@@ -1,13 +1,11 @@
 package processing
 
 import (
-	"fmt"
 	"image"
 	"image/color"
-	"math/rand"
 )
 
-const MINIMUM_NUMBER_OF_PIXELS_FOR_VALID_REGION = 100
+const MINIMUM_NUMBER_OF_PIXELS_FOR_VALID_REGION = 150
 
 var Red color.NRGBA = color.NRGBA{uint8(255), uint8(0), uint8(0), uint8(255)}
 var Green color.NRGBA = color.NRGBA{uint8(0), uint8(255), uint8(0), uint8(255)}
@@ -22,46 +20,88 @@ func absDiff[T int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint
 	return b - a
 }
 
-type Pixel struct {
-	X, Y int
-}
+type PixelIndex int
+type RegionIndex int
 
 type RegionMap struct {
-	regions []*[]Pixel
-	pixels  map[Pixel]int
+	regions []*[]PixelIndex
+	pixels  map[PixelIndex]RegionIndex
 }
 
-func NewRegionMap() *RegionMap {
-	return &RegionMap{make([]*[]Pixel, 0), make(map[Pixel]int)}
-}
-
-func (rm *RegionMap) NewRegion(pixel Pixel) {
-	region := len(rm.regions)
-	rm.regions = append(rm.regions, &[]Pixel{pixel})
+func (rm *RegionMap) NewRegion(pixel PixelIndex) (region RegionIndex) {
+	region = RegionIndex(len(rm.regions))
+	rm.regions = append(rm.regions, &[]PixelIndex{pixel})
 	rm.pixels[pixel] = region
+	return
 }
 
-func (rm *RegionMap) AddPixelToRegion(pixel Pixel, region int) {
+type PixelImage interface {
+	image.Image
+
+	PixOffset(x int, y int) int
+}
+
+func (rm *RegionMap) AddPixelToRegion(pixel PixelIndex, region RegionIndex) {
 	newPixelArray := append((*rm.regions[region]), pixel)
 	rm.regions[region] = &newPixelArray
 	rm.pixels[pixel] = region
 }
 
-func (rm *RegionMap) GetPixelHasRegion(pixel Pixel) (hasRegion bool) {
+func (rm *RegionMap) GetPixelIndexHasRegion(pixel PixelIndex) (hasRegion bool) {
 	_, hasRegion = rm.pixels[pixel]
 	return
 }
 
-func (rm *RegionMap) GetRegionOfPixel(pixel Pixel) int {
-	return rm.pixels[pixel]
+func (rm *RegionMap) GetRegionOfPixelIndex(pixel PixelIndex) (regionIndex RegionIndex, hasRegion bool) {
+	regionIndex, hasRegion = rm.pixels[pixel]
+	return
 }
 
-func (rm *RegionMap) GetRegionPixels(region int) []Pixel {
+func (rm *RegionMap) GetRegionPixels(region RegionIndex) []PixelIndex {
 	return *rm.regions[region]
 }
 
-func (rm *RegionMap) GetRegions() []*[]Pixel {
+func (rm *RegionMap) GetRegions() []*[]PixelIndex {
 	return rm.regions
+}
+
+func Traverse(img PixelImage, regionMap *RegionMap, px, py int, regionIndex RegionIndex) {
+
+	if pixelIndex := PixelIndex(img.PixOffset(px, py-1)); ColorsBelongInSameRegion(img.At(px, py), img.At(px, py-1)) && !regionMap.GetPixelIndexHasRegion(pixelIndex) {
+		regionMap.AddPixelToRegion(pixelIndex, regionIndex)
+		Traverse(img, regionMap, px, py-1, regionIndex)
+	}
+	if pixelIndex := PixelIndex(img.PixOffset(px, py+1)); ColorsBelongInSameRegion(img.At(px, py), img.At(px, py+1)) && !regionMap.GetPixelIndexHasRegion(pixelIndex) {
+		regionMap.AddPixelToRegion(pixelIndex, regionIndex)
+		Traverse(img, regionMap, px, py+1, regionIndex)
+	}
+	if pixelIndex := PixelIndex(img.PixOffset(px-1, py)); ColorsBelongInSameRegion(img.At(px, py), img.At(px-1, py)) && !regionMap.GetPixelIndexHasRegion(pixelIndex) {
+		regionMap.AddPixelToRegion(pixelIndex, regionIndex)
+		Traverse(img, regionMap, px-1, py, regionIndex)
+	}
+	if pixelIndex := PixelIndex(img.PixOffset(px+1, py)); ColorsBelongInSameRegion(img.At(px, py), img.At(px+1, py)) && !regionMap.GetPixelIndexHasRegion(pixelIndex) {
+		regionMap.AddPixelToRegion(pixelIndex, regionIndex)
+		Traverse(img, regionMap, px+1, py, regionIndex)
+	}
+}
+
+func BuildRegionMap(img PixelImage) *RegionMap {
+	regionMap := RegionMap{make([]*[]PixelIndex, 0, 20), make(map[PixelIndex]RegionIndex, (img.Bounds().Dx()*img.Bounds().Dy())/4)}
+
+	bd := img.Bounds()
+
+	for y := bd.Min.Y; y < bd.Max.Y; y++ {
+		for x := bd.Min.X; x < bd.Max.X; x++ {
+			pixelIndex := PixelIndex(img.PixOffset(x, y))
+
+			if img.At(x, y) != White && !regionMap.GetPixelIndexHasRegion(pixelIndex) {
+				regionIndex := regionMap.NewRegion(pixelIndex)
+				Traverse(img, &regionMap, x, y, regionIndex)
+			}
+		}
+	}
+
+	return &regionMap
 }
 
 // hot damn someone rename this function
@@ -71,16 +111,28 @@ func ColorsBelongInSameRegion(a color.Color, b color.Color) bool {
 	} else if (a == Black && b == Red) || (b == Black && a == Red) {
 		return true
 	} else {
-		fmt.Printf("%v != %v\n", a, b)
 		return false
 	}
 }
 
+func PixFromOffset(img image.Image, pixIndex PixelIndex) (x int, y int) {
+	switch v := img.(type) {
+	case *image.Paletted:
+		b := v.Bounds()
+		x = b.Min.X + (int(pixIndex) % v.Stride)
+		y = b.Min.Y + (int(pixIndex) / v.Stride)
+	case *image.NRGBA:
+		b := v.Bounds()
+		x = b.Min.X + (int(pixIndex)%v.Stride)/4
+		y = b.Min.Y + (int(pixIndex) / v.Stride)
+	}
+	return
+}
+
 func SimplifyImage(img *image.Image, result chan image.Image) {
 	bd := (*img).Bounds()
-	// newImg := image.NewPaletted(bd, color.Palette{White, Black, Red, Green, Blue})
-	newImg := image.NewNRGBA(bd)
-	regionMap := *NewRegionMap()
+	newImg := image.NewPaletted(bd, color.Palette{White, Black, Red, Green, Blue})
+	// newImg := image.NewNRGBA(bd)
 
 	for y := bd.Min.Y; y < bd.Max.Y; y++ {
 		for x := bd.Min.X; x < bd.Max.X; x++ {
@@ -105,26 +157,29 @@ func SimplifyImage(img *image.Image, result chan image.Image) {
 				newPixelColor = White
 			}
 			newImg.Set(x, y, newPixelColor)
-
-			if newPixelColor != White {
-				// check neighbor pixels
-				if x > bd.Min.X && regionMap.GetPixelHasRegion(Pixel{x - 1, y}) && ColorsBelongInSameRegion(newPixelColor, newImg.At(x-1, y)) {
-					regionMap.AddPixelToRegion(Pixel{x, y}, regionMap.GetRegionOfPixel(Pixel{x - 1, y}))
-				} else if y > bd.Min.Y && regionMap.GetPixelHasRegion(Pixel{x, y - 1}) && ColorsBelongInSameRegion(newPixelColor, newImg.At(x, y-1)) {
-					regionMap.AddPixelToRegion(Pixel{x, y}, regionMap.GetRegionOfPixel(Pixel{x, y - 1}))
-				} else {
-					regionMap.NewRegion(Pixel{x, y})
-				}
-			}
 		}
 	}
 
+	regionMap := BuildRegionMap(newImg)
+
+	// colors := []color.Color{Black, Red, Green, Blue}
 	for region := range regionMap.GetRegions() {
-		regionPixels := regionMap.GetRegionPixels(region)
-		randColor := color.NRGBA{uint8(rand.Intn(256)), uint8(rand.Intn(256)), uint8(rand.Intn(256)), uint8(255)}
-		for _, pix := range regionPixels {
-			newImg.Set(pix.X, pix.Y, randColor)
+		regionPixels := regionMap.GetRegionPixels(RegionIndex(region))
+		// randColor := color.NRGBA{uint8(rand.Intn(256)), uint8(rand.Intn(256)), uint8(rand.Intn(256)), uint8(255)}
+		// randColor := colors[rand.Intn(len(colors))]
+		if len(regionPixels) < MINIMUM_NUMBER_OF_PIXELS_FOR_VALID_REGION {
+			for _, pixelIndex := range regionPixels {
+				x, y := PixFromOffset(newImg, pixelIndex)
+				newImg.Set(x, y, White)
+			}
 		}
+
+		// } else {
+		// 	for _, pixelIndex := range regionPixels {
+		// 		x, y := PixFromOffset(newImg, pixelIndex)
+		// 		newImg.Set(x, y, randColor)
+		// 	}
+		// }
 	}
 
 	result <- newImg
