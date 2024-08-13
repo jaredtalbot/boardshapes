@@ -5,7 +5,9 @@ import (
 	"codejester27/cmps401fa2024/processing"
 	"image"
 	"image/png"
+	"log"
 	"net/http"
+	"runtime"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,11 +33,18 @@ func simplifyImage(c *gin.Context) {
 
 	img, err := png.Decode(file)
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusBadRequest, gin.H{"errorMessage": "Could not decode your PNG image."})
+		return
+	}
+
+	img, err = processing.ResizeImage(img)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errorMessage": err.Error()})
+		return
 	}
 
 	imgc := make(chan image.Image)
-	go processing.SimplifyImage(&img, imgc)
+	go processing.SimplifyImage(img, imgc)
 
 	buf := new(bytes.Buffer)
 	if err := png.Encode(buf, <-imgc); err != nil {
@@ -47,6 +56,8 @@ func simplifyImage(c *gin.Context) {
 }
 
 func main() {
+	log.Printf("Running with %d CPUs\n", runtime.NumCPU())
+
 	router := gin.Default()
 
 	router.POST("/api/simplify", simplifyImage)
