@@ -9,7 +9,7 @@ import (
 	"golang.org/x/image/draw"
 )
 
-const MINIMUM_NUMBER_OF_PIXELS_FOR_VALID_REGION = 100
+const MINIMUM_NUMBER_OF_PIXELS_FOR_VALID_REGION = 50
 
 var Red color.NRGBA = color.NRGBA{uint8(255), uint8(0), uint8(0), uint8(255)}
 var Green color.NRGBA = color.NRGBA{uint8(0), uint8(255), uint8(0), uint8(255)}
@@ -64,7 +64,7 @@ func SimplifyImage(img image.Image, result chan image.Image) {
 				}
 			} else if r > g && r > b {
 				newPixelColor = Red
-			} else if g > r && g > b {
+			} else if g > r && absDiff(g, b) < 10 {
 				newPixelColor = Green
 			} else if b > r && b > g {
 				newPixelColor = Blue
