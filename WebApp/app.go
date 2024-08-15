@@ -3,13 +3,24 @@ package main
 import (
 	"bytes"
 	"codejester27/cmps401fa2024/processing"
+	"fmt"
 	"image"
 	"image/png"
 	"log"
 	"net/http"
+	"os"
 	"runtime"
+	"slices"
+	"sync"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
+)
+
+const LISTENER_TOKEN_ENV = "LISTENER_TOKEN"
+
+var (
+	ListenerToken = os.Getenv(LISTENER_TOKEN_ENV)
 )
 
 func simplifyImage(c *gin.Context) {
@@ -51,16 +62,89 @@ func simplifyImage(c *gin.Context) {
 		panic(err)
 	}
 
+	notifyListeners(gin.H{"message": fmt.Sprintf("Simplified image %s", fileh.Filename)})
 	c.Data(http.StatusOK, "image/png", buf.Bytes())
 	c.Header("Content-Disposition", `attachment; filename="simplified-image.png"`)
+}
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+var listeners = make([]chan any, 0, 5)
+var listenersMutex sync.Mutex
+
+func notifyListeners(msg any) {
+	listenersMutex.Lock()
+	for _, l := range listeners {
+		l <- msg
+	}
+	listenersMutex.Unlock()
+}
+
+func addListener(listener chan any) {
+	listenersMutex.Lock()
+	listeners = append(listeners, listener)
+	listenersMutex.Unlock()
+}
+
+func removeListener(listener chan any) {
+	listenersMutex.Lock()
+	close(listener)
+	listeners = slices.DeleteFunc(listeners, func(c chan any) bool {
+		return c == listener
+	})
+	listenersMutex.Unlock()
+}
+
+func connectWebsocket(c *gin.Context) {
+	if c.Query("token") != ListenerToken {
+		c.Status(401)
+		return
+	}
+	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	ch := make(chan any, 1)
+	addListener(ch)
+
+	go func() {
+		for {
+			if _, _, err := conn.ReadMessage(); err != nil {
+				removeListener(ch)
+				conn.Close()
+				break
+			}
+		}
+	}()
+
+	log.Printf("Listener connected %s", c.Request.RemoteAddr)
+	defer log.Printf("Listener disconnected %s", c.Request.RemoteAddr)
+	for m := range ch {
+		err := conn.WriteJSON(m)
+		if err != nil {
+			log.Printf("Could not send %T: %s", m, err)
+			removeListener(ch)
+			conn.Close()
+			break
+		}
+	}
 }
 
 func main() {
 	log.Printf("Running with %d CPUs\n", runtime.NumCPU())
 
-	router := gin.Default()
+	router := gin.New()
+	router.Use(gin.Recovery())
 
-	router.POST("/api/simplify", simplifyImage)
+	logged := router.Group("") // I don't like seeing auth tokens in my terminal so we're not logging the websocket requests
+	logged.Use(gin.Logger())
+
+	logged.POST("/api/simplify", simplifyImage)
+	router.GET("/api/ws", connectWebsocket)
 
 	router.Run("localhost:8080")
 }

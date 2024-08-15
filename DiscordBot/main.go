@@ -8,23 +8,27 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/gorilla/websocket"
 )
 
 const TOKEN_ENV = "DISCORD_BOT_TOKEN"
 const APP_ENV = "DISCORD_BOT_APP"
 const GUILD_ENV = "DISCORD_BOT_GUILD"
 const SERVER_URL_ENV = "WEB_SERVER_URL"
+const SERVER_TOKEN_ENV = "WEB_SERVER_TOKEN"
 
 var (
-	Token     = os.Getenv(TOKEN_ENV)
-	App       = os.Getenv(APP_ENV)
-	Guild     = os.Getenv(GUILD_ENV)
-	ServerUrl = os.Getenv(SERVER_URL_ENV)
+	Token       = os.Getenv(TOKEN_ENV)
+	App         = os.Getenv(APP_ENV)
+	Guild       = os.Getenv(GUILD_ENV)
+	ServerUrl   = os.Getenv(SERVER_URL_ENV)
+	ServerToken = os.Getenv(SERVER_TOKEN_ENV)
 )
 
 func handleSimplify(s *discordgo.Session, i *discordgo.InteractionCreate, data *discordgo.ApplicationCommandInteractionData) {
@@ -115,6 +119,36 @@ func handleSimplify(s *discordgo.Session, i *discordgo.InteractionCreate, data *
 	})
 }
 
+func openServerWebsocket(session *discordgo.Session) *websocket.Conn {
+	u := url.URL{Scheme: "ws", Host: ServerUrl, Path: "/api/ws"}
+	q := u.Query()
+	q.Add("token", ServerToken)
+	u.RawQuery = q.Encode()
+	conn, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+	if err != nil {
+		log.Fatalf("Couldn't open a connection to the main server: %s", err)
+	}
+	log.Println("Connected to main server!")
+
+	go func() {
+		for {
+			msg := make(map[string]any)
+			err := conn.ReadJSON(&msg)
+			if err != nil {
+				e, ok := err.(*websocket.CloseError)
+				if !ok || e.Code != websocket.CloseNormalClosure {
+					log.Println(err)
+				}
+				break
+			}
+			log.Println(msg)
+		}
+		conn.Close()
+	}()
+
+	return conn
+}
+
 func main() {
 	if Token == "" {
 		log.Fatalf("Bot token not set in environment var '%s'", TOKEN_ENV)
@@ -148,11 +182,17 @@ func main() {
 	})
 
 	// TODO: add simplify slash command creation
-	// TODO: connect to web server or die trying
 	// TODO: relay simplify requests to bot channel or just give results of post request idk
 
-	session.Open()
+	err = session.Open()
+	if err != nil {
+		log.Fatalf("Couldn't open a connection to Discord: %s", err)
+	}
+	log.Println("Connected to Discord!")
 	defer session.Close()
+
+	serverConn := openServerWebsocket(session)
+	defer serverConn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 
 	sigch := make(chan os.Signal, 1)
 	signal.Notify(sigch, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
