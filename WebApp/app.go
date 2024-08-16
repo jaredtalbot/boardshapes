@@ -138,6 +138,7 @@ func main() {
 	log.Printf("Running with %d CPUs\n", runtime.NumCPU())
 
 	router := gin.New()
+	router.SetTrustedProxies(nil)
 	router.Use(gin.Recovery())
 
 	logged := router.Group("") // I don't like seeing auth tokens in my terminal so we're not logging the websocket requests
