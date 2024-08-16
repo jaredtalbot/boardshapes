@@ -66,7 +66,7 @@ func simplifyImage(c *gin.Context) {
 	}
 	base64Img := base64.StdEncoding.EncodeToString(buf.Bytes())
 	notifyListeners(ListenerMessage{
-		Content: fmt.Sprintf("Simplified image %s successfully", fileh.Filename),
+		Content: fmt.Sprintf("Simplified image %s successfully.", fileh.Filename),
 		Attachments: []AttachedFile{
 			{
 				Name:          fileh.Filename,

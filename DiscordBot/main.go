@@ -2,12 +2,14 @@ package main
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
 	"net/http"
+	"net/textproto"
 	"net/url"
 	"os"
 	"os/signal"
@@ -34,9 +36,11 @@ var (
 	ServerToken = os.Getenv(SERVER_TOKEN_ENV)
 )
 
+var quoteEscaper = strings.NewReplacer("\\", "\\\\", `"`, "\\\"")
+
 func handleSimplify(s *discordgo.Session, i *discordgo.InteractionCreate, data *discordgo.ApplicationCommandInteractionData) {
 	option := data.Options[0]
-	if option.Name != "image" || !option.BoolValue() {
+	if option.Name != "image" || option.Type != discordgo.ApplicationCommandOptionAttachment {
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
@@ -70,7 +74,13 @@ func handleSimplify(s *discordgo.Session, i *discordgo.InteractionCreate, data *
 
 	var buff bytes.Buffer
 	w := multipart.NewWriter(&buff)
-	fw, err := w.CreateFormFile("image", attachment.Filename)
+
+	h := make(textproto.MIMEHeader)
+	h.Set("Content-Disposition",
+		fmt.Sprintf(`form-data; name="%s"; filename="%s"`,
+			"image", quoteEscaper.Replace(attachment.Filename)))
+	h.Set("Content-Type", "image/png")
+	fw, err := w.CreatePart(h)
 	if err != nil {
 		errorRespond(fmt.Sprintf("Couldn't write image at '%s' to form.", attachmentUrl), "Couldn't send the image to the server.")
 		return
@@ -84,7 +94,7 @@ func handleSimplify(s *discordgo.Session, i *discordgo.InteractionCreate, data *
 
 	w.Close()
 
-	req, err := http.NewRequest("POST", ServerUrl, &buff)
+	req, err := http.NewRequest("POST", ServerUrl+"/api/simplify", &buff)
 	if err != nil {
 		errorRespond(fmt.Sprintf("Couldn't make request to server with image at '%s'", attachmentUrl), "Couldn't send the image to the server.")
 		return
@@ -92,33 +102,37 @@ func handleSimplify(s *discordgo.Session, i *discordgo.InteractionCreate, data *
 
 	req.Header.Set("Content-Type", w.FormDataContentType())
 
+	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseDeferredChannelMessageWithSource,
+	})
 	res, err = http.DefaultClient.Do(req)
 	if err != nil {
 		errorRespond(fmt.Sprintf("Request to server containing image at '%s' has failed", attachmentUrl), "Request to server has failed.")
 		return
 	}
-
 	if res.StatusCode != http.StatusOK {
 		if b, err := io.ReadAll(res.Body); err == nil {
 			if json.Valid(b) {
 				m := make(map[string]any)
 				if err = json.Unmarshal(b, &m); err == nil {
 					if errorMessage, ok := m["errorMessage"]; ok { // THE GREAT PYRAMID
-						errorRespond(fmt.Sprintf("Request to server containing image at '%s' has errored with code %d: %v", attachmentUrl, res.StatusCode, errorMessage), fmt.Sprintf("Error: %v", errorMessage))
+						log.Printf("Request to server containing image at '%s' has errored with code %d: %v", attachmentUrl, res.StatusCode, errorMessage)
+						s.FollowupMessageCreate(i.Interaction, false, &discordgo.WebhookParams{
+							Content: fmt.Sprintf("Error: %v", errorMessage),
+						})
 						return
 					}
 				}
 			}
 		}
-		errorRespond(fmt.Sprintf("Request to server containing image at '%s' has errored with code %d", attachmentUrl, res.StatusCode), "The server returned an error.")
+		log.Printf("Request to server containing image at '%s' has errored with code %d", attachmentUrl, res.StatusCode)
+		s.FollowupMessageCreate(i.Interaction, false, &discordgo.WebhookParams{
+			Content: fmt.Sprintf("There was an error with uploading %s to the server.", attachment.Filename),
+		})
 		return
 	}
-
-	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: fmt.Sprintf("File %s was successfully uploaded and simplified.", attachment.Filename),
-		},
+	s.FollowupMessageCreate(i.Interaction, false, &discordgo.WebhookParams{
+		Content: fmt.Sprintf("File %s was successfully uploaded and simplified.", attachment.Filename),
 	})
 }
 
@@ -173,11 +187,11 @@ func openServerWebsocket(session *discordgo.Session) (*websocket.Conn, error) {
 					discordMsgFiles[i] = &discordgo.File{
 						Name:        v.Name,
 						ContentType: v.ContentType,
-						Reader:      strings.NewReader("data:image/png;base64," + v.Base64Content),
+						Reader:      base64.NewDecoder(base64.StdEncoding, strings.NewReader(v.Base64Content)),
 					}
 				}
 			}
-
+			// TODO: consider embeds
 			discordMsg := &discordgo.MessageSend{Content: msg.Content, Files: discordMsgFiles}
 			_, err = session.ChannelMessageSendComplex(Channel, discordMsg)
 			if err != nil {
