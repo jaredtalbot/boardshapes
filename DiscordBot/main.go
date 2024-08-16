@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
@@ -20,12 +21,14 @@ import (
 const TOKEN_ENV = "DISCORD_BOT_TOKEN"
 const APP_ENV = "DISCORD_BOT_APP"
 const GUILD_ENV = "DISCORD_BOT_GUILD"
+const CHANNEL_ENV = "DISCORD_BOT_CHANNEL"
 const SERVER_URL_ENV = "WEB_SERVER_URL"
 const SERVER_TOKEN_ENV = "WEB_SERVER_TOKEN"
 
 var (
 	Token       = os.Getenv(TOKEN_ENV)
 	App         = os.Getenv(APP_ENV)
+	Channel     = os.Getenv(CHANNEL_ENV)
 	Guild       = os.Getenv(GUILD_ENV)
 	ServerUrl   = os.Getenv(SERVER_URL_ENV)
 	ServerToken = os.Getenv(SERVER_TOKEN_ENV)
@@ -119,21 +122,42 @@ func handleSimplify(s *discordgo.Session, i *discordgo.InteractionCreate, data *
 	})
 }
 
-func openServerWebsocket(session *discordgo.Session) *websocket.Conn {
-	u := url.URL{Scheme: "ws", Host: ServerUrl, Path: "/api/ws"}
+type WebServerAttachedFile struct {
+	Name          string
+	ContentType   string
+	Base64Content string
+}
+
+type WebServerMessage struct {
+	Content     string
+	Attachments []WebServerAttachedFile
+}
+
+func openServerWebsocket(session *discordgo.Session) (*websocket.Conn, error) {
+	u, err := url.Parse(ServerUrl)
+	if err != nil {
+		log.Printf("Couldn't parse server URL [%s]", err)
+		return nil, err
+	}
+	u.Path = "/api/ws"
+	u.Scheme = "ws"
+	if strings.Contains(ServerUrl, "https") {
+		u.Scheme = "wss"
+	}
 	q := u.Query()
 	q.Add("token", ServerToken)
 	u.RawQuery = q.Encode()
 	conn, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
-		log.Fatalf("Couldn't open a connection to the main server: %s", err)
+		log.Printf("Couldn't open a connection to the main server [%s]", err)
+		return nil, err
 	}
 	log.Println("Connected to main server!")
 
 	go func() {
 		for {
-			msg := make(map[string]any)
-			err := conn.ReadJSON(&msg)
+			msg := new(WebServerMessage)
+			err := conn.ReadJSON(msg)
 			if err != nil {
 				e, ok := err.(*websocket.CloseError)
 				if !ok || e.Code != websocket.CloseNormalClosure {
@@ -141,12 +165,45 @@ func openServerWebsocket(session *discordgo.Session) *websocket.Conn {
 				}
 				break
 			}
-			log.Println(msg)
+
+			var discordMsgFiles []*discordgo.File
+			if msg.Attachments != nil {
+				discordMsgFiles = make([]*discordgo.File, len(msg.Attachments))
+				for i, v := range msg.Attachments {
+					discordMsgFiles[i] = &discordgo.File{
+						Name:        v.Name,
+						ContentType: v.ContentType,
+						Reader:      strings.NewReader("data:image/png;base64," + v.Base64Content),
+					}
+				}
+			}
+
+			discordMsg := &discordgo.MessageSend{Content: msg.Content, Files: discordMsgFiles}
+			_, err = session.ChannelMessageSendComplex(Channel, discordMsg)
+			if err != nil {
+				log.Printf("Couldn't send message from main server [%s]", err)
+			}
 		}
 		conn.Close()
 	}()
 
-	return conn
+	return conn, nil
+}
+
+var commands = []*discordgo.ApplicationCommand{
+	{
+		Name:        "simplify",
+		Description: "Try out simplifying an image",
+		Options: []*discordgo.ApplicationCommandOption{
+			{
+				Name:        "image",
+				Description: "Contents of the message",
+				Type:        discordgo.ApplicationCommandOptionAttachment,
+				Required:    true,
+			},
+		},
+		Type: discordgo.ChatApplicationCommand,
+	},
 }
 
 func main() {
@@ -159,8 +216,14 @@ func main() {
 	if Guild == "" {
 		log.Fatalf("Guild id not set in environment var '%s'", GUILD_ENV)
 	}
+	if Channel == "" {
+		log.Fatalf("Channel id not set in environment var '%s'", CHANNEL_ENV)
+	}
 	if ServerUrl == "" {
 		log.Fatalf("Server URL not set in environment var '%s'", SERVER_URL_ENV)
+	}
+	if ServerToken == "" {
+		log.Fatalf("Server Token not set in environment var '%s'", SERVER_TOKEN_ENV)
 	}
 
 	session, err := discordgo.New("Bot " + Token)
@@ -181,21 +244,28 @@ func main() {
 		handleSimplify(s, i, &data)
 	})
 
-	// TODO: add simplify slash command creation
-	// TODO: relay simplify requests to bot channel or just give results of post request idk
+	_, err = session.ApplicationCommandBulkOverwrite(App, Guild, commands)
+	if err != nil {
+		log.Printf("Could not register commands: %s", err)
+		return
+	}
 
 	err = session.Open()
 	if err != nil {
-		log.Fatalf("Couldn't open a connection to Discord: %s", err)
+		log.Printf("Couldn't open a connection to Discord: %s", err)
+		return
 	}
 	log.Println("Connected to Discord!")
 	defer session.Close()
 
-	serverConn := openServerWebsocket(session)
+	serverConn, err := openServerWebsocket(session)
+	if err != nil {
+		return
+	}
 	defer serverConn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 
+	defer log.Println("Shutting down...")
 	sigch := make(chan os.Signal, 1)
 	signal.Notify(sigch, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 	<-sigch
-	log.Println("Shutting down...")
 }

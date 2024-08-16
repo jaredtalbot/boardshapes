@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"codejester27/cmps401fa2024/processing"
+	"encoding/base64"
 	"fmt"
 	"image"
 	"image/png"
@@ -63,21 +64,35 @@ func simplifyImage(c *gin.Context) {
 	if err := png.Encode(buf, <-imgc); err != nil {
 		panic(err)
 	}
-
-	notifyListeners(gin.H{"message": fmt.Sprintf("Simplified image %s", fileh.Filename)})
+	base64Img := base64.StdEncoding.EncodeToString(buf.Bytes())
+	notifyListeners(ListenerMessage{
+		Content: fmt.Sprintf("Simplified image %s successfully", fileh.Filename),
+		Attachments: []AttachedFile{
+			{
+				Name:          fileh.Filename,
+				ContentType:   "image/png",
+				Base64Content: base64Img,
+			},
+		}})
 	c.Data(http.StatusOK, "image/png", buf.Bytes())
 	c.Header("Content-Disposition", `attachment; filename="simplified-image.png"`)
 }
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
+type AttachedFile struct {
+	Name          string
+	ContentType   string
+	Base64Content string
 }
 
-var listeners = make([]chan any, 0, 5)
+type ListenerMessage struct {
+	Content     string         `json:"content"`
+	Attachments []AttachedFile `json:"attachments"`
+}
+
+var listeners = make([]chan ListenerMessage, 0, 5)
 var listenersMutex sync.Mutex
 
-func notifyListeners(msg any) {
+func notifyListeners(msg ListenerMessage) {
 	listenersMutex.Lock()
 	for _, l := range listeners {
 		l <- msg
@@ -85,19 +100,24 @@ func notifyListeners(msg any) {
 	listenersMutex.Unlock()
 }
 
-func addListener(listener chan any) {
+func addListener(listener chan ListenerMessage) {
 	listenersMutex.Lock()
 	listeners = append(listeners, listener)
 	listenersMutex.Unlock()
 }
 
-func removeListener(listener chan any) {
+func removeListener(listener chan ListenerMessage) {
 	listenersMutex.Lock()
 	close(listener)
-	listeners = slices.DeleteFunc(listeners, func(c chan any) bool {
+	listeners = slices.DeleteFunc(listeners, func(c chan ListenerMessage) bool {
 		return c == listener
 	})
 	listenersMutex.Unlock()
+}
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
 }
 
 func connectWebsocket(c *gin.Context) {
@@ -110,7 +130,7 @@ func connectWebsocket(c *gin.Context) {
 		panic(err)
 	}
 
-	ch := make(chan any, 1)
+	ch := make(chan ListenerMessage, 1)
 	addListener(ch)
 
 	go func() {
