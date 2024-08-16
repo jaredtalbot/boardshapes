@@ -18,9 +18,11 @@ import (
 )
 
 const LISTENER_TOKEN_ENV = "LISTENER_TOKEN"
+const PORT_ENV = "PORT"
 
 var (
 	ListenerToken = os.Getenv(LISTENER_TOKEN_ENV)
+	Port          = os.Getenv(PORT_ENV)
 )
 
 func simplifyImage(c *gin.Context) {
@@ -147,5 +149,9 @@ func main() {
 	logged.POST("/api/simplify", simplifyImage)
 	router.GET("/api/ws", connectWebsocket)
 
-	router.Run("localhost:8080")
+	port := Port
+	if port == "" {
+		port = "8080"
+	}
+	router.Run(":" + port)
 }
