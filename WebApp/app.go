@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"codejester27/cmps401fa2024/processing"
 	"encoding/base64"
-	"fmt"
-	"image"
 	"image/png"
 	"log"
 	"net/http"
@@ -13,6 +11,7 @@ import (
 	"runtime"
 	"slices"
 	"sync"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -57,62 +56,75 @@ func simplifyImage(c *gin.Context) {
 		return
 	}
 
-	imgc := make(chan image.Image)
-	go processing.SimplifyImage(img, imgc)
+	newImg, regionCount := processing.SimplifyImage(img)
 
 	buf := new(bytes.Buffer)
-	if err := png.Encode(buf, <-imgc); err != nil {
+	if err := png.Encode(buf, newImg); err != nil {
 		panic(err)
 	}
 	base64Img := base64.StdEncoding.EncodeToString(buf.Bytes())
-	notifyListeners(ListenerMessage{
-		Content: fmt.Sprintf("Simplified image %s successfully.", fileh.Filename),
+	listenerHub.NotifyListeners(ListenerMessage{
+		Type: "simplify",
 		Attachments: []AttachedFile{
 			{
 				Name:          fileh.Filename,
 				ContentType:   "image/png",
 				Base64Content: base64Img,
+				Meta: map[string]any{
+					"regionCount": regionCount,
+				},
 			},
-		}})
+		},
+		Timestamp: time.Now().Format(time.RFC3339),
+	})
 	c.Data(http.StatusOK, "image/png", buf.Bytes())
 	c.Header("Content-Disposition", `attachment; filename="simplified-image.png"`)
 }
 
 type AttachedFile struct {
-	Name          string
-	ContentType   string
-	Base64Content string
+	Name          string         `json:"name"`
+	ContentType   string         `json:"contentType"`
+	Base64Content string         `json:"base64Content"`
+	Meta          map[string]any `json:"meta,omitempty"`
 }
 
 type ListenerMessage struct {
-	Content     string         `json:"content"`
-	Attachments []AttachedFile `json:"attachments"`
+	Type        string         `json:"type"`
+	Content     string         `json:"content,omitempty"`
+	Attachments []AttachedFile `json:"attachments,omitempty"`
+	Timestamp   string         `json:"timestamp,omitempty"`
 }
 
-var listeners = make([]chan ListenerMessage, 0, 5)
-var listenersMutex sync.Mutex
+type ListenerHub struct {
+	listeners []chan ListenerMessage
+	sync.Mutex
+}
 
-func notifyListeners(msg ListenerMessage) {
-	listenersMutex.Lock()
-	for _, l := range listeners {
+var listenerHub = ListenerHub{
+	listeners: make([]chan ListenerMessage, 0, 5),
+}
+
+func (lh *ListenerHub) NotifyListeners(msg ListenerMessage) {
+	lh.Lock()
+	defer lh.Unlock()
+	for _, l := range lh.listeners {
 		l <- msg
 	}
-	listenersMutex.Unlock()
 }
 
-func addListener(listener chan ListenerMessage) {
-	listenersMutex.Lock()
-	listeners = append(listeners, listener)
-	listenersMutex.Unlock()
+func (lh *ListenerHub) AddListener(listener chan ListenerMessage) {
+	lh.Lock()
+	defer lh.Unlock()
+	lh.listeners = append(lh.listeners, listener)
 }
 
-func removeListener(listener chan ListenerMessage) {
-	listenersMutex.Lock()
+func (lh *ListenerHub) RemoveListener(listener chan ListenerMessage) {
+	lh.Lock()
+	defer lh.Unlock()
 	close(listener)
-	listeners = slices.DeleteFunc(listeners, func(c chan ListenerMessage) bool {
+	lh.listeners = slices.DeleteFunc(lh.listeners, func(c chan ListenerMessage) bool {
 		return c == listener
 	})
-	listenersMutex.Unlock()
 }
 
 var upgrader = websocket.Upgrader{
@@ -131,12 +143,12 @@ func connectWebsocket(c *gin.Context) {
 	}
 
 	ch := make(chan ListenerMessage, 1)
-	addListener(ch)
+	listenerHub.AddListener(ch)
 
 	go func() {
 		for {
 			if _, _, err := conn.ReadMessage(); err != nil {
-				removeListener(ch)
+				listenerHub.RemoveListener(ch)
 				conn.Close()
 				break
 			}
@@ -149,7 +161,7 @@ func connectWebsocket(c *gin.Context) {
 		err := conn.WriteJSON(m)
 		if err != nil {
 			log.Printf("Could not send %T: %s", m, err)
-			removeListener(ch)
+			listenerHub.RemoveListener(ch)
 			conn.Close()
 			break
 		}

@@ -24,6 +24,8 @@ func absDiff[T int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint
 	return b - a
 }
 
+var ImageTooWideError = errors.New("image is too wide")
+
 func ResizeImage(img image.Image) (image.Image, error) {
 	const MAX_HEIGHT = 1080
 	const MAX_WIDTH = 2000
@@ -33,18 +35,18 @@ func ResizeImage(img image.Image) (image.Image, error) {
 		scalar := float64(MAX_HEIGHT) / float64(bd.Dy())
 		newWidth := math.Round(float64(bd.Dx()) * scalar)
 		if newWidth > MAX_WIDTH {
-			return nil, errors.New("image is too wide")
+			return nil, ImageTooWideError
 		}
 		scaledImg := image.NewNRGBA(image.Rect(0, 0, int(newWidth), MAX_HEIGHT))
 		draw.NearestNeighbor.Scale(scaledImg, scaledImg.Rect, img, img.Bounds(), draw.Over, nil)
 		return scaledImg, nil
 	} else if bd.Dx() > MAX_WIDTH {
-		return nil, errors.New("image is too wide")
+		return nil, ImageTooWideError
 	}
 	return img, nil
 }
 
-func SimplifyImage(img image.Image, result chan image.Image) {
+func SimplifyImage(img image.Image) (result image.Image, regionCount int) {
 	bd := img.Bounds()
 	newImg := image.NewPaletted(bd, color.Palette{White, Black, Red, Green, Blue})
 	// newImg := image.NewNRGBA(bd)
@@ -86,6 +88,8 @@ func SimplifyImage(img image.Image, result chan image.Image) {
 			for _, pixel := range regionPixels {
 				newImg.Set(int(pixel.X), int(pixel.Y), White)
 			}
+		} else {
+			regionCount++
 		}
 
 		// } else {
@@ -95,5 +99,5 @@ func SimplifyImage(img image.Image, result chan image.Image) {
 		// }
 	}
 
-	result <- newImg
+	return newImg, regionCount
 }

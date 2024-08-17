@@ -15,6 +15,7 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/gorilla/websocket"
@@ -137,21 +138,119 @@ func handleSimplify(s *discordgo.Session, i *discordgo.InteractionCreate, data *
 }
 
 type WebServerAttachedFile struct {
-	Name          string
-	ContentType   string
-	Base64Content string
+	Name          string         `json:"name"`
+	ContentType   string         `json:"contentType"`
+	Base64Content string         `json:"base64Content"`
+	Meta          map[string]any `json:"meta,omitempty"`
 }
 
 type WebServerMessage struct {
-	Content     string
-	Attachments []WebServerAttachedFile
+	Type        string                  `json:"type"`
+	Content     string                  `json:"content,omitempty"`
+	Attachments []WebServerAttachedFile `json:"attachments,omitempty"`
+	Timestamp   string                  `json:"timestamp,omitempty"`
 }
 
-func openServerWebsocket(session *discordgo.Session) (*websocket.Conn, error) {
+var serverConn *websocket.Conn
+
+var retryDelays = []int{5, 10, 30, 60}
+
+func handleWebServerMessage(session *discordgo.Session, msg *WebServerMessage) {
+	var discordMsgFiles []*discordgo.File
+	var discordMsgEmbeds []*discordgo.MessageEmbed
+	if msg.Attachments != nil {
+		discordMsgFiles = make([]*discordgo.File, len(msg.Attachments))
+		for i, v := range msg.Attachments {
+			discordMsgFiles[i] = &discordgo.File{
+				Name:        v.Name,
+				ContentType: v.ContentType,
+				Reader:      base64.NewDecoder(base64.StdEncoding, strings.NewReader(v.Base64Content)),
+			}
+		}
+		if msg.Type == "simplify" {
+			discordMsgEmbeds = make([]*discordgo.MessageEmbed, len(msg.Attachments))
+			for i, v := range msg.Attachments {
+				var footer strings.Builder
+				footer.WriteString("Region Count: ")
+				if regionCount, ok := v.Meta["regionCount"]; ok {
+					footer.WriteString(fmt.Sprint(regionCount))
+				}
+				discordMsgEmbeds[i] = &discordgo.MessageEmbed{
+					Title:       "Simplified Image",
+					Description: v.Name,
+					Image: &discordgo.MessageEmbedImage{
+						URL: "attachment://" + v.Name,
+					},
+					Footer: &discordgo.MessageEmbedFooter{
+						Text: footer.String(),
+					},
+					Timestamp: msg.Timestamp,
+					Color:     0x237feb,
+				}
+			}
+		}
+	}
+
+	discordMsg := &discordgo.MessageSend{Content: msg.Content, Files: discordMsgFiles, Embeds: discordMsgEmbeds}
+	_, err := session.ChannelMessageSendComplex(Channel, discordMsg)
+	if err != nil {
+		log.Printf("Couldn't send message from main server [%s]", err)
+	}
+}
+
+// TODO: better name?
+func handleServerEvents(session *discordgo.Session, u *url.URL) {
+	retries := 0
+	suppressRetryMessages := false
+	for {
+		// try to connect
+		serverConn, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+		if err != nil {
+			retryDelay := retryDelays[min(retries, len(retryDelays)-1)]
+			retries++
+			if !suppressRetryMessages {
+				log.Printf("Couldn't open a connection to the main server [%s]", err)
+				log.Printf("Retrying in %d seconds", retryDelay)
+			}
+			time.Sleep(time.Second * time.Duration(retryDelay))
+			continue
+		}
+		// connected
+		log.Println("Connected to main server!")
+		retries = 0
+		suppressRetryMessages = false
+	handleMessages:
+		for {
+			msg := new(WebServerMessage)
+			err := serverConn.ReadJSON(msg)
+			if err != nil {
+				if websocket.IsCloseError(err, websocket.CloseNormalClosure) {
+					log.Println("Connection with main server was closed normally.")
+					suppressRetryMessages = true
+					break handleMessages
+				}
+				if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure) {
+					log.Printf("Disconnected from main server [%s]", err)
+					break handleMessages
+				}
+				switch err.(type) {
+				case *json.SyntaxError, *json.UnmarshalTypeError:
+					log.Printf("Bad data received from main server [%s]", err)
+				default:
+					log.Println(err)
+					break handleMessages
+				}
+			}
+			go handleWebServerMessage(session, msg)
+		}
+	}
+}
+
+func openServerWebsocket(session *discordgo.Session) error {
 	u, err := url.Parse(ServerUrl)
 	if err != nil {
 		log.Printf("Couldn't parse server URL [%s]", err)
-		return nil, err
+		return err
 	}
 	u.Path = "/api/ws"
 	u.Scheme = "ws"
@@ -161,47 +260,10 @@ func openServerWebsocket(session *discordgo.Session) (*websocket.Conn, error) {
 	q := u.Query()
 	q.Add("token", ServerToken)
 	u.RawQuery = q.Encode()
-	conn, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
-	if err != nil {
-		log.Printf("Couldn't open a connection to the main server [%s]", err)
-		return nil, err
-	}
-	log.Println("Connected to main server!")
 
-	go func() {
-		for {
-			msg := new(WebServerMessage)
-			err := conn.ReadJSON(msg)
-			if err != nil {
-				e, ok := err.(*websocket.CloseError)
-				if !ok || e.Code != websocket.CloseNormalClosure {
-					log.Println(err)
-				}
-				break
-			}
+	go handleServerEvents(session, u)
 
-			var discordMsgFiles []*discordgo.File
-			if msg.Attachments != nil {
-				discordMsgFiles = make([]*discordgo.File, len(msg.Attachments))
-				for i, v := range msg.Attachments {
-					discordMsgFiles[i] = &discordgo.File{
-						Name:        v.Name,
-						ContentType: v.ContentType,
-						Reader:      base64.NewDecoder(base64.StdEncoding, strings.NewReader(v.Base64Content)),
-					}
-				}
-			}
-			// TODO: consider embeds
-			discordMsg := &discordgo.MessageSend{Content: msg.Content, Files: discordMsgFiles}
-			_, err = session.ChannelMessageSendComplex(Channel, discordMsg)
-			if err != nil {
-				log.Printf("Couldn't send message from main server [%s]", err)
-			}
-		}
-		conn.Close()
-	}()
-
-	return conn, nil
+	return nil
 }
 
 var commands = []*discordgo.ApplicationCommand{
@@ -272,11 +334,15 @@ func main() {
 	log.Println("Connected to Discord!")
 	defer session.Close()
 
-	serverConn, err := openServerWebsocket(session)
+	err = openServerWebsocket(session)
 	if err != nil {
 		return
 	}
-	defer serverConn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+	defer func() {
+		if serverConn != nil {
+			defer serverConn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+		}
+	}()
 
 	defer log.Println("Shutting down...")
 	sigch := make(chan os.Signal, 1)
