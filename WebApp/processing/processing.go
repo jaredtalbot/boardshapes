@@ -24,7 +24,7 @@ func absDiff[T int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint
 	return b - a
 }
 
-var ImageTooWideError = errors.New("image is too wide")
+var ErrImageTooWide = errors.New("image is too wide")
 
 func ResizeImage(img image.Image) (image.Image, error) {
 	const MAX_HEIGHT = 1080
@@ -35,13 +35,13 @@ func ResizeImage(img image.Image) (image.Image, error) {
 		scalar := float64(MAX_HEIGHT) / float64(bd.Dy())
 		newWidth := math.Round(float64(bd.Dx()) * scalar)
 		if newWidth > MAX_WIDTH {
-			return nil, ImageTooWideError
+			return nil, ErrImageTooWide
 		}
 		scaledImg := image.NewNRGBA(image.Rect(0, 0, int(newWidth), MAX_HEIGHT))
 		draw.NearestNeighbor.Scale(scaledImg, scaledImg.Rect, img, img.Bounds(), draw.Over, nil)
 		return scaledImg, nil
 	} else if bd.Dx() > MAX_WIDTH {
-		return nil, ImageTooWideError
+		return nil, ErrImageTooWide
 	}
 	return img, nil
 }
@@ -66,7 +66,7 @@ func SimplifyImage(img image.Image) (result image.Image, regionCount int) {
 				}
 			} else if r > g && r > b {
 				newPixelColor = Red
-			} else if g > r && absDiff(g, b) < 10 {
+			} else if g > r && (g > b || b-g < 10) {
 				newPixelColor = Green
 			} else if b > r && b > g {
 				newPixelColor = Blue
