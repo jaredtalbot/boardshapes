@@ -58,7 +58,7 @@ func SimplifyImage(img image.Image) (result image.Image, regionCount int) {
 
 			var newPixelColor color.NRGBA
 			avg := (r + g + b) / 3
-			if max(absDiff(r, avg), absDiff(avg, g), absDiff(avg, b)) < 10 {
+			if max(absDiff(avg, r), absDiff(avg, g), absDiff(avg, b)) < 10 {
 				// todo: better way to detect black maybe
 				if max(r, g, b) > 115 {
 					newPixelColor = White
