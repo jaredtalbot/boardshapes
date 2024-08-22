@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"codejester27/cmps401fa2024/processing"
 	"encoding/base64"
+	"image"
+	"image/jpeg"
 	"image/png"
 	"log"
 	"net/http"
@@ -34,19 +36,28 @@ func simplifyImage(c *gin.Context) {
 		return
 	}
 
-	if fileh.Header.Get("Content-Type") != "image/png" {
-		c.JSON(http.StatusBadRequest, gin.H{"errorMessage": "Only PNG images are accepted."})
-		return
-	}
-
 	file, err := fileh.Open()
 	if err != nil {
 		panic(err)
 	}
 
-	img, err := png.Decode(file)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"errorMessage": "Could not decode your PNG image."})
+	contentType := fileh.Header.Get("Content-Type")
+	var img image.Image
+	switch contentType {
+	case "image/png":
+		img, err = png.Decode(file)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"errorMessage": "Could not decode your PNG image."})
+			return
+		}
+	case "image/jpeg":
+		img, err = jpeg.Decode(file)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"errorMessage": "Could not decode your JPEG image."})
+			return
+		}
+	default:
+		c.JSON(http.StatusBadRequest, gin.H{"errorMessage": "Only JPEG and PNG images are accepted."})
 		return
 	}
 
