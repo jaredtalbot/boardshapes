@@ -86,6 +86,6 @@ func Traverse(img image.Image, regionMap *RegionMap, px, py int, regionIndex Reg
 }
 
 // hot damn someone rename this function
-func ColorsBelongInSameRegion(a color.Color, b color.Color) bool {
+func ColorRegionEquivalence(a color.Color, b color.Color) bool {
 	return a == b
 }
