@@ -203,10 +203,10 @@ func handleServerEvents(session *discordgo.Session, u *url.URL) {
 	retries := 0
 	suppressRetryMessages := false
 	for {
+		session.UpdateCustomStatus(fmt.Sprintf("Disconnected from %s", u.Host))
 		// try to connect
 		serverConn, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 		if err != nil {
-			session.UpdateCustomStatus(fmt.Sprintf("Disconnected from %s", u.Host))
 			retryDelay := retryDelays[min(retries, len(retryDelays)-1)]
 			retries++
 			if !suppressRetryMessages {
