@@ -203,6 +203,7 @@ func handleServerEvents(session *discordgo.Session, u *url.URL) {
 	retries := 0
 	suppressRetryMessages := false
 	for {
+		session.UpdateCustomStatus(fmt.Sprintf("Disconnected from %s", u.Host))
 		// try to connect
 		serverConn, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 		if err != nil {
@@ -216,6 +217,7 @@ func handleServerEvents(session *discordgo.Session, u *url.URL) {
 			continue
 		}
 		// connected
+		session.UpdateCustomStatus(fmt.Sprintf("Connected to %s", u.Host))
 		log.Println("Connected to main server!")
 		retries = 0
 		suppressRetryMessages = false
