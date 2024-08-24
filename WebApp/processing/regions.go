@@ -6,7 +6,7 @@ import (
 )
 
 func BuildRegionMap(img image.Image) *RegionMap {
-	regionMap := RegionMap{make([]*[]Pixel, 0, 20), make(map[Pixel]RegionIndex, (img.Bounds().Dx()*img.Bounds().Dy())/4)}
+	regionMap := RegionMap{make([]*Region, 0, 20), make(map[Pixel]RegionIndex, (img.Bounds().Dx()*img.Bounds().Dy())/4)}
 
 	bd := img.Bounds()
 
@@ -27,16 +27,18 @@ func BuildRegionMap(img image.Image) *RegionMap {
 type Pixel struct {
 	X, Y uint16
 }
+
 type RegionIndex int
+type Region []Pixel
 
 type RegionMap struct {
-	regions []*[]Pixel
+	regions []*Region
 	pixels  map[Pixel]RegionIndex
 }
 
 func (rm *RegionMap) NewRegion(pixel Pixel) (region RegionIndex) {
 	region = RegionIndex(len(rm.regions))
-	rm.regions = append(rm.regions, &[]Pixel{pixel})
+	rm.regions = append(rm.regions, &Region{pixel})
 	rm.pixels[pixel] = region
 	return
 }
@@ -57,11 +59,11 @@ func (rm *RegionMap) GetRegionOfPixel(pixel Pixel) (regionIndex RegionIndex, has
 	return
 }
 
-func (rm *RegionMap) GetRegionPixels(region RegionIndex) []Pixel {
+func (rm *RegionMap) GetRegion(region RegionIndex) Region {
 	return *rm.regions[region]
 }
 
-func (rm *RegionMap) GetRegions() []*[]Pixel {
+func (rm *RegionMap) GetRegions() []*Region {
 	return rm.regions
 }
 
