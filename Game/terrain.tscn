@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://el8gsxkxepdo"]
+
+[node name="Terrain" type="StaticBody2D"]
+scale = Vector2(5, 5)
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-108, -15, -88, -27, -68, -26, -54, -18, -37, -13, -23, -17, -6, -24, 14, -22, 30, -15, 48, -20, 61, -26, 73, -28, 86, -17, 92, 6, 82, 28, 31, 49, -18, 46, -39, 26, -64, 32, -88, 30, -97, 15, -121, 4)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-108, -15, -88, -27, -68, -26, -54, -18, -37, -13, -23, -17, -6, -24, 14, -22, 30, -15, 48, -20, 61, -26, 73, -28, 86, -17, 92, 6, 82, 28, 31, 49, -18, 46, -39, 26, -64, 32, -88, 30, -97, 15, -121, 4)
