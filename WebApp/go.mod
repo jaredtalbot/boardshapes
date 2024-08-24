@@ -1,6 +1,6 @@
 module codejester27/cmps401fa2024/web-app
 
-go 1.23.0
+go 1.23
 
 require (
 	github.com/gin-gonic/gin v1.10.0
