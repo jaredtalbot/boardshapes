@@ -67,19 +67,19 @@ func (rm *RegionMap) GetRegions() []*[]Pixel {
 
 func Traverse(img image.Image, regionMap *RegionMap, px, py int, regionIndex RegionIndex) {
 
-	if pixel := (Pixel{uint16(px), uint16(py - 1)}); ColorsBelongInSameRegion(img.At(px, py), img.At(px, py-1)) && !regionMap.GetPixelHasRegion(pixel) {
+	if pixel := (Pixel{uint16(px), uint16(py - 1)}); ColorRegionEquivalence(img.At(px, py), img.At(px, py-1)) && !regionMap.GetPixelHasRegion(pixel) {
 		regionMap.AddPixelToRegion(pixel, regionIndex)
 		Traverse(img, regionMap, px, py-1, regionIndex)
 	}
-	if pixel := (Pixel{uint16(px), uint16(py + 1)}); ColorsBelongInSameRegion(img.At(px, py), img.At(px, py+1)) && !regionMap.GetPixelHasRegion(pixel) {
+	if pixel := (Pixel{uint16(px), uint16(py + 1)}); ColorRegionEquivalence(img.At(px, py), img.At(px, py+1)) && !regionMap.GetPixelHasRegion(pixel) {
 		regionMap.AddPixelToRegion(pixel, regionIndex)
 		Traverse(img, regionMap, px, py+1, regionIndex)
 	}
-	if pixel := (Pixel{uint16(px - 1), uint16(py)}); ColorsBelongInSameRegion(img.At(px, py), img.At(px-1, py)) && !regionMap.GetPixelHasRegion(pixel) {
+	if pixel := (Pixel{uint16(px - 1), uint16(py)}); ColorRegionEquivalence(img.At(px, py), img.At(px-1, py)) && !regionMap.GetPixelHasRegion(pixel) {
 		regionMap.AddPixelToRegion(pixel, regionIndex)
 		Traverse(img, regionMap, px-1, py, regionIndex)
 	}
-	if pixel := (Pixel{uint16(px + 1), uint16(py)}); ColorsBelongInSameRegion(img.At(px, py), img.At(px+1, py)) && !regionMap.GetPixelHasRegion(pixel) {
+	if pixel := (Pixel{uint16(px + 1), uint16(py)}); ColorRegionEquivalence(img.At(px, py), img.At(px+1, py)) && !regionMap.GetPixelHasRegion(pixel) {
 		regionMap.AddPixelToRegion(pixel, regionIndex)
 		Traverse(img, regionMap, px+1, py, regionIndex)
 	}
