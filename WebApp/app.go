@@ -2,7 +2,7 @@ package main
 
 import (
 	"bytes"
-	"codejester27/cmps401fa2024/processing"
+	"codejester27/cmps401fa2024/web-app/processing"
 	"encoding/base64"
 	"image"
 	"image/jpeg"
