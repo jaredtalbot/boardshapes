@@ -82,11 +82,11 @@ func SimplifyImage(img image.Image) (result image.Image, regionCount int) {
 
 	// colors := []color.Color{Black, Red, Green, Blue}
 	for region := range regionMap.GetRegions() {
-		regionPixels := regionMap.GetRegionPixels(RegionIndex(region))
+		region := regionMap.GetRegion(RegionIndex(region))
 		// randColor := color.NRGBA{uint8(rand.Intn(256)), uint8(rand.Intn(256)), uint8(rand.Intn(256)), uint8(255)}
 		// randColor := colors[rand.Intn(len(colors))]
-		if len(regionPixels) < MINIMUM_NUMBER_OF_PIXELS_FOR_VALID_REGION {
-			for _, pixel := range regionPixels {
+		if len(region) < MINIMUM_NUMBER_OF_PIXELS_FOR_VALID_REGION {
+			for _, pixel := range region {
 				newImg.Set(int(pixel.X), int(pixel.Y), White)
 			}
 		} else {

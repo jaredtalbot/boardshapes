@@ -59,7 +59,7 @@ func (rm *RegionMap) GetRegionOfPixel(pixel Pixel) (regionIndex RegionIndex, has
 	return
 }
 
-func (rm *RegionMap) GetRegionPixels(region RegionIndex) []Pixel {
+func (rm *RegionMap) GetRegion(region RegionIndex) Region {
 	return *rm.regions[region]
 }
 
