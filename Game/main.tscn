@@ -1,12 +1,21 @@
 [gd_scene load_steps=3 format=3 uid="uid://s2dcpgi066gy"]
 
 [ext_resource type="PackedScene" uid="uid://crgwrl3y2s3g6" path="res://player.tscn" id="1_3kdm3"]
-[ext_resource type="PackedScene" uid="uid://el8gsxkxepdo" path="res://terrain.tscn" id="2_e4ppf"]
+[ext_resource type="PackedScene" uid="uid://cokv41yrvmq5l" path="res://bellyrub.tscn" id="3_uj8iy"]
 
 [node name="Main" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_3kdm3")]
 position = Vector2(199, 289)
 
-[node name="Terrain" parent="." instance=ExtResource("2_e4ppf")]
-position = Vector2(687, 732)
+[node name="dash_timer" type="Timer" parent="Player"]
+unique_name_in_owner = true
+wait_time = 0.35
+one_shot = true
+
+[node name="coyote_timer" type="Timer" parent="Player"]
+wait_time = 0.35
+
+[node name="bellyrub" parent="." instance=ExtResource("3_uj8iy")]
+
+[connection signal="timeout" from="Player/coyote_timer" to="Player" method="_on_coyote_timer_timeout"]
