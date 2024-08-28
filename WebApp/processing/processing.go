@@ -91,13 +91,10 @@ func SimplifyImage(img image.Image) (result image.Image, regionCount int) {
 			}
 		} else {
 			regionCount++
+			// for _, pixel := range region {
+			// 	newImg.Set(int(pixel.X), int(pixel.Y), Black)
+			// }
 		}
-
-		// } else {
-		// 	for _, pixel := range regionPixels {
-		// 		newImg.Set(int(pixel.X), int(pixel.Y), randColor)
-		// 	}
-		// }
 	}
 
 	return newImg, regionCount
