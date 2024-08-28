@@ -2,7 +2,7 @@ extends CharacterBody2D
 
 const SPEED = 300.0
 const JUMP_VELOCITY = -400.0
-var acceleration = 25
+var acceleration = 1500
 
 var dash_speed = 700
 var is_dashing = false
@@ -52,9 +52,9 @@ func _physics_process(delta):
 			velocity.x = direction * dash_speed
 			
 		else:
-			velocity.x = move_toward(velocity.x, direction * SPEED, acceleration)
+			velocity.x = move_toward(velocity.x, direction * SPEED, acceleration * delta)
 	else:
-		velocity.x = move_toward(velocity.x, 0, acceleration)
+		velocity.x = move_toward(velocity.x, 0, acceleration * delta)
 
 	move_and_slide()
 	
