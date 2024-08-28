@@ -2,7 +2,7 @@ extends CharacterBody2D
 
 @export var SPEED = 300.0
 @export var JUMP_VELOCITY = -400.0
-@export var acceleration = 25
+@export var acceleration = 1500
 @export var wall_slide_speed = 50
 
 @export var dash_speed = 700
@@ -53,9 +53,9 @@ func _physics_process(delta):
 			velocity.x = direction * dash_speed
 			
 		else:
-			velocity.x = move_toward(velocity.x, direction * SPEED, acceleration)
+			velocity.x = move_toward(velocity.x, direction * SPEED, acceleration * delta)
 	else:
-		velocity.x = move_toward(velocity.x, 0, acceleration)
+		velocity.x = move_toward(velocity.x, 0, acceleration * delta)
 
 	move_and_slide()
 	
