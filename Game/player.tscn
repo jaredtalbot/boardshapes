@@ -33,3 +33,19 @@ scale = Vector2(0.1, 0.1)
 sprite_frames = SubResource("SpriteFrames_mupna")
 animation = &"new_animation"
 autoplay = "new_animation"
+
+[node name="dash_timer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 0.1
+one_shot = true
+
+[node name="coyote_timer" type="Timer" parent="."]
+wait_time = 0.1
+
+[node name="wall_timer" type="Timer" parent="."]
+wait_time = 0.1
+
+[node name="dash_cooldown_timer" type="Timer" parent="."]
+wait_time = 0.6
+
+[connection signal="timeout" from="dash_cooldown_timer" to="." method="_on_dash_cooldown_timer_timeout"]

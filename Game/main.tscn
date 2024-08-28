@@ -8,14 +8,4 @@
 [node name="Player" parent="." instance=ExtResource("1_3kdm3")]
 position = Vector2(199, 289)
 
-[node name="dash_timer" type="Timer" parent="Player"]
-unique_name_in_owner = true
-wait_time = 0.35
-one_shot = true
-
-[node name="coyote_timer" type="Timer" parent="Player"]
-wait_time = 0.35
-
 [node name="bellyrub" parent="." instance=ExtResource("3_uj8iy")]
-
-[connection signal="timeout" from="Player/coyote_timer" to="Player" method="_on_coyote_timer_timeout"]
