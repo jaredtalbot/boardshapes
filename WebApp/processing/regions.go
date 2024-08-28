@@ -21,6 +21,7 @@ func BuildRegionMap(img image.Image) *RegionMap {
 		}
 	}
 
+	regionMap.CleanupRegionMap()
 	return &regionMap
 }
 
@@ -77,7 +78,21 @@ func (rm *RegionMap) AddPixelToRegionMap(pixel Pixel, img image.Image) {
 	}
 }
 
-// todo: cleanup regionmap function
+// cleans up nil regions and rewrites the pixel map
+func (rm *RegionMap) CleanupRegionMap() {
+	rm.regions = slices.DeleteFunc(rm.regions, func(r *Region) bool { return r == nil })
+	pixelsInRegions := 0
+	for _, region := range rm.regions {
+		pixelsInRegions += len(*region)
+	}
+	// new fresh map
+	rm.pixels = make(map[Pixel]RegionIndex, pixelsInRegions)
+	for regionIndex, region := range rm.regions {
+		for _, pixel := range *region {
+			rm.pixels[pixel] = RegionIndex(regionIndex)
+		}
+	}
+}
 
 func (rm *RegionMap) GetPixelHasRegion(pixel Pixel) (hasRegion bool) {
 	_, hasRegion = rm.pixels[pixel]
