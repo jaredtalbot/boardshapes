@@ -1,15 +1,16 @@
 extends CharacterBody2D
 
-const SPEED = 300.0
-const JUMP_VELOCITY = -400.0
-var acceleration = 1500
+@export var SPEED = 300.0
+@export var JUMP_VELOCITY = -400.0
+@export var acceleration = 1500
+@export var wall_slide_speed = 50
 
-var dash_speed = 700
+@export var dash_speed = 700
 var is_dashing = false
 
 var can_jump = false
 
-var wall_jump_power = 500
+@export var wall_jump_power = 500
 
 func _on_coyote_timer_timeout():
 	can_jump = false
@@ -59,7 +60,7 @@ func _physics_process(delta):
 	move_and_slide()
 	
 	if is_on_wall() and !is_on_floor():
-		velocity.y = 50
+		velocity.y = wall_slide_speed
 	
 	if is_on_wall() and Input.is_action_pressed("jump"):
 		$wall_timer.start()
