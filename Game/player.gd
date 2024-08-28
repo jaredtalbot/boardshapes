@@ -1,15 +1,15 @@
 extends CharacterBody2D
 
-const SPEED = 300.0
-const JUMP_VELOCITY = -400.0
-var acceleration = 25
+@export var SPEED = 300.0
+@export var JUMP_VELOCITY = -400.0
+@export var acceleration = 25
 
-var dash_speed = 700
+@export var dash_speed = 700
 var is_dashing = false
 
 var can_jump = false
 
-var wall_jump_power = 500
+@export var wall_jump_power = 500
 
 func _on_coyote_timer_timeout():
 	can_jump = false
