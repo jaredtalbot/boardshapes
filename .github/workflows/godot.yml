@@ -16,5 +16,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4.1.7
       
-      - name: TODO godot build step
-        run: echo 'todo godot build step'
+      - name: Check GD Files
+        run: .github/scripts/godotcheck.sh
