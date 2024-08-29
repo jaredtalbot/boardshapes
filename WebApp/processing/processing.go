@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/color"
 	"math"
+	"sort"
 
 	"golang.org/x/image/draw"
 )
@@ -103,6 +104,14 @@ func (region *Region) CreateMesh() (mesh *[]Vertex) {
 	}
 
 	// sort outermesh
+	// sort them
+	sort.Slice(OuterVertexMesh, func(i, j int) bool {
+		return OuterVertexMesh[i].X < OuterVertexMesh[j].X
+	})
+
+	sort.Slice(OuterVertexMesh, func(i, j int) bool {
+		return OuterVertexMesh[i].Y < OuterVertexMesh[j].Y
+	})
 
 	return &OuterVertexMesh
 }
