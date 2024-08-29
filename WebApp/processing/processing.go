@@ -26,6 +26,87 @@ func absDiff[T int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint
 
 var ErrImageTooWide = errors.New("image is too wide")
 
+type RegionPixelStatus uint8
+
+type RegionPixel struct {
+	InRegion, Visited bool
+}
+
+func (region *Region) CreateMesh() (mesh *[]Vertex) {
+	if len(*region) == 0 {
+		// TODO: handle bad case
+	}
+	regionBounds := image.Rect(0, 0, 65535, 65535)
+	for _, pixel := range *region {
+		if pixel.X < uint16(regionBounds.Min.X) {
+			regionBounds.Min.X = int(pixel.X)
+		}
+		if pixel.Y < uint16(regionBounds.Min.Y) {
+			regionBounds.Min.Y = int(pixel.Y)
+		}
+		if pixel.X > uint16(regionBounds.Max.X) {
+			regionBounds.Max.X = int(pixel.X)
+		}
+		if pixel.Y > uint16(regionBounds.Max.Y) {
+			regionBounds.Max.Y = int(pixel.Y)
+		}
+	}
+
+	// will sastisfy my requirements.
+	VertexMesh := make([][]RegionPixel, regionBounds.Dx()+2)
+	for i := range VertexMesh {
+		VertexMesh[i] = make([]RegionPixel, regionBounds.Dy()+2)
+	}
+
+	for _, v := range *region {
+		VertexMesh[regionBounds.Min.X-int(v.X+1)][regionBounds.Min.Y-int(v.Y+1)].InRegion = true
+	}
+
+	OuterVertexMesh := make([]Vertex, 0, 4)
+
+	vertexesToVisit := []Vertex{{0, 0}}
+	// visit outer pixel
+	for len(vertexesToVisit) > 0 {
+		v := vertexesToVisit[len(vertexesToVisit)-1]
+		vertexesToVisit = vertexesToVisit[:1]
+		if !VertexMesh[v.X][v.Y].Visited {
+			VertexMesh[v.X][v.Y].Visited = true
+			if v.X > 0 && !VertexMesh[v.X-1][v.Y].Visited {
+				if VertexMesh[v.X-1][v.Y].InRegion {
+					OuterVertexMesh = append(OuterVertexMesh, Vertex{v.X - 1, v.Y})
+				} else {
+					vertexesToVisit = append(vertexesToVisit, Vertex{v.X - 1, v.Y})
+				}
+			}
+			if v.X < uint16(len(VertexMesh))-1 && !VertexMesh[v.X+1][v.Y].Visited {
+				if VertexMesh[v.X+1][v.Y].InRegion {
+					OuterVertexMesh = append(OuterVertexMesh, Vertex{v.X + 1, v.Y})
+				} else {
+					vertexesToVisit = append(vertexesToVisit, Vertex{v.X + 1, v.Y})
+				}
+			}
+			if v.Y > 0 && !VertexMesh[v.X][v.Y-1].Visited {
+				if VertexMesh[v.X][v.Y-1].InRegion {
+					OuterVertexMesh = append(OuterVertexMesh, Vertex{v.X, v.Y - 1})
+				} else {
+					vertexesToVisit = append(vertexesToVisit, Vertex{v.X, v.Y - 1})
+				}
+			}
+			if v.Y > 0 && !VertexMesh[v.X][v.Y+1].Visited {
+				if VertexMesh[v.X][v.Y+1].InRegion {
+					OuterVertexMesh = append(OuterVertexMesh, Vertex{v.X, v.Y + 1})
+				} else {
+					vertexesToVisit = append(vertexesToVisit, Vertex{v.X, v.Y + 1})
+				}
+			}
+		}
+	}
+
+	// sort outermesh
+
+	return &OuterVertexMesh
+}
+
 func ResizeImage(img image.Image) (image.Image, error) {
 	const MAX_HEIGHT = 1080
 	const MAX_WIDTH = 2000

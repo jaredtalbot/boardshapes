@@ -1,8 +1,12 @@
 package processing
 
+
+
+
 import (
 	"image"
 	"image/color"
+	
 )
 
 func BuildRegionMap(img image.Image) *RegionMap {
@@ -25,6 +29,10 @@ func BuildRegionMap(img image.Image) *RegionMap {
 }
 
 type Pixel struct {
+	X, Y uint16
+}
+
+type Vertex struct {
 	X, Y uint16
 }
 
