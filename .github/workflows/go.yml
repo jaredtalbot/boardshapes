@@ -7,12 +7,12 @@ on:
   push:
     branches: [ "master" ]
     paths: 
-      - DiscordApp/**
+      - DiscordBot/**
       - WebApp/**
   pull_request:
     branches: [ "master" ]
     paths: 
-      - DiscordApp/**
+      - DiscordBot/**
       - WebApp/**
 
 jobs:
