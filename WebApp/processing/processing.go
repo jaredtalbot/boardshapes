@@ -5,7 +5,7 @@ import (
 	"image"
 	"image/color"
 	"math"
-	
+	"slices"
 
 	"golang.org/x/image/draw"
 )
@@ -37,7 +37,7 @@ func (region *Region) CreateMesh() (mesh *[]Vertex) {
 	if len(*region) == 0 {
 		// TODO: handle bad case
 	}
-	regionBounds := image.Rect(0, 0, 65535, 65535)
+	regionBounds := image.Rectangle{Min: image.Pt(65535, 65535), Max: image.Pt(0, 0)}
 	for _, pixel := range *region {
 		if pixel.X < uint16(regionBounds.Min.X) {
 			regionBounds.Min.X = int(pixel.X)
@@ -45,11 +45,11 @@ func (region *Region) CreateMesh() (mesh *[]Vertex) {
 		if pixel.Y < uint16(regionBounds.Min.Y) {
 			regionBounds.Min.Y = int(pixel.Y)
 		}
-		if pixel.X > uint16(regionBounds.Max.X) {
-			regionBounds.Max.X = int(pixel.X)
+		if pixel.X+1 > uint16(regionBounds.Max.X) {
+			regionBounds.Max.X = int(pixel.X) + 1
 		}
-		if pixel.Y > uint16(regionBounds.Max.Y) {
-			regionBounds.Max.Y = int(pixel.Y)
+		if pixel.Y+1 > uint16(regionBounds.Max.Y) {
+			regionBounds.Max.Y = int(pixel.Y) + 1
 		}
 	}
 
@@ -60,7 +60,7 @@ func (region *Region) CreateMesh() (mesh *[]Vertex) {
 	}
 
 	for _, v := range *region {
-		VertexMesh[regionBounds.Min.X-int(v.X+1)][regionBounds.Min.Y-int(v.Y+1)].InRegion = true
+		VertexMesh[int(v.X+1)-regionBounds.Min.X][int(v.Y+1)-regionBounds.Min.Y].InRegion = true
 	}
 
 	OuterVertexMesh := make([]Vertex, 0, 4)
@@ -69,31 +69,31 @@ func (region *Region) CreateMesh() (mesh *[]Vertex) {
 	// visit outer pixel
 	for len(vertexesToVisit) > 0 {
 		v := vertexesToVisit[len(vertexesToVisit)-1]
-		vertexesToVisit = vertexesToVisit[:1]
+		vertexesToVisit = vertexesToVisit[:len(vertexesToVisit)-1]
 		if !VertexMesh[v.X][v.Y].Visited {
 			VertexMesh[v.X][v.Y].Visited = true
-			if v.X > 0 && !VertexMesh[v.X-1][v.Y].Visited {
+			if v.X > 0 && !VertexMesh[v.X-1][v.Y].Visited && !slices.Contains(OuterVertexMesh, Vertex{v.X - 1, v.Y}) {
 				if VertexMesh[v.X-1][v.Y].InRegion {
 					OuterVertexMesh = append(OuterVertexMesh, Vertex{v.X - 1, v.Y})
 				} else {
 					vertexesToVisit = append(vertexesToVisit, Vertex{v.X - 1, v.Y})
 				}
 			}
-			if v.X < uint16(len(VertexMesh))-1 && !VertexMesh[v.X+1][v.Y].Visited {
+			if v.X < uint16(len(VertexMesh))-1 && !VertexMesh[v.X+1][v.Y].Visited && !slices.Contains(OuterVertexMesh, Vertex{v.X + 1, v.Y}) {
 				if VertexMesh[v.X+1][v.Y].InRegion {
 					OuterVertexMesh = append(OuterVertexMesh, Vertex{v.X + 1, v.Y})
 				} else {
 					vertexesToVisit = append(vertexesToVisit, Vertex{v.X + 1, v.Y})
 				}
 			}
-			if v.Y > 0 && !VertexMesh[v.X][v.Y-1].Visited {
+			if v.Y > 0 && !VertexMesh[v.X][v.Y-1].Visited && !slices.Contains(OuterVertexMesh, Vertex{v.X, v.Y - 1}) {
 				if VertexMesh[v.X][v.Y-1].InRegion {
 					OuterVertexMesh = append(OuterVertexMesh, Vertex{v.X, v.Y - 1})
 				} else {
 					vertexesToVisit = append(vertexesToVisit, Vertex{v.X, v.Y - 1})
 				}
 			}
-			if v.Y > 0 && !VertexMesh[v.X][v.Y+1].Visited {
+			if v.Y < uint16(len(VertexMesh[0]))-1 && !VertexMesh[v.X][v.Y+1].Visited && !slices.Contains(OuterVertexMesh, Vertex{v.X, v.Y + 1}) {
 				if VertexMesh[v.X][v.Y+1].InRegion {
 					OuterVertexMesh = append(OuterVertexMesh, Vertex{v.X, v.Y + 1})
 				} else {
@@ -103,35 +103,39 @@ func (region *Region) CreateMesh() (mesh *[]Vertex) {
 		}
 	}
 
+	// Note: It may be worth getting rid of the OuterVertexMesh slice entirely, and instead
+	//		 just adding an "OuterVertex" boolean to the RegionPixel struct so that you
+	//		 can just reuse the VertexMesh variable.
+	//		 This would make checking adjacent pixels much easier when creating a sorted outer mesh.
+
 	// sort outermesh
-	// sort them
-	SortedOuterVertexMesh := make([]Vertex ,0, len(OuterVertexMesh))
+	SortedOuterVertexMesh := make([]Vertex, 0, len(OuterVertexMesh))
 	for i := 0; i < len(OuterVertexMesh); i++ {
 		currentVertex := OuterVertexMesh[i]
 
 		if i+1 < len(OuterVertexMesh) {
 			nextVertex := OuterVertexMesh[i+1]
 
-		if currentVertex.X > nextVertex.X && currentVertex.Y == nextVertex.Y   {
-			SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
-			currentVertex = nextVertex
-		
-		}else if   currentVertex.Y > nextVertex.Y && currentVertex.X == nextVertex.X {
-			SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
-			currentVertex = nextVertex
-		}
-		if currentVertex.X < nextVertex.X && currentVertex.Y == nextVertex.Y   {
-			SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
-			currentVertex = nextVertex
-		
-		}else if   currentVertex.Y < nextVertex.Y && currentVertex.X == nextVertex.X {
-			SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
-			currentVertex = nextVertex
+			if currentVertex.X > nextVertex.X && currentVertex.Y == nextVertex.Y {
+				SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
+				currentVertex = nextVertex
 
+			} else if currentVertex.Y > nextVertex.Y && currentVertex.X == nextVertex.X {
+				SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
+				currentVertex = nextVertex
+			}
+			if currentVertex.X < nextVertex.X && currentVertex.Y == nextVertex.Y {
+				SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
+				currentVertex = nextVertex
+
+			} else if currentVertex.Y < nextVertex.Y && currentVertex.X == nextVertex.X {
+				SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
+				currentVertex = nextVertex
+
+			}
 		}
 	}
-}
-return &SortedOuterVertexMesh
+	return &SortedOuterVertexMesh
 }
 
 func ResizeImage(img image.Image) (image.Image, error) {
