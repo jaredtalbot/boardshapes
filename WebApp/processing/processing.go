@@ -5,7 +5,7 @@ import (
 	"image"
 	"image/color"
 	"math"
-	"sort"
+	
 
 	"golang.org/x/image/draw"
 )
@@ -105,15 +105,33 @@ func (region *Region) CreateMesh() (mesh *[]Vertex) {
 
 	// sort outermesh
 	// sort them
-	sort.Slice(OuterVertexMesh, func(i, j int) bool {
-		return OuterVertexMesh[i].X < OuterVertexMesh[j].X
-	})
+	SortedOuterVertexMesh := make([]Vertex ,0, len(OuterVertexMesh))
+	for i := 0; i < len(OuterVertexMesh); i++ {
+		currentVertex := OuterVertexMesh[i]
 
-	sort.Slice(OuterVertexMesh, func(i, j int) bool {
-		return OuterVertexMesh[i].Y < OuterVertexMesh[j].Y
-	})
+		if i+1 < len(OuterVertexMesh) {
+			nextVertex := OuterVertexMesh[i+1]
 
-	return &OuterVertexMesh
+		if currentVertex.X > nextVertex.X && currentVertex.Y == nextVertex.Y   {
+			SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
+			currentVertex = nextVertex
+		
+		}else if   currentVertex.Y > nextVertex.Y && currentVertex.X == nextVertex.X {
+			SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
+			currentVertex = nextVertex
+		}
+		if currentVertex.X < nextVertex.X && currentVertex.Y == nextVertex.Y   {
+			SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
+			currentVertex = nextVertex
+		
+		}else if   currentVertex.Y < nextVertex.Y && currentVertex.X == nextVertex.X {
+			SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
+			currentVertex = nextVertex
+
+		}
+	}
+}
+return &SortedOuterVertexMesh
 }
 
 func ResizeImage(img image.Image) (image.Image, error) {
