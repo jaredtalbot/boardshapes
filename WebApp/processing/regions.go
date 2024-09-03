@@ -1,12 +1,8 @@
 package processing
 
-
-
-
 import (
 	"image"
 	"image/color"
-	
 )
 
 func BuildRegionMap(img image.Image) *RegionMap {

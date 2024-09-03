@@ -109,28 +109,65 @@ func (region *Region) CreateMesh() (mesh *[]Vertex) {
 	//		 This would make checking adjacent pixels much easier when creating a sorted outer mesh.
 
 	// sort outermesh
+
 	SortedOuterVertexMesh := make([]Vertex, 0, len(OuterVertexMesh))
+	tempVertexStack := make([]Vertex, 0, len(OuterVertexMesh))
+	onStack := false
 	for i := 0; i < len(OuterVertexMesh); i++ {
 		currentVertex := OuterVertexMesh[i]
 
+		if len(tempVertexStack) > 0 && onStack {
+
+			for j := 0; j < len(tempVertexStack); j++ {
+				if j+1 < len(tempVertexStack) && onStack {
+					nextVertexTemp := tempVertexStack[j+1]
+
+					if currentVertex.X-nextVertexTemp.X < 1 {
+						SortedOuterVertexMesh = append(SortedOuterVertexMesh, nextVertexTemp)
+						currentVertex = nextVertexTemp
+						onStack = false
+
+					} else if currentVertex.Y-nextVertexTemp.Y < 1 {
+						SortedOuterVertexMesh = append(SortedOuterVertexMesh, nextVertexTemp)
+						currentVertex = nextVertexTemp
+						onStack = false
+
+					} else if currentVertex.X < nextVertexTemp.X && currentVertex.Y-nextVertexTemp.Y < 1 {
+						SortedOuterVertexMesh = append(SortedOuterVertexMesh, nextVertexTemp)
+						currentVertex = nextVertexTemp
+						onStack = false
+
+					} else if currentVertex.X > nextVertexTemp.X && nextVertexTemp.Y-currentVertex.Y < 1 {
+						SortedOuterVertexMesh = append(SortedOuterVertexMesh, nextVertexTemp)
+						currentVertex = nextVertexTemp
+						onStack = false
+					}
+				}
+			}
+		}
 		if i+1 < len(OuterVertexMesh) {
 			nextVertex := OuterVertexMesh[i+1]
 
-			if currentVertex.X > nextVertex.X && currentVertex.Y == nextVertex.Y {
-				SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
+			if currentVertex.X-nextVertex.X < 1 {
+				SortedOuterVertexMesh = append(SortedOuterVertexMesh, nextVertex)
 				currentVertex = nextVertex
 
-			} else if currentVertex.Y > nextVertex.Y && currentVertex.X == nextVertex.X {
-				SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
-				currentVertex = nextVertex
-			}
-			if currentVertex.X < nextVertex.X && currentVertex.Y == nextVertex.Y {
-				SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
+			} else if currentVertex.Y-nextVertex.Y < 1 {
+				SortedOuterVertexMesh = append(SortedOuterVertexMesh, nextVertex)
 				currentVertex = nextVertex
 
-			} else if currentVertex.Y < nextVertex.Y && currentVertex.X == nextVertex.X {
-				SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
+			} else if currentVertex.X < nextVertex.X && currentVertex.Y-nextVertex.Y < 1 {
+				SortedOuterVertexMesh = append(SortedOuterVertexMesh, nextVertex)
 				currentVertex = nextVertex
+
+			} else if currentVertex.X > nextVertex.X && nextVertex.Y-currentVertex.Y < 1 {
+				SortedOuterVertexMesh = append(SortedOuterVertexMesh, nextVertex)
+				currentVertex = nextVertex
+
+			} else {
+				tempVertexStack = append(tempVertexStack, nextVertex)
+				currentVertex = nextVertex
+				onStack = true
 
 			}
 		}
