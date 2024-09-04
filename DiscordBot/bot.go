@@ -349,5 +349,5 @@ func main() {
 	defer log.Println("Shutting down...")
 	sigch := make(chan os.Signal, 1)
 	signal.Notify(sigch, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
-	<-sigch
+	<-si
 }
