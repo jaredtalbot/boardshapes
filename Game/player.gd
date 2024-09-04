@@ -13,7 +13,7 @@ var can_jump = false
 @export var wall_jump_power = 500
 
 func _on_coyote_timer_timeout():
-	can_jump = false
+	can_jump = fa
 
 
 func _physics_process(delta):
