@@ -5,34 +5,32 @@ name: Go
 
 on:
   push:
-    branches: [ "master" ]
-    paths: 
+    branches: ["master"]
+    paths:
       - DiscordBot/**
       - WebApp/**
   pull_request:
-    branches: [ "master" ]
-    paths: 
+    branches: ["master"]
+    paths:
       - DiscordBot/**
       - WebApp/**
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.23.0'
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.23.0"
 
-    - name: Build Web App
-      run: go build -C ./WebApp -v ./...
+      - name: Build Web App
+        run: go build -C ./WebApp -v ./...
 
-    - name: Build Discord Bot
-      run: go build -C ./DiscordBot -v ./...
+      - name: Build Discord Bot
+        run: go build -C ./DiscordBot -v ./...
 
-    # Tests later... maybe?
-    # - name: Test
-    #   run: go test -v ./...
+      - name: Test Web App Processing
+        run: go test -C ./WebApp/processing -v ./...
