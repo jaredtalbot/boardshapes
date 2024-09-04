@@ -1,0 +1,61 @@
+name: Build
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      go: ${{ steps.filter.outputs.go }}
+      godot: ${{ steps.filter.outputs.godot }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            go:
+              - 'WebApp/**'
+              - 'DiscordBot/**'
+            godot:
+              - 'Game/**'
+
+  go-build:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.go == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.23.0"
+
+      - name: Build Web App
+        run: go build -C ./WebApp -v ./...
+
+      - name: Build Discord Bot
+        run: go build -C ./DiscordBot -v ./...
+
+    # Tests later... maybe?
+    # - name: Test
+    #   run: go test -v ./...
+
+  godot-build:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.godot == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.7
+
+      - run: chmod +xwr .github/scripts/godotcheck.sh
+
+      - name: Check GD Files
+        run: sudo .github/scripts/godotcheck.sh
