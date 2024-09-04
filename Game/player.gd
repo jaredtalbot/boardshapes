@@ -14,7 +14,6 @@ var can_jump = false
 
 func _on_coyote_timer_timeout():
 	can_jump = false
-	# This is a comment!
 
 
 func _physics_process(delta):
