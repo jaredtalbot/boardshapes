@@ -118,3 +118,39 @@ func (rm *RegionMap) GetRegions() []*Region {
 func ColorRegionEquivalence(a color.Color, b color.Color) bool {
 	return a == b
 }
+
+func FindRegionPosition(region Region) (int, int) {
+	corner := region[0]
+
+	for i := 0; i < len(region); i++ {
+		if region[i].X < corner.X {
+			corner.X = region[i].X
+		}
+		if region[i].Y < corner.Y {
+			corner.Y = region[i].Y
+		}
+	}
+
+	return int(corner.X), int(corner.Y)
+}
+
+func GetColorOfRegion(region Region, img image.Image) color.Color {
+	regionColor := img.At(int(region[0].X), int(region[0].Y))
+	return regionColor
+}
+
+// I feel like there is a better way to do this
+func GetRegionDimensions(region Region, img image.Image) (int, int) {
+	corner := region[0]
+
+	for i := 0; i < len(region); i++ {
+		if region[i].X > corner.X {
+			corner.X = region[i].X
+		}
+		if region[i].Y > corner.Y {
+			corner.Y = region[i].Y
+		}
+	}
+
+	return int(corner.X), int(corner.Y)
+}

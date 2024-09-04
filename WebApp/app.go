@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"codejester27/cmps401fa2024/web-app/processing"
 	"encoding/base64"
+	"encoding/json"
 	"image"
+	"image/color"
 	"image/jpeg"
 	"image/png"
 	"log"
@@ -90,6 +92,88 @@ func simplifyImage(c *gin.Context) {
 	})
 	c.Data(http.StatusOK, "image/png", buf.Bytes())
 	c.Header("Content-Disposition", `attachment; filename="simplified-image.png"`)
+}
+
+func buildLevel(c *gin.Context) {
+	c.SetAccepted("multipart/form-data")
+
+	fileh, err := c.FormFile("image")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errorMessage": `File not found, be sure it is included under the "image" key of your form`})
+		return
+	}
+
+	file, err := fileh.Open()
+	if err != nil {
+		panic(err)
+	}
+
+	contentType := fileh.Header.Get("Content-Type")
+	var img image.Image
+	switch contentType {
+	case "image/png":
+		img, err = png.Decode(file)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"errorMessage": "Could not decode your PNG image."})
+			return
+		}
+	case "image/jpeg":
+		img, err = jpeg.Decode(file)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"errorMessage": "Could not decode your JPEG image."})
+			return
+		}
+	default:
+		c.JSON(http.StatusBadRequest, gin.H{"errorMessage": "Only JPEG and PNG images are accepted."})
+		return
+	}
+
+	img, err = processing.ResizeImage(img)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errorMessage": err.Error()})
+		return
+	}
+
+	newImg, regionCount := processing.SimplifyImage(img)
+
+	regionMap := processing.BuildRegionMap(newImg)
+
+	type regionData struct {
+		RegionNumber int         `json:"regionNumber"`
+		RegionColor  color.Color `json:"regionColor"`
+		CornerX      int         `json:"cornerX"`
+		CornerY      int         `json:"cornerY"`
+		RegionImage  string      `json:"regionImage"`
+	}
+
+	regionJson, _ := os.OpenFile("level.json", os.O_CREATE, os.ModePerm)
+	enc := json.NewEncoder(regionJson)
+
+	for i := 0; i < regionCount; i++ {
+		region := regionMap.GetRegion(processing.RegionIndex(i))
+
+		posX, posY := processing.FindRegionPosition(region)
+		regionColor := processing.GetColorOfRegion(region, newImg)
+
+		//This looks genuinely awful
+		x, y := processing.GetRegionDimensions(region, newImg)
+		regionImage := newImg.(interface {
+			SubImage(r image.Rectangle) image.Image
+		}).SubImage(image.Rect(posX, posY, x+1, y+1))
+
+		buf := new(bytes.Buffer)
+		if err := png.Encode(buf, regionImage); err != nil {
+			panic(err)
+		}
+		base64Region := base64.StdEncoding.EncodeToString(buf.Bytes())
+
+		data := regionData{i, regionColor, posX, posY, base64Region}
+		if err := enc.Encode(data); err != nil {
+			panic(err)
+		}
+	}
+
+	regionJson.Close()
 }
 
 type AttachedFile struct {
@@ -190,6 +274,7 @@ func main() {
 	logged.Use(gin.Logger())
 
 	logged.POST("/api/simplify", simplifyImage)
+	logged.POST("/api/build-level", buildLevel)
 	router.GET("/api/ws", connectWebsocket)
 
 	port := Port
