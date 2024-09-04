@@ -13,7 +13,7 @@ func BuildRegionMap(img image.Image) *RegionMap {
 
 	for y := bd.Min.Y; y < bd.Max.Y; y++ {
 		for x := bd.Min.X; x < bd.Max.X; x++ {
-			pixel := Pixel{uint16(x), uint16(y)}
+			pixel := Pixel{uint16(x), uint16(y)
 
 			if img.At(x, y) != White {
 				regionMap.AddPixelToRegionMap(pixel, img)
