@@ -77,7 +77,7 @@ Y:
 	return &mesh
 }
 
-func generateTestFailureImage(name string, mesh *[]Vertex) error {
+func generateTestResultImage(name string, mesh *[]Vertex) error {
 	file, err := os.Create(fmt.Sprintf("./test_images/test_out_%s.gif", name))
 	if err != nil {
 		return err
@@ -179,12 +179,16 @@ func TestRegion_CreateMesh(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotMesh := *tt.region.CreateMesh()
+			gotMeshP, err := tt.region.CreateMesh()
+			if err != nil {
+				t.Fatalf("Error: %s", err)
+			}
+			gotMesh := *gotMeshP
 			wantMesh := *tt.wantMesh
 
 			fail := func() {
-				if generateTestFailureImage(tt.name, &gotMesh) == nil {
-					t.Logf("Generated test failure image for %s", tt.name)
+				if generateTestResultImage(tt.name, &gotMesh) == nil {
+					t.Logf("Generated test result image for %s", tt.name)
 				}
 				t.Fatalf("Region.CreateMesh() = %v\n want %v", gotMesh, wantMesh)
 			}
@@ -207,6 +211,9 @@ func TestRegion_CreateMesh(t *testing.T) {
 				if gotMesh[i] != wantMesh[(firstIndex+i)%length] {
 					fail()
 				}
+			}
+			if generateTestResultImage(tt.name, &gotMesh) == nil {
+				t.Logf("Generated test result image for %s", tt.name)
 			}
 		})
 	}

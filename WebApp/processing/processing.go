@@ -25,6 +25,10 @@ func absDiff[T int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint
 	return b - a
 }
 
+func manhattanDistance(a Vertex, b Vertex) int {
+	return absDiff(int(a.X), int(b.X)) + absDiff(int(a.Y), int(b.Y))
+}
+
 var ErrImageTooWide = errors.New("image is too wide")
 
 type RegionPixelStatus uint8
@@ -33,34 +37,20 @@ type RegionPixel struct {
 	InRegion, Visited bool
 }
 
-func (region *Region) CreateMesh() (mesh *[]Vertex) {
+func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
 	if len(*region) == 0 {
-		// TODO: handle bad case
+		return nil, errors.New("region-to-mesh: region is empty")
 	}
-	regionBounds := image.Rectangle{Min: image.Pt(65535, 65535), Max: image.Pt(0, 0)}
-	for _, pixel := range *region {
-		if pixel.X < uint16(regionBounds.Min.X) {
-			regionBounds.Min.X = int(pixel.X)
-		}
-		if pixel.Y < uint16(regionBounds.Min.Y) {
-			regionBounds.Min.Y = int(pixel.Y)
-		}
-		if pixel.X+1 > uint16(regionBounds.Max.X) {
-			regionBounds.Max.X = int(pixel.X) + 1
-		}
-		if pixel.Y+1 > uint16(regionBounds.Max.Y) {
-			regionBounds.Max.Y = int(pixel.Y) + 1
-		}
-	}
+	regionBounds := region.GetBounds()
 
 	// will sastisfy my requirements.
-	VertexMesh := make([][]RegionPixel, regionBounds.Dx()+2)
-	for i := range VertexMesh {
-		VertexMesh[i] = make([]RegionPixel, regionBounds.Dy()+2)
+	regionPixels := make([][]RegionPixel, regionBounds.Dx()+2)
+	for i := range regionPixels {
+		regionPixels[i] = make([]RegionPixel, regionBounds.Dy()+2)
 	}
 
 	for _, v := range *region {
-		VertexMesh[int(v.X+1)-regionBounds.Min.X][int(v.Y+1)-regionBounds.Min.Y].InRegion = true
+		regionPixels[int(v.X+1)-regionBounds.Min.X][int(v.Y+1)-regionBounds.Min.Y].InRegion = true
 	}
 
 	OuterVertexMesh := make([]Vertex, 0, 4)
@@ -70,31 +60,31 @@ func (region *Region) CreateMesh() (mesh *[]Vertex) {
 	for len(vertexesToVisit) > 0 {
 		v := vertexesToVisit[len(vertexesToVisit)-1]
 		vertexesToVisit = vertexesToVisit[:len(vertexesToVisit)-1]
-		if !VertexMesh[v.X][v.Y].Visited {
-			VertexMesh[v.X][v.Y].Visited = true
-			if v.X > 0 && !VertexMesh[v.X-1][v.Y].Visited && !slices.Contains(OuterVertexMesh, Vertex{v.X - 1, v.Y}) {
-				if VertexMesh[v.X-1][v.Y].InRegion {
+		if !regionPixels[v.X][v.Y].Visited {
+			regionPixels[v.X][v.Y].Visited = true
+			if v.X > 0 && !regionPixels[v.X-1][v.Y].Visited && !slices.Contains(OuterVertexMesh, Vertex{v.X - 1, v.Y}) {
+				if regionPixels[v.X-1][v.Y].InRegion {
 					OuterVertexMesh = append(OuterVertexMesh, Vertex{v.X - 1, v.Y})
 				} else {
 					vertexesToVisit = append(vertexesToVisit, Vertex{v.X - 1, v.Y})
 				}
 			}
-			if v.X < uint16(len(VertexMesh))-1 && !VertexMesh[v.X+1][v.Y].Visited && !slices.Contains(OuterVertexMesh, Vertex{v.X + 1, v.Y}) {
-				if VertexMesh[v.X+1][v.Y].InRegion {
+			if v.X < uint16(len(regionPixels))-1 && !regionPixels[v.X+1][v.Y].Visited && !slices.Contains(OuterVertexMesh, Vertex{v.X + 1, v.Y}) {
+				if regionPixels[v.X+1][v.Y].InRegion {
 					OuterVertexMesh = append(OuterVertexMesh, Vertex{v.X + 1, v.Y})
 				} else {
 					vertexesToVisit = append(vertexesToVisit, Vertex{v.X + 1, v.Y})
 				}
 			}
-			if v.Y > 0 && !VertexMesh[v.X][v.Y-1].Visited && !slices.Contains(OuterVertexMesh, Vertex{v.X, v.Y - 1}) {
-				if VertexMesh[v.X][v.Y-1].InRegion {
+			if v.Y > 0 && !regionPixels[v.X][v.Y-1].Visited && !slices.Contains(OuterVertexMesh, Vertex{v.X, v.Y - 1}) {
+				if regionPixels[v.X][v.Y-1].InRegion {
 					OuterVertexMesh = append(OuterVertexMesh, Vertex{v.X, v.Y - 1})
 				} else {
 					vertexesToVisit = append(vertexesToVisit, Vertex{v.X, v.Y - 1})
 				}
 			}
-			if v.Y < uint16(len(VertexMesh[0]))-1 && !VertexMesh[v.X][v.Y+1].Visited && !slices.Contains(OuterVertexMesh, Vertex{v.X, v.Y + 1}) {
-				if VertexMesh[v.X][v.Y+1].InRegion {
+			if v.Y < uint16(len(regionPixels[0]))-1 && !regionPixels[v.X][v.Y+1].Visited && !slices.Contains(OuterVertexMesh, Vertex{v.X, v.Y + 1}) {
+				if regionPixels[v.X][v.Y+1].InRegion {
 					OuterVertexMesh = append(OuterVertexMesh, Vertex{v.X, v.Y + 1})
 				} else {
 					vertexesToVisit = append(vertexesToVisit, Vertex{v.X, v.Y + 1})
@@ -103,76 +93,91 @@ func (region *Region) CreateMesh() (mesh *[]Vertex) {
 		}
 	}
 
-	// Note: It may be worth getting rid of the OuterVertexMesh slice entirely, and instead
-	//		 just adding an "OuterVertex" boolean to the RegionPixel struct so that you
-	//		 can just reuse the VertexMesh variable.
-	//		 This would make checking adjacent pixels much easier when creating a sorted outer mesh.
+	// translate all vertices by (-1, -1)
+	// necessary because we added extra space for the region up above
+	for i := range OuterVertexMesh {
+		OuterVertexMesh[i].X--
+		OuterVertexMesh[i].Y--
+	}
 
-	// sort outermesh
-
+	var previousVertex Vertex
+	var isPreviousVertexSet = false
+	var currentVertex Vertex = OuterVertexMesh[0]
 	SortedOuterVertexMesh := make([]Vertex, 0, len(OuterVertexMesh))
-	tempVertexStack := make([]Vertex, 0, len(OuterVertexMesh))
-	onStack := false
-	for i := 0; i < len(OuterVertexMesh); i++ {
-		currentVertex := OuterVertexMesh[i]
+	for {
+		adjacentVertices := make([]Vertex, 0, 8)
 
-		if len(tempVertexStack) > 0 && onStack {
+		for _, v := range OuterVertexMesh {
+			if (int16(v.X) >= int16(currentVertex.X)-1 && v.X <= currentVertex.X+1) &&
+				(int16(v.Y) >= int16(currentVertex.Y)-1 && v.Y <= currentVertex.Y+1) &&
+				currentVertex != v {
+				adjacentVertices = append(adjacentVertices, v)
+			}
+		}
 
-			for j := 0; j < len(tempVertexStack); j++ {
-				if j+1 < len(tempVertexStack) && onStack {
-					nextVertexTemp := tempVertexStack[j+1]
+		// sort by manhattan distance to put diagonal vertices last
+		slices.SortFunc(adjacentVertices, func(a Vertex, b Vertex) int {
+			return manhattanDistance(a, currentVertex) - manhattanDistance(b, currentVertex)
+		})
 
-					if currentVertex.X-nextVertexTemp.X < 1 {
-						SortedOuterVertexMesh = append(SortedOuterVertexMesh, nextVertexTemp)
-						currentVertex = nextVertexTemp
-						onStack = false
+		if len(adjacentVertices) < 2 || len(adjacentVertices) > 3 {
+			return nil, errors.New("region-to-mesh: mesh is too thin at some points")
+		}
 
-					} else if currentVertex.Y-nextVertexTemp.Y < 1 {
-						SortedOuterVertexMesh = append(SortedOuterVertexMesh, nextVertexTemp)
-						currentVertex = nextVertexTemp
-						onStack = false
+		if !isPreviousVertexSet {
+			isPreviousVertexSet = true
+			previousVertex = adjacentVertices[0]
+			SortedOuterVertexMesh = append(SortedOuterVertexMesh, previousVertex)
+		}
 
-					} else if currentVertex.X < nextVertexTemp.X && currentVertex.Y-nextVertexTemp.Y < 1 {
-						SortedOuterVertexMesh = append(SortedOuterVertexMesh, nextVertexTemp)
-						currentVertex = nextVertexTemp
-						onStack = false
+		SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
 
-					} else if currentVertex.X > nextVertexTemp.X && nextVertexTemp.Y-currentVertex.Y < 1 {
-						SortedOuterVertexMesh = append(SortedOuterVertexMesh, nextVertexTemp)
-						currentVertex = nextVertexTemp
-						onStack = false
+		// scary!!!
+		if len(adjacentVertices) == 3 {
+			// SOLUTION 1: remove diagonal vertex
+			hasNonDiagonalVertex := false
+			oldAdjacentVertices := make([]Vertex, len(adjacentVertices))
+			copy(oldAdjacentVertices, adjacentVertices)
+			for i, v := range oldAdjacentVertices {
+				if v != previousVertex {
+					if manhattanDistance(currentVertex, v) < 2 {
+						if hasNonDiagonalVertex {
+							return nil, errors.New("region-to-mesh: vertex has 2 adjacent non-diagonal non-previous vertices. this should not happen")
+						}
+						hasNonDiagonalVertex = true
+					} else if hasNonDiagonalVertex {
+						adjacentVertices = slices.Delete(adjacentVertices, i, i+1)
 					}
 				}
 			}
-		}
-		if i+1 < len(OuterVertexMesh) {
-			nextVertex := OuterVertexMesh[i+1]
 
-			if currentVertex.X-nextVertex.X < 1 {
-				SortedOuterVertexMesh = append(SortedOuterVertexMesh, nextVertex)
-				currentVertex = nextVertex
-
-			} else if currentVertex.Y-nextVertex.Y < 1 {
-				SortedOuterVertexMesh = append(SortedOuterVertexMesh, nextVertex)
-				currentVertex = nextVertex
-
-			} else if currentVertex.X < nextVertex.X && currentVertex.Y-nextVertex.Y < 1 {
-				SortedOuterVertexMesh = append(SortedOuterVertexMesh, nextVertex)
-				currentVertex = nextVertex
-
-			} else if currentVertex.X > nextVertex.X && nextVertex.Y-currentVertex.Y < 1 {
-				SortedOuterVertexMesh = append(SortedOuterVertexMesh, nextVertex)
-				currentVertex = nextVertex
-
-			} else {
-				tempVertexStack = append(tempVertexStack, nextVertex)
-				currentVertex = nextVertex
-				onStack = true
-
+			if !hasNonDiagonalVertex {
+				// SOLUTION 2: remove vertex adjacent to previous vertex
+				adjacentVertices = slices.DeleteFunc(adjacentVertices, func(v Vertex) bool {
+					return v != previousVertex && manhattanDistance(previousVertex, v) < 2
+				})
+				if len(adjacentVertices) != 2 {
+					return nil, errors.New("region-to-mesh: mesh generation failed")
+				}
 			}
 		}
+
+		if adjacentVertices[0] == previousVertex {
+			previousVertex = currentVertex
+			currentVertex = adjacentVertices[1]
+		} else {
+			previousVertex = currentVertex
+			currentVertex = adjacentVertices[0]
+		}
+
+		if currentVertex == SortedOuterVertexMesh[0] {
+			return &SortedOuterVertexMesh, nil
+		}
+
+		if len(SortedOuterVertexMesh) >= len(OuterVertexMesh) {
+			return nil, errors.New("region-to-mesh: could not close mesh")
+		}
 	}
-	return &SortedOuterVertexMesh
 }
 
 func ResizeImage(img image.Image) (image.Image, error) {
