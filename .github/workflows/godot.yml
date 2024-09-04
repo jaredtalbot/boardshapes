@@ -1,0 +1,22 @@
+name: Godot
+
+on:
+  push:
+    branches: [ "master" ]
+    paths: 
+      - Game/**
+  pull_request:
+    branches: [ "master" ]
+    paths: 
+      - Game/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.7
+
+      - run: chmod +xwr .github/scripts/godotcheck.sh
+      
+      - name: Check GD Files
+        run: sudo .github/scripts/godotcheck.sh

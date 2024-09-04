@@ -3,6 +3,7 @@ package processing
 import (
 	"image"
 	"image/color"
+	"slices"
 )
 
 func BuildRegionMap(img image.Image) *RegionMap {
@@ -14,13 +15,13 @@ func BuildRegionMap(img image.Image) *RegionMap {
 		for x := bd.Min.X; x < bd.Max.X; x++ {
 			pixel := Pixel{uint16(x), uint16(y)}
 
-			if img.At(x, y) != White && !regionMap.GetPixelHasRegion(pixel) {
-				regionIndex := regionMap.NewRegion(pixel)
-				Traverse(img, &regionMap, x, y, regionIndex)
+			if img.At(x, y) != White {
+				regionMap.AddPixelToRegionMap(pixel, img)
 			}
 		}
 	}
 
+	regionMap.CleanupRegionMap()
 	return &regionMap
 }
 
@@ -53,6 +54,50 @@ func (rm *RegionMap) AddPixelToRegion(pixel Pixel, region RegionIndex) {
 	rm.pixels[pixel] = region
 }
 
+func (rm *RegionMap) AddPixelToRegionMap(pixel Pixel, img image.Image) {
+	colorP := img.At(int(pixel.X), int(pixel.Y))
+	regionLeft, hasRegionLeft := rm.pixels[Pixel{pixel.X - 1, pixel.Y}]
+	colorLeft := img.At(int(pixel.X)-1, int(pixel.Y))
+	regionAbove, hasRegionAbove := rm.pixels[Pixel{pixel.X, pixel.Y - 1}]
+	colorAbove := img.At(int(pixel.X), int(pixel.Y)-1)
+	if hasRegionLeft && ColorRegionEquivalence(colorP, colorLeft) {
+		if hasRegionAbove && ColorRegionEquivalence(colorP, colorAbove) && regionLeft != regionAbove { // time to merge regions
+			pixelsInRegionAbove := rm.regions[regionAbove]
+			// grow left region to fit the above region
+			mergedRegion := slices.Grow(*rm.regions[regionLeft], len(*rm.regions[regionLeft])+len(*pixelsInRegionAbove)+1)
+			// add all pixels in the above region to the left region
+			mergedRegion = append(mergedRegion, *pixelsInRegionAbove...)
+			rm.regions[regionLeft] = &mergedRegion
+			// fix pixel map for all pixels in the above region
+			for _, p := range *pixelsInRegionAbove {
+				rm.pixels[p] = regionLeft
+			}
+			rm.regions[regionAbove] = nil
+		}
+		rm.AddPixelToRegion(pixel, regionLeft)
+	} else if hasRegionAbove && ColorRegionEquivalence(colorP, colorAbove) {
+		rm.AddPixelToRegion(pixel, regionAbove)
+	} else {
+		rm.NewRegion(pixel)
+	}
+}
+
+// cleans up nil regions and rewrites the pixel map
+func (rm *RegionMap) CleanupRegionMap() {
+	rm.regions = slices.DeleteFunc(rm.regions, func(r *Region) bool { return r == nil })
+	pixelsInRegions := 0
+	for _, region := range rm.regions {
+		pixelsInRegions += len(*region)
+	}
+	// new fresh map
+	rm.pixels = make(map[Pixel]RegionIndex, pixelsInRegions)
+	for regionIndex, region := range rm.regions {
+		for _, pixel := range *region {
+			rm.pixels[pixel] = RegionIndex(regionIndex)
+		}
+	}
+}
+
 func (rm *RegionMap) GetPixelHasRegion(pixel Pixel) (hasRegion bool) {
 	_, hasRegion = rm.pixels[pixel]
 	return
@@ -64,31 +109,14 @@ func (rm *RegionMap) GetRegionOfPixel(pixel Pixel) (regionIndex RegionIndex, has
 }
 
 func (rm *RegionMap) GetRegion(region RegionIndex) Region {
-	return *rm.regions[region]
+	if rp := rm.regions[region]; rp != nil {
+		return *rp
+	}
+	return nil
 }
 
 func (rm *RegionMap) GetRegions() []*Region {
 	return rm.regions
-}
-
-func Traverse(img image.Image, regionMap *RegionMap, px, py int, regionIndex RegionIndex) {
-
-	if pixel := (Pixel{uint16(px), uint16(py - 1)}); ColorRegionEquivalence(img.At(px, py), img.At(px, py-1)) && !regionMap.GetPixelHasRegion(pixel) {
-		regionMap.AddPixelToRegion(pixel, regionIndex)
-		Traverse(img, regionMap, px, py-1, regionIndex)
-	}
-	if pixel := (Pixel{uint16(px), uint16(py + 1)}); ColorRegionEquivalence(img.At(px, py), img.At(px, py+1)) && !regionMap.GetPixelHasRegion(pixel) {
-		regionMap.AddPixelToRegion(pixel, regionIndex)
-		Traverse(img, regionMap, px, py+1, regionIndex)
-	}
-	if pixel := (Pixel{uint16(px - 1), uint16(py)}); ColorRegionEquivalence(img.At(px, py), img.At(px-1, py)) && !regionMap.GetPixelHasRegion(pixel) {
-		regionMap.AddPixelToRegion(pixel, regionIndex)
-		Traverse(img, regionMap, px-1, py, regionIndex)
-	}
-	if pixel := (Pixel{uint16(px + 1), uint16(py)}); ColorRegionEquivalence(img.At(px, py), img.At(px+1, py)) && !regionMap.GetPixelHasRegion(pixel) {
-		regionMap.AddPixelToRegion(pixel, regionIndex)
-		Traverse(img, regionMap, px+1, py, regionIndex)
-	}
 }
 
 func (re *Region) GetBounds() (regionBounds image.Rectangle) {
@@ -110,7 +138,6 @@ func (re *Region) GetBounds() (regionBounds image.Rectangle) {
 	return
 }
 
-// hot damn someone rename this function
 func ColorRegionEquivalence(a color.Color, b color.Color) bool {
 	return a == b
 }
