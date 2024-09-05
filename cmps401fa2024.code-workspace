@@ -5,6 +5,10 @@
     },
     {
       "path": "DiscordBot"
+    },
+    {
+      "name": "DevOps",
+      "path": ".github"
     }
   ],
   "settings": {}

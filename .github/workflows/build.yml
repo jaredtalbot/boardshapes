@@ -44,9 +44,8 @@ jobs:
       - name: Build Discord Bot
         run: go build -C ./DiscordBot -v ./...
 
-    # Tests later... maybe?
-    # - name: Test
-    #   run: go test -v ./...
+      - name: Test Web App Processing
+        run: go test -C ./WebApp/processing -v ./...
 
   godot-build:
     needs: detect-changes
