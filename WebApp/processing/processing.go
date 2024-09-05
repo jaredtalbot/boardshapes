@@ -53,7 +53,7 @@ func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
 		regionPixels[int(v.X+1)-regionBounds.Min.X][int(v.Y+1)-regionBounds.Min.Y].InRegion = true
 	}
 
-	OuterVertexMesh := make([]Vertex, 0, 4)
+	OuterVertexMesh := make([]Vertex, 0, regionBounds.Dx()*2+regionBounds.Dy()*2-2)
 
 	vertexesToVisit := []Vertex{{0, 0}}
 	// visit outer pixel
