@@ -29,6 +29,10 @@ type Pixel struct {
 	X, Y uint16
 }
 
+type Vertex struct {
+	X, Y uint16
+}
+
 type RegionIndex int
 type Region []Pixel
 
@@ -113,6 +117,25 @@ func (rm *RegionMap) GetRegion(region RegionIndex) Region {
 
 func (rm *RegionMap) GetRegions() []*Region {
 	return rm.regions
+}
+
+func (re *Region) GetBounds() (regionBounds image.Rectangle) {
+	regionBounds = image.Rectangle{Min: image.Pt(65535, 65535), Max: image.Pt(0, 0)}
+	for _, pixel := range *re {
+		if pixel.X < uint16(regionBounds.Min.X) {
+			regionBounds.Min.X = int(pixel.X)
+		}
+		if pixel.Y < uint16(regionBounds.Min.Y) {
+			regionBounds.Min.Y = int(pixel.Y)
+		}
+		if pixel.X+1 > uint16(regionBounds.Max.X) {
+			regionBounds.Max.X = int(pixel.X) + 1
+		}
+		if pixel.Y+1 > uint16(regionBounds.Max.Y) {
+			regionBounds.Max.Y = int(pixel.Y) + 1
+		}
+	}
+	return
 }
 
 func ColorRegionEquivalence(a color.Color, b color.Color) bool {
