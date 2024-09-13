@@ -1,18 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://ctlv0f8nuv1wd"]
 
+[ext_resource type="Script" path="res://menu.gd" id="1_4efcq"]
 [ext_resource type="Texture2D" uid="uid://s2g7jgj7r40t" path="res://boardwalkbetalogo.png" id="2_hr4hu"]
-
-[sub_resource type="GDScript" id="GDScript_piie1"]
-script/source = "extends Control
-
-
-func _on_start_pressed():
-	get_tree().change_scene_to_file(\"res://main.tscn\")
-
-
-func _on_exit_pressed():
-	get_tree().quit()
-"
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -25,7 +14,7 @@ offset_right = -120.0
 offset_bottom = -80.0
 grow_horizontal = 2
 grow_vertical = 2
-script = SubResource("GDScript_piie1")
+script = ExtResource("1_4efcq")
 
 [node name="Boardwalkbetalogo" type="Sprite2D" parent="."]
 position = Vector2(840, 250)
