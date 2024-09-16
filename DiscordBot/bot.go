@@ -80,7 +80,7 @@ func handleSimplify(s *discordgo.Session, i *discordgo.InteractionCreate, data *
 	h.Set("Content-Disposition",
 		fmt.Sprintf(`form-data; name="%s"; filename="%s"`,
 			"image", quoteEscaper.Replace(attachment.Filename)))
-	h.Set("Content-Type", "image/png")
+	h.Set("Content-Type", res.Header.Get("Content-Type"))
 	fw, err := w.CreatePart(h)
 	if err != nil {
 		errorRespond(fmt.Sprintf("Couldn't write image at '%s' to form.", attachmentUrl), "Couldn't send the image to the server.")
