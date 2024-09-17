@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://s2dcpgi066gy"]
 
 [ext_resource type="PackedScene" uid="uid://crgwrl3y2s3g6" path="res://player.tscn" id="1_3kdm3"]
-[ext_resource type="PackedScene" uid="uid://cokv41yrvmq5l" path="res://bellyrub.tscn" id="3_uj8iy"]
+[ext_resource type="PackedScene" path="res://bellyrub.tscn" id="3_uj8iy"]
 
 [node name="Main" type="Node2D"]
 
