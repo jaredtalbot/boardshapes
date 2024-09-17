@@ -15,8 +15,7 @@ func _ready():
 	
 func _on_file_selected(path: String):
 	print(\"begin upload\")
-	#var req = FileUploader.upload_file(\"https://cmps401fa2024.onrender.com/api/simplify\", path, HTTPClient.METHOD_POST, \"image\")
-	var req = FileUploader.upload_file(\"http://localhost:8080/api/simplify\", path, HTTPClient.METHOD_POST, \"image\")
+	var req = FileUploader.upload_file(\"https://cmps401fa2024.onrender.com/api/simplify\", path, HTTPClient.METHOD_POST, \"image\")
 	
 	req.request_completed.connect(_on_response_received)
 
