@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"image/color"
 	"io"
 	"log"
 	"mime/multipart"
@@ -238,7 +239,8 @@ func handleBuildLevel(s *discordgo.Session, i *discordgo.InteractionCreate, data
 type WebServerAttachedFile struct {
 	Name          string         `json:"name"`
 	ContentType   string         `json:"contentType"`
-	Base64Content string         `json:"base64Content"`
+	Base64Content string         `json:"base64Content,omitempty"`
+	RegionData    []string       `json:"levelJson,omitempty"`
 	Meta          map[string]any `json:"meta,omitempty"`
 }
 
@@ -259,10 +261,39 @@ func handleWebServerMessage(session *discordgo.Session, msg *WebServerMessage) {
 	if msg.Attachments != nil {
 		discordMsgFiles = make([]*discordgo.File, len(msg.Attachments))
 		for i, v := range msg.Attachments {
-			discordMsgFiles[i] = &discordgo.File{
-				Name:        v.Name,
-				ContentType: v.ContentType,
-				Reader:      base64.NewDecoder(base64.StdEncoding, strings.NewReader(v.Base64Content)),
+			if msg.Type == "build-level" {
+				log.Print(len(v.RegionData))
+				regionJson, _ := os.OpenFile(v.Name, os.O_CREATE, os.ModePerm)
+				enc := json.NewEncoder(regionJson)
+				for p := 0; p < len(v.RegionData); p++ {
+					type region struct {
+						RegionNumber int         `json:"regionNumber"`
+						RegionColor  color.Color `json:"regionColor"`
+						CornerX      int         `json:"cornerX"`
+						CornerY      int         `json:"cornerY"`
+						RegionImage  string      `json:"regionImage"`
+					}
+					data := region{}
+					log.Printf("I am running!")
+
+					t := json.Unmarshal([]byte(v.RegionData[p]), &data)
+					if err := enc.Encode(t); err != nil {
+						panic(err)
+					}
+					log.Printf("I am working!")
+				}
+				discordMsgFiles[i] = &discordgo.File{
+					Name:        v.Name,
+					ContentType: v.ContentType,
+					Reader:      regionJson,
+				}
+				//				regionJson.Close()
+			} else {
+				discordMsgFiles[i] = &discordgo.File{
+					Name:        v.Name,
+					ContentType: v.ContentType,
+					Reader:      base64.NewDecoder(base64.StdEncoding, strings.NewReader(v.Base64Content)),
+				}
 			}
 		}
 		if msg.Type == "simplify" {
@@ -287,28 +318,20 @@ func handleWebServerMessage(session *discordgo.Session, msg *WebServerMessage) {
 				}
 			}
 		}
-		if msg.Type == "build-level" {
-			discordMsgEmbeds = make([]*discordgo.MessageEmbed, len(msg.Attachments))
+		/*if msg.Type == "build-level" {
 			for i, v := range msg.Attachments {
 				var footer strings.Builder
 				footer.WriteString("Region Count: ")
 				if regionCount, ok := v.Meta["regionCount"]; ok {
 					footer.WriteString(fmt.Sprint(regionCount))
 				}
-				discordMsgEmbeds[i] = &discordgo.MessageEmbed{
-					Title:       "Simplified Image",
-					Description: v.Name,
-					Image: &discordgo.MessageEmbedImage{
-						URL: "attachment://" + v.Name,
-					},
-					Footer: &discordgo.MessageEmbedFooter{
-						Text: footer.String(),
-					},
-					Timestamp: msg.Timestamp,
-					Color:     0x237feb,
+				discordMsgFiles[i] = &discordgo.File{
+					Name:        v.Name,
+					ContentType: v.ContentType,
+					Reader:      v.LevelJson,
 				}
 			}
-		}
+		}*/
 	}
 
 	discordMsg := &discordgo.MessageSend{Content: msg.Content, Files: discordMsgFiles, Embeds: discordMsgEmbeds}
@@ -455,13 +478,6 @@ func main() {
 		default:
 			return
 		}
-
-		/*data := i.ApplicationCommandData()
-		if data.Name != "simplify" {
-			return
-		}
-
-		handleSimplify(s, i, &data)*/
 	})
 
 	_, err = session.ApplicationCommandBulkOverwrite(App, Guild, commands)

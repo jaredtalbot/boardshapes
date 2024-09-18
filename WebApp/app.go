@@ -5,10 +5,12 @@ import (
 	"codejester27/cmps401fa2024/web-app/processing"
 	"encoding/base64"
 	"encoding/json"
+
 	"image"
 	"image/color"
 	"image/jpeg"
 	"image/png"
+
 	"log"
 	"net/http"
 	"os"
@@ -138,28 +140,22 @@ func buildLevel(c *gin.Context) {
 
 	regionMap := processing.BuildRegionMap(newImg)
 
-	type regionData struct {
-		RegionNumber int         `json:"regionNumber"`
-		RegionColor  color.Color `json:"regionColor"`
-		CornerX      int         `json:"cornerX"`
-		CornerY      int         `json:"cornerY"`
-		RegionImage  string      `json:"regionImage"`
-	}
+	//regionJson, _ := os.OpenFile("level.json", os.O_CREATE, os.ModePerm)
+	//enc := json.NewEncoder(regionJson)
 
-	regionJson, _ := os.OpenFile("level.json", os.O_CREATE, os.ModePerm)
-	enc := json.NewEncoder(regionJson)
+	data := make([]string, regionCount)
 
 	for i := 0; i < regionCount; i++ {
 		region := regionMap.GetRegion(processing.RegionIndex(i))
 
-		posX, posY := processing.FindRegionPosition(region)
+		minX, minY := processing.FindRegionPosition(region)
 		regionColor := processing.GetColorOfRegion(region, newImg)
 
-		//This looks genuinely awful
-		x, y := processing.GetRegionDimensions(region, newImg)
-		regionImage := newImg.(interface {
-			SubImage(r image.Rectangle) image.Image
-		}).SubImage(image.Rect(posX, posY, x+1, y+1))
+		regionImage := image.NewNRGBA(region.GetBounds())
+
+		for j := 0; j < len(region); j++ {
+			regionImage.Set(int(region[j].X), int(region[j].Y), processing.GetColorOfRegion(region, newImg))
+		}
 
 		buf := new(bytes.Buffer)
 		if err := png.Encode(buf, regionImage); err != nil {
@@ -167,19 +163,46 @@ func buildLevel(c *gin.Context) {
 		}
 		base64Region := base64.StdEncoding.EncodeToString(buf.Bytes())
 
-		data := regionData{i, regionColor, posX, posY, base64Region}
-		if err := enc.Encode(data); err != nil {
+		d, err := json.Marshal(regionData{i, regionColor, minX, minY, base64Region})
+		if err != nil {
 			panic(err)
 		}
+		regionString := base64.StdEncoding.EncodeToString(d)
+		data[i] = regionString
+		/*if err := enc.Encode(data); err != nil {
+			panic(err)
+		}*/
 	}
+	log.Print(len(data))
 
-	regionJson.Close()
+	//regionJson.Close()
+
+	listenerHub.NotifyListeners(ListenerMessage{
+		Type: "build-level",
+		Attachments: []AttachedFile{
+			{
+				Name:        "level.json",
+				ContentType: "file/json",
+				RegionData:  data,
+			},
+		},
+		Timestamp: time.Now().Format(time.RFC3339),
+	})
+}
+
+type regionData struct {
+	RegionNumber int         `json:"regionNumber"`
+	RegionColor  color.Color `json:"regionColor"`
+	CornerX      int         `json:"cornerX"`
+	CornerY      int         `json:"cornerY"`
+	RegionImage  string      `json:"regionImage"`
 }
 
 type AttachedFile struct {
 	Name          string         `json:"name"`
 	ContentType   string         `json:"contentType"`
-	Base64Content string         `json:"base64Content"`
+	Base64Content string         `json:"base64Content,omitempty"`
+	RegionData    []string       `json:"regionData,omitempty"`
 	Meta          map[string]any `json:"meta,omitempty"`
 }
 
