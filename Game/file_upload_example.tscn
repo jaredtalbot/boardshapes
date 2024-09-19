@@ -1,39 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://qkl0qkscgqes"]
+[gd_scene load_steps=3 format=3 uid="uid://bs3wmhvsov3to"]
 
+[ext_resource type="Script" path="res://file_upload_example.gd" id="1_fwyx8"]
 [ext_resource type="PackedScene" uid="uid://cbbx0v3mpscgm" path="res://pick_image_file.tscn" id="1_v8buk"]
 
-[sub_resource type="GDScript" id="GDScript_40lgd"]
-resource_name = "fileex"
-script/source = "extends Node
-
-@onready var pick_image_file_dialog = $PickImageFileDialog
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pick_image_file_dialog.show()
-	pick_image_file_dialog.file_selected.connect(_on_file_selected)
-	
-func _on_file_selected(path: String):
-	print(\"begin upload\")
-	var req = FileUploader.upload_file(\"https://cmps401fa2024.onrender.com/api/simplify\", path, HTTPClient.METHOD_POST, \"image\")
-	
-	req.request_completed.connect(_on_response_received)
-
-func _on_response_received(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray):
-	print(\"response received %d, %d\" % [result, response_code])
-	print(headers)
-	var img = Image.new()
-	img.load_png_from_buffer(body)
-	var tex_rect = TextureRect.new()
-	tex_rect.texture = ImageTexture.create_from_image(img)
-	add_child(tex_rect)
-	
-	
-	
-	
-"
-
 [node name="FileUploadExample" type="Node"]
-script = SubResource("GDScript_40lgd")
+script = ExtResource("1_fwyx8")
 
 [node name="PickImageFileDialog" parent="." instance=ExtResource("1_v8buk")]
