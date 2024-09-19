@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	//	"image/color"
 	"io"
 	"log"
 	"mime/multipart"
