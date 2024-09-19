@@ -240,8 +240,7 @@ func handleBuildLevel(s *discordgo.Session, i *discordgo.InteractionCreate, data
 type WebServerAttachedFile struct {
 	Name          string         `json:"name"`
 	ContentType   string         `json:"contentType"`
-	Base64Content string         `json:"base64Content,omitempty"`
-	RegionData    string         `json:"levelJson,omitempty"`
+	Base64Content string         `json:"base64Content"`
 	Meta          map[string]any `json:"meta,omitempty"`
 }
 
@@ -263,29 +262,11 @@ func handleWebServerMessage(session *discordgo.Session, msg *WebServerMessage) {
 		discordMsgFiles = make([]*discordgo.File, len(msg.Attachments))
 		for i, v := range msg.Attachments {
 			if msg.Type == "build-level" {
-				log.Print(v.RegionData)
-				/*regionJson, _ := os.OpenFile(v.Name, os.O_CREATE, os.ModePerm)
-				enc := json.NewEncoder(regionJson)
-				type region struct {
-					RegionNumber int         `json:"regionNumber"`
-					RegionColor  color.Color `json:"regionColor"`
-					CornerX      int         `json:"cornerX"`
-					CornerY      int         `json:"cornerY"`
-					RegionImage  string      `json:"regionImage"`
-				}
-				data := region{}
-				if t := json.Unmarshal([]byte(v.RegionData), &data); t != nil {
-					panic(t)
-				}
-				if err := enc.Encode(data); err != nil {
-					panic(err)
-				}*/
 				discordMsgFiles[i] = &discordgo.File{
 					Name:        v.Name,
 					ContentType: v.ContentType,
-					Reader:      strings.NewReader(v.RegionData),
+					Reader:      strings.NewReader(v.Base64Content),
 				}
-				//				regionJson.Close()
 			} else {
 				discordMsgFiles[i] = &discordgo.File{
 					Name:        v.Name,
@@ -316,20 +297,6 @@ func handleWebServerMessage(session *discordgo.Session, msg *WebServerMessage) {
 				}
 			}
 		}
-		/*if msg.Type == "build-level" {
-			for i, v := range msg.Attachments {
-				var footer strings.Builder
-				footer.WriteString("Region Count: ")
-				if regionCount, ok := v.Meta["regionCount"]; ok {
-					footer.WriteString(fmt.Sprint(regionCount))
-				}
-				discordMsgFiles[i] = &discordgo.File{
-					Name:        v.Name,
-					ContentType: v.ContentType,
-					Reader:      v.LevelJson,
-				}
-			}
-		}*/
 	}
 
 	discordMsg := &discordgo.MessageSend{Content: msg.Content, Files: discordMsgFiles, Embeds: discordMsgEmbeds}
