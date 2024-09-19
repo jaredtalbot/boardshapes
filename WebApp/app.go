@@ -143,7 +143,7 @@ func buildLevel(c *gin.Context) {
 	//regionJson, _ := os.OpenFile("level.json", os.O_CREATE, os.ModePerm)
 	//enc := json.NewEncoder(regionJson)
 
-	data := make([]string, regionCount)
+	data := make([]regionData, regionCount)
 
 	for i := 0; i < regionCount; i++ {
 		region := regionMap.GetRegion(processing.RegionIndex(i))
@@ -163,17 +163,19 @@ func buildLevel(c *gin.Context) {
 		}
 		base64Region := base64.StdEncoding.EncodeToString(buf.Bytes())
 
-		d, err := json.Marshal(regionData{i, regionColor, minX, minY, base64Region})
-		if err != nil {
-			panic(err)
-		}
-		regionString := base64.StdEncoding.EncodeToString(d)
-		data[i] = regionString
+		//regionString := base64.StdEncoding.EncodeToString(d)
+		r := regionData{i, regionColor, minX, minY, base64Region}
+		data[i] = r
 		/*if err := enc.Encode(data); err != nil {
 			panic(err)
 		}*/
 	}
-	log.Print(len(data))
+
+	d, err := json.Marshal(data)
+	if err != nil {
+		panic(err)
+	}
+	log.Print(string(d))
 
 	//regionJson.Close()
 
@@ -182,8 +184,8 @@ func buildLevel(c *gin.Context) {
 		Attachments: []AttachedFile{
 			{
 				Name:        "level.json",
-				ContentType: "file/json",
-				RegionData:  data,
+				ContentType: "application/json",
+				RegionData:  string(d),
 			},
 		},
 		Timestamp: time.Now().Format(time.RFC3339),
@@ -202,7 +204,7 @@ type AttachedFile struct {
 	Name          string         `json:"name"`
 	ContentType   string         `json:"contentType"`
 	Base64Content string         `json:"base64Content,omitempty"`
-	RegionData    []string       `json:"regionData,omitempty"`
+	RegionData    string         `json:"regionData,omitempty"`
 	Meta          map[string]any `json:"meta,omitempty"`
 }
 

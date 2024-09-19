@@ -5,7 +5,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"image/color"
+
+	//	"image/color"
 	"io"
 	"log"
 	"mime/multipart"
@@ -240,7 +241,7 @@ type WebServerAttachedFile struct {
 	Name          string         `json:"name"`
 	ContentType   string         `json:"contentType"`
 	Base64Content string         `json:"base64Content,omitempty"`
-	RegionData    []string       `json:"levelJson,omitempty"`
+	RegionData    string         `json:"levelJson,omitempty"`
 	Meta          map[string]any `json:"meta,omitempty"`
 }
 
@@ -262,30 +263,27 @@ func handleWebServerMessage(session *discordgo.Session, msg *WebServerMessage) {
 		discordMsgFiles = make([]*discordgo.File, len(msg.Attachments))
 		for i, v := range msg.Attachments {
 			if msg.Type == "build-level" {
-				log.Print(len(v.RegionData))
-				regionJson, _ := os.OpenFile(v.Name, os.O_CREATE, os.ModePerm)
+				log.Print(v.RegionData)
+				/*regionJson, _ := os.OpenFile(v.Name, os.O_CREATE, os.ModePerm)
 				enc := json.NewEncoder(regionJson)
-				for p := 0; p < len(v.RegionData); p++ {
-					type region struct {
-						RegionNumber int         `json:"regionNumber"`
-						RegionColor  color.Color `json:"regionColor"`
-						CornerX      int         `json:"cornerX"`
-						CornerY      int         `json:"cornerY"`
-						RegionImage  string      `json:"regionImage"`
-					}
-					data := region{}
-					log.Printf("I am running!")
-
-					t := json.Unmarshal([]byte(v.RegionData[p]), &data)
-					if err := enc.Encode(t); err != nil {
-						panic(err)
-					}
-					log.Printf("I am working!")
+				type region struct {
+					RegionNumber int         `json:"regionNumber"`
+					RegionColor  color.Color `json:"regionColor"`
+					CornerX      int         `json:"cornerX"`
+					CornerY      int         `json:"cornerY"`
+					RegionImage  string      `json:"regionImage"`
 				}
+				data := region{}
+				if t := json.Unmarshal([]byte(v.RegionData), &data); t != nil {
+					panic(t)
+				}
+				if err := enc.Encode(data); err != nil {
+					panic(err)
+				}*/
 				discordMsgFiles[i] = &discordgo.File{
 					Name:        v.Name,
 					ContentType: v.ContentType,
-					Reader:      regionJson,
+					Reader:      strings.NewReader(v.RegionData),
 				}
 				//				regionJson.Close()
 			} else {
