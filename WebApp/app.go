@@ -180,6 +180,7 @@ func buildLevel(c *gin.Context) {
 		},
 		Timestamp: time.Now().Format(time.RFC3339),
 	})
+	c.Data(http.StatusOK, "application/json", d)
 }
 
 type regionData struct {
