@@ -168,7 +168,6 @@ func buildLevel(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	log.Print(string(d))
 
 	listenerHub.NotifyListeners(ListenerMessage{
 		Type: "build-level",
