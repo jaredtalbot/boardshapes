@@ -58,3 +58,27 @@ func main() {
 	fmt.Printf("Type: %-20T Value: %v\n", mapEx, mapEx)
 	fmt.Printf("Type: %-20T Value: %v\n", channelEx, channelEx)
 }
+
+// Expected Output
+// Type: bool                 Value: false
+// Type: string               Value: Hello, World!
+// Type: int                  Value: 1
+// Type: int8                 Value: 127
+// Type: int16                Value: 32767
+// Type: int32                Value: 2147483647
+// Type: int64                Value: 9223372036854775807
+// Type: uint                 Value: 18446744073709551615
+// Type: uint8                Value: 255
+// Type: uint16               Value: 65535
+// Type: uint32               Value: 4294967295
+// Type: uint64               Value: 18446744073709551615
+// Type: float32              Value: 3.4e+38
+// Type: float64              Value: 1.7e+308
+// Type: complex64            Value: (3+2i)
+// Type: complex128           Value: (8.019654435455+0.5611214343732119i)
+// Type: main.ExampleStruct   Value: {123 321}
+// Type: string               Value: Anything
+// Type: [3]int               Value: [1 2 3]
+// Type: []int                Value: [1]
+// Type: map[string]string    Value: map[Key:Value]
+// Type: chan string          Value: 0xc000070070

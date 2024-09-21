@@ -25,3 +25,6 @@ func main() {
 	// at this point we have asserted there was no error
 	fmt.Printf("Result: %d\n", d)
 }
+
+//Expected Output:
+//"divide: division by zero not allowed"

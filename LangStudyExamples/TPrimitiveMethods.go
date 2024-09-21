@@ -12,3 +12,6 @@ func main() {
 	i := MyInt(5)
 	fmt.Println(i.Square()) // Expected Output: 25
 }
+
+//Expected Output:
+//25

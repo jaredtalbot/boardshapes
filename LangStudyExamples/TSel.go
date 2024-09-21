@@ -60,3 +60,10 @@ func main() {
 	}
 	// (only chan2 will be received here)
 }
+
+// Expected Output:
+// d > a
+// (e >= b) || (c < b)
+// (a != b)
+// d is 2, 3, or 4
+// chan2 said: bar

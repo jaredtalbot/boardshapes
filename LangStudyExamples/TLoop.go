@@ -59,3 +59,30 @@ func main() {
 	}
 	fmt.Println("c has been closed")
 }
+
+// Expected Output
+// Value of a is 2
+// Value of a is 4
+// Value of a is 8
+// Value of a is 16
+// Value of a is 32
+
+// Value of b is 1
+// Value of b is 2
+// Value of b is 3
+// Value of b is 4
+// Value of b is 5
+
+// myArray[0] = 62
+// myArray[1] = 74
+// myArray[2] = 23
+
+// myMap[PI] = 3.141590E+00
+// myMap[K] = 8.987550E+09
+// myMap[G] = 6.674300E-11
+
+// received from c: 3
+// received from c: 2
+// received from c: 1
+// received from c: Liftoff
+// c has been closed

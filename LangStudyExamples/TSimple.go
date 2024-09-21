@@ -10,3 +10,6 @@ func main() {
 	// print "Hello, World!" followed by a line break
 	fmt.Println("Hello, World!")
 }
+
+// Expected Output:
+// Hello, World!
