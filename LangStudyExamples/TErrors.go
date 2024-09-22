@@ -26,5 +26,5 @@ func main() {
 	fmt.Printf("Result: %d\n", d)
 }
 
-//Expected Output:
-//"divide: division by zero not allowed"
+// Expected Output:
+// divide: division by zero not allowed

@@ -13,5 +13,5 @@ func main() {
 	fmt.Println(i.Square()) // Expected Output: 25
 }
 
-//Expected Output:
-//25
+// Expected Output:
+// 25
