@@ -20,14 +20,27 @@ func _on_response_received(result: int, response_code: int, headers: PackedStrin
 	print(headers)
 	if response_code != 200:
 		var label = Label.new()
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		label.text = body.get_string_from_utf8()
 		add_child(label)
 		return
-	var img = Image.new()
-	img.load_png_from_buffer(body)
-	var tex_rect = TextureRect.new()
-	tex_rect.texture = ImageTexture.create_from_image(img)
-	add_child(tex_rect)
+	
+	for header in headers:
+		if header.contains("Content-Type") and header.contains("image/png"):
+			var img = Image.new()
+			img.load_png_from_buffer(body)
+			var tex_rect = TextureRect.new()
+			tex_rect.texture = ImageTexture.create_from_image(img)
+			add_child(tex_rect)
+		else:
+			var label = Label.new()
+			var json = JSON.parse_string(body.get_string_from_utf8())
+			var json_string = JSON.stringify(json, "  ")
+			label.text = json_string
+			add_child(label)
+			return
+	
+	
 
 func _unhandled_key_input(event):
 	if event is InputEventKey and event.is_action_pressed("ui_accept"):
