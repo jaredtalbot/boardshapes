@@ -8,12 +8,12 @@ chmod +xr godot.x86_64
 echo Running project...
 ./godot.x86_64 --headless --import --path ./Game 2> godotout
 cat godotout
-# error=$(grep 'SCRIPT ERROR' godotout | wc -c)
-# if [ $error -gt 0 ]
-# then
-#     echo There is a script error.
-#     exit 1
-# else 
-#     echo Godot check successful.
-#     exit 0
-# fi
+error=$(grep 'SCRIPT ERROR' godotout | wc -c)
+if [ $error -gt 0 ]
+then
+    echo There is a script error.
+    exit 1
+else 
+    echo Godot check successful.
+    exit 0
+fi
