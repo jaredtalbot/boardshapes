@@ -5,13 +5,13 @@ sudo apt install unzip
 echo Unzipping Godot...
 unzip -p godot.zip Godot_v*-stable_linux.x86_64 > godot.x86_64
 chmod +xr godot.x86_64
-echo Checking files...
-find . -name '*.gd' -print0 | xargs -P 8 -n 1 -0  ./godot.x86_64 --headless --check-only -q -s
-if [ $? -eq 0 ]
+echo Running project...
+error=$(./godot.x86_64 --headless --import --path ./Game |& grep 'SCRIPT ERROR' - | wc -c)
+if [ $error -gt 0 ]
 then
-    echo All files checked successfully.
-    exit 0
-else 
-    echo There is an issue with one of the files.
+    echo There is a script error.
     exit 1
+else 
+    echo Godot check successful.
+    exit 0
 fi
