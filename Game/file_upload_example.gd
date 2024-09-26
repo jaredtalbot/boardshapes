@@ -10,7 +10,7 @@ func _ready():
 	pick_image_file_dialog.file_selected.connect(_on_file_selected)
 	
 func _on_file_selected(path: String):
-	print("begin upload")
+	print("begin upload"
 	var req = FileUploader.upload_file(web_server_url + "/api/simplify", path, HTTPClient.METHOD_POST, "image")
 	
 	req.request_completed.connect(_on_response_received)
