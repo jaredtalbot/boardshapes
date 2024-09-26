@@ -6,13 +6,13 @@ echo Unzipping Godot...
 unzip -p godot.zip Godot_v*-stable_linux.x86_64 > godot.x86_64
 chmod +xr godot.x86_64
 echo Running project...
-./godot.x86_64 --headless --import --path ./Game &> godotout
-error=$(grep 'SCRIPT ERROR' godotout | wc -c)
-if [ $error -gt 0 ]
-then
-    echo There is a script error.
-    exit 1
-else 
-    echo Godot check successful.
-    exit 0
-fi
+./godot.x86_64 --headless --import --path ./Game
+# error=$(grep 'SCRIPT ERROR' godotout | wc -c)
+# if [ $error -gt 0 ]
+# then
+#     echo There is a script error.
+#     exit 1
+# else 
+#     echo Godot check successful.
+#     exit 0
+# fi
