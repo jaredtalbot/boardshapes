@@ -134,7 +134,7 @@ func generateTestResultImage(name string, mesh *[]Vertex) error {
 	return file.Close()
 }
 
-var vertexMapNameRegex = regexp.MustCompile("^test_(\\w+)_vertexmap")
+var vertexMapNameRegex = regexp.MustCompile(`^test_(\w+)_vertexmap`)
 
 func TestRegion_CreateMesh(t *testing.T) {
 	tests := make([]struct {
