@@ -2,9 +2,12 @@ package processing
 
 import (
 	"errors"
+	"fmt"
 	"image"
 	"image/color"
+	"image/gif"
 	"math"
+	"os"
 	"slices"
 
 	"golang.org/x/image/draw"
@@ -93,36 +96,43 @@ func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
 		}
 	}
 
+	vertexMatrix := make([][]bool, regionBounds.Dx())
+	for i := range vertexMatrix {
+		vertexMatrix[i] = make([]bool, regionBounds.Dy())
+	}
+
 	// translate all vertices by (-1, -1)
 	// necessary because we added extra space for the region up above
-	for i := range OuterVertexMesh {
+	for i, v := range OuterVertexMesh {
 		OuterVertexMesh[i].X--
 		OuterVertexMesh[i].Y--
+		vertexMatrix[v.X-1][v.Y-1] = true
 	}
+
+	wither(vertexMatrix)
+
+	OuterVertexMesh = slices.DeleteFunc(OuterVertexMesh, func(v Vertex) bool {
+		return !vertexMatrix[v.X][v.Y]
+	})
 
 	var previousVertex Vertex
 	var isPreviousVertexSet = false
 	var currentVertex Vertex = OuterVertexMesh[0]
 	SortedOuterVertexMesh := make([]Vertex, 0, len(OuterVertexMesh))
+
 	for {
 		adjacentVertices := make([]Vertex, 0, 8)
 
-		for _, v := range OuterVertexMesh {
-			if (int16(v.X) >= int16(currentVertex.X)-1 && v.X <= currentVertex.X+1) &&
-				(int16(v.Y) >= int16(currentVertex.Y)-1 && v.Y <= currentVertex.Y+1) &&
-				currentVertex != v {
-				adjacentVertices = append(adjacentVertices, v)
+		forAdjacents(currentVertex.X, currentVertex.Y, len(vertexMatrix), len(vertexMatrix[0]), func(x, y uint16) {
+			if vertexMatrix[x][y] {
+				adjacentVertices = append(adjacentVertices, Vertex{uint16(x), uint16(y)})
 			}
-		}
+		})
 
 		// sort by manhattan distance to put diagonal vertices last
 		slices.SortFunc(adjacentVertices, func(a Vertex, b Vertex) int {
 			return manhattanDistance(a, currentVertex) - manhattanDistance(b, currentVertex)
 		})
-
-		if len(adjacentVertices) < 2 || len(adjacentVertices) > 3 {
-			return nil, errors.New("region-to-mesh: mesh is too thin at some points")
-		}
 
 		if !isPreviousVertexSet {
 			isPreviousVertexSet = true
@@ -134,32 +144,45 @@ func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
 
 		// scary!!!
 		if len(adjacentVertices) == 3 {
-			// SOLUTION 1: remove diagonal vertex
-			hasNonDiagonalVertex := false
-			oldAdjacentVertices := make([]Vertex, len(adjacentVertices))
-			copy(oldAdjacentVertices, adjacentVertices)
-			for i, v := range oldAdjacentVertices {
+			var a, b *Vertex = nil, nil
+			for _, v := range adjacentVertices {
 				if v != previousVertex {
-					if manhattanDistance(currentVertex, v) < 2 {
-						if hasNonDiagonalVertex {
-							return nil, errors.New("region-to-mesh: vertex has 2 adjacent non-diagonal non-previous vertices. this should not happen")
+					var adjs uint8 = 0
+					forAdjacents(v.X, v.Y, len(vertexMatrix), len(vertexMatrix[0]), func(x, y uint16) {
+						if vertexMatrix[x][y] {
+							adjs++
 						}
-						hasNonDiagonalVertex = true
-					} else if hasNonDiagonalVertex {
-						adjacentVertices = slices.Delete(adjacentVertices, i, i+1)
+					})
+					if adjs == 2 {
+						if a == nil {
+							a = &v
+						} else {
+							return nil, errors.New("region-to-mesh: mesh generation failed")
+						}
+					} else if adjs == 3 {
+						if b == nil {
+							b = &v
+						} else {
+							return nil, errors.New("region-to-mesh: mesh generation failed")
+						}
 					}
 				}
 			}
 
-			if !hasNonDiagonalVertex {
-				// SOLUTION 2: remove vertex adjacent to previous vertex
-				adjacentVertices = slices.DeleteFunc(adjacentVertices, func(v Vertex) bool {
-					return v != previousVertex && manhattanDistance(previousVertex, v) < 2
-				})
-				if len(adjacentVertices) != 2 {
-					return nil, errors.New("region-to-mesh: mesh generation failed")
-				}
+			if a == nil || b == nil {
+				return nil, errors.New("region-to-mesh: mesh generation failed")
 			}
+
+			vertexMatrix[a.X][a.Y] = false
+			adjacentVertices = slices.DeleteFunc(adjacentVertices, func(v Vertex) bool {
+				return v == *a
+			})
+
+			wither(vertexMatrix)
+		}
+
+		if len(adjacentVertices) != 2 {
+			return nil, errors.New("region-to-mesh: mesh generation failed")
 		}
 
 		if adjacentVertices[0] == previousVertex {
@@ -178,6 +201,113 @@ func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
 			return nil, errors.New("region-to-mesh: could not close mesh")
 		}
 	}
+}
+
+func wither(matrix [][]bool) {
+	maxX, maxY := len(matrix), len(matrix[0])
+	frames := make([]*image.Paletted, 0)
+	for {
+		frames = append(frames, MatrixToImage(matrix))
+		verticesToRemove := make([]Vertex, 0)
+		for x := uint16(0); x < uint16(maxX); x++ {
+		Y:
+			for y := uint16(0); y < uint16(maxY); y++ {
+				if matrix[x][y] {
+					// add adjacents to slice
+					adjacentVertices := make([]Vertex, 0, 8)
+					forAdjacents(x, y, maxX, maxY, func(x, y uint16) {
+						if matrix[x][y] {
+							adjacentVertices = append(adjacentVertices, Vertex{x, y})
+						}
+					})
+
+					if len(adjacentVertices) < 2 {
+						verticesToRemove = append(verticesToRemove, Vertex{x, y})
+						continue Y
+					}
+
+					for _, v := range adjacentVertices {
+						noAdjacents := true
+						for _, ov := range adjacentVertices {
+							if v != ov {
+								vX, vY, ovX, ovY := int(v.X), int(v.Y), int(ov.X), int(ov.Y)
+								noAdjacents = vX < ovX-1 || vX > ovX+1 || vY < ovY-1 || vY > ovY+1
+								if !noAdjacents {
+									break
+								}
+							}
+						}
+						if noAdjacents {
+							continue Y
+						}
+					}
+
+					verticesToRemove = append(verticesToRemove, Vertex{x, y})
+				}
+			}
+		}
+
+		if len(verticesToRemove) < 1 {
+			break
+		}
+
+		for _, v := range verticesToRemove {
+			matrix[v.X][v.Y] = false
+		}
+	}
+	frames = append(frames, MatrixToImage(matrix))
+	delays := make([]int, len(frames))
+	for i := range frames {
+		delays[i] = 15
+	}
+
+	g := &gif.GIF{
+		Image: frames,
+		Delay: delays,
+		Config: image.Config{
+			ColorModel: color.Palette{White, Black},
+			Width:      maxX,
+			Height:     maxY,
+		},
+	}
+
+	gifFile, err := os.Create("withering.gif")
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = gif.EncodeAll(gifFile, g)
+
+	if err != nil {
+		panic(err)
+	}
+}
+
+func PrintMatrix(matrix [][]bool) {
+	for _, s := range matrix {
+		for _, v := range s {
+			if v {
+				fmt.Print("██")
+			} else {
+				fmt.Print("░░")
+			}
+		}
+		fmt.Println()
+	}
+}
+
+func MatrixToImage(matrix [][]bool) *image.Paletted {
+	maxX, maxY := len(matrix), len(matrix[0])
+	result := image.NewPaletted(image.Rect(0, 0, maxX, maxY), color.Palette{White, Black})
+	for x := uint16(0); x < uint16(maxX); x++ {
+		for y := uint16(0); y < uint16(maxY); y++ {
+			if matrix[x][y] {
+				result.SetColorIndex(int(x), int(y), 1)
+			}
+		}
+	}
+	return result
 }
 
 func ResizeImage(img image.Image) (image.Image, error) {
@@ -252,4 +382,31 @@ func SimplifyImage(img image.Image) (result image.Image, regionCount int) {
 	}
 
 	return newImg, regionCount
+}
+
+func forAdjacents(x, y uint16, maxX, maxY int, function func(x, y uint16)) {
+	if y > 0 {
+		if x > 0 {
+			function(x-1, y-1)
+		}
+		function(x, y-1)
+		if x < uint16(maxX)-1 {
+			function(x+1, y-1)
+		}
+	}
+	if x > 0 {
+		function(x-1, y)
+	}
+	if x < uint16(maxX)-1 {
+		function(x+1, y)
+	}
+	if y < uint16(maxY)-1 {
+		if x > 0 {
+			function(x-1, y+1)
+		}
+		function(x, y+1)
+		if x < uint16(maxX)-1 {
+			function(x+1, y+1)
+		}
+	}
 }
