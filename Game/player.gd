@@ -12,9 +12,13 @@ var can_jump = false
 
 @export var wall_jump_power = 500
 
+@onready var test_animation = $AnimatedSprite2D
+
 func _on_coyote_timer_timeout():
 	can_jump = false
 
+func _ready():
+	test_animation.play("idle animation")
 
 func _physics_process(delta):
 	
@@ -32,6 +36,11 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("jump") and can_jump == true:
 		velocity.y = JUMP_VELOCITY
 		can_jump = false
+		test_animation.play("jumping")
+		if velocity.x > 0:
+			test_animation.flip_h = false
+		elif velocity.x < 0:
+			test_animation.flip_h = true
 		
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
@@ -54,6 +63,15 @@ func _physics_process(delta):
 			
 		else:
 			velocity.x = move_toward(velocity.x, direction * SPEED, acceleration * delta)
+			if velocity.x > 0:
+				test_animation.flip_h = false
+			elif velocity.x < 0:
+				test_animation.flip_h = true
+			if is_on_floor():
+				test_animation.play("running")
+			else:
+				test_animation.play("jumping")
+				test_animation.set_frame_and_progress(7, 0.0)
 	else:
 		velocity.x = move_toward(velocity.x, 0, acceleration * delta)
 
@@ -61,6 +79,11 @@ func _physics_process(delta):
 	
 	if is_on_wall() and !is_on_floor():
 		velocity.y = wall_slide_speed
+		test_animation.play("sliding")
+		if velocity.x > 0:
+			test_animation.flip_h = false
+		elif velocity.x < 0:
+			test_animation.flip_h = true
 	
 	if is_on_wall() and Input.is_action_pressed("jump"):
 		$wall_timer.start()
