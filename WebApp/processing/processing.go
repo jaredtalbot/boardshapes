@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"image/gif"
 	"math"
-	"os"
 	"slices"
 
 	"golang.org/x/image/draw"
@@ -36,8 +34,40 @@ var ErrImageTooWide = errors.New("image is too wide")
 
 type RegionPixelStatus uint8
 
-type RegionPixel struct {
-	InRegion, Visited bool
+type RegionPixel byte
+
+const (
+	REGION_PIXEL_IN_REGION = 0b00000001
+	REGION_PIXEL_VISITED   = 0b00000010
+	REGION_PIXEL_IN_MESH   = 0b00000100
+)
+
+func (r *RegionPixel) MarkInRegion() {
+	*r = *r | REGION_PIXEL_IN_REGION
+}
+
+func (r *RegionPixel) MarkVisited() {
+	*r = *r | REGION_PIXEL_VISITED
+}
+
+func (r *RegionPixel) MarkInMesh() {
+	*r = *r | REGION_PIXEL_IN_MESH
+}
+
+func (r RegionPixel) InRegion() bool {
+	return r&REGION_PIXEL_IN_REGION > 0
+}
+
+func (r RegionPixel) Visited() bool {
+	return r&REGION_PIXEL_VISITED > 0
+}
+
+func (r RegionPixel) InMesh() bool {
+	return r&REGION_PIXEL_IN_MESH > 0
+}
+
+func (r RegionPixel) String() string {
+	return fmt.Sprintf("in region: %t; visited: %t; in mesh: %t", r.InRegion(), r.Visited(), r.InMesh())
 }
 
 func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
@@ -53,42 +83,46 @@ func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
 	}
 
 	for _, v := range *region {
-		regionPixels[int(v.X+1)-regionBounds.Min.X][int(v.Y+1)-regionBounds.Min.Y].InRegion = true
+		regionPixels[int(v.X+1)-regionBounds.Min.X][int(v.Y+1)-regionBounds.Min.Y].MarkInRegion()
 	}
 
-	OuterVertexMesh := make([]Vertex, 0, regionBounds.Dx()*2+regionBounds.Dy()*2-2)
+	outerVertexMesh := make([]Vertex, 0, regionBounds.Dx()*2+regionBounds.Dy()*2-2)
 
 	vertexesToVisit := []Vertex{{0, 0}}
-	// visit outer pixel
+	// visit outer pixels
 	for len(vertexesToVisit) > 0 {
 		v := vertexesToVisit[len(vertexesToVisit)-1]
 		vertexesToVisit = vertexesToVisit[:len(vertexesToVisit)-1]
-		if !regionPixels[v.X][v.Y].Visited {
-			regionPixels[v.X][v.Y].Visited = true
-			if v.X > 0 && !regionPixels[v.X-1][v.Y].Visited && !slices.Contains(OuterVertexMesh, Vertex{v.X - 1, v.Y}) {
-				if regionPixels[v.X-1][v.Y].InRegion {
-					OuterVertexMesh = append(OuterVertexMesh, Vertex{v.X - 1, v.Y})
+		if !regionPixels[v.X][v.Y].Visited() {
+			regionPixels[v.X][v.Y].MarkVisited()
+			if v.X > 0 && !regionPixels[v.X-1][v.Y].Visited() && !regionPixels[v.X-1][v.Y].InMesh() {
+				if regionPixels[v.X-1][v.Y].InRegion() {
+					outerVertexMesh = append(outerVertexMesh, Vertex{v.X - 1, v.Y})
+					regionPixels[v.X-1][v.Y].MarkInMesh()
 				} else {
 					vertexesToVisit = append(vertexesToVisit, Vertex{v.X - 1, v.Y})
 				}
 			}
-			if v.X < uint16(len(regionPixels))-1 && !regionPixels[v.X+1][v.Y].Visited && !slices.Contains(OuterVertexMesh, Vertex{v.X + 1, v.Y}) {
-				if regionPixels[v.X+1][v.Y].InRegion {
-					OuterVertexMesh = append(OuterVertexMesh, Vertex{v.X + 1, v.Y})
+			if v.X < uint16(len(regionPixels))-1 && !regionPixels[v.X+1][v.Y].Visited() && !regionPixels[v.X+1][v.Y].InMesh() {
+				if regionPixels[v.X+1][v.Y].InRegion() {
+					outerVertexMesh = append(outerVertexMesh, Vertex{v.X + 1, v.Y})
+					regionPixels[v.X-1][v.Y].MarkInMesh()
 				} else {
 					vertexesToVisit = append(vertexesToVisit, Vertex{v.X + 1, v.Y})
 				}
 			}
-			if v.Y > 0 && !regionPixels[v.X][v.Y-1].Visited && !slices.Contains(OuterVertexMesh, Vertex{v.X, v.Y - 1}) {
-				if regionPixels[v.X][v.Y-1].InRegion {
-					OuterVertexMesh = append(OuterVertexMesh, Vertex{v.X, v.Y - 1})
+			if v.Y > 0 && !regionPixels[v.X][v.Y-1].Visited() && !regionPixels[v.X][v.Y-1].InMesh() {
+				if regionPixels[v.X][v.Y-1].InRegion() {
+					outerVertexMesh = append(outerVertexMesh, Vertex{v.X, v.Y - 1})
+					regionPixels[v.X-1][v.Y].MarkInMesh()
 				} else {
 					vertexesToVisit = append(vertexesToVisit, Vertex{v.X, v.Y - 1})
 				}
 			}
-			if v.Y < uint16(len(regionPixels[0]))-1 && !regionPixels[v.X][v.Y+1].Visited && !slices.Contains(OuterVertexMesh, Vertex{v.X, v.Y + 1}) {
-				if regionPixels[v.X][v.Y+1].InRegion {
-					OuterVertexMesh = append(OuterVertexMesh, Vertex{v.X, v.Y + 1})
+			if v.Y < uint16(len(regionPixels[0]))-1 && !regionPixels[v.X][v.Y+1].Visited() && !regionPixels[v.X][v.Y+1].InMesh() {
+				if regionPixels[v.X][v.Y+1].InRegion() {
+					outerVertexMesh = append(outerVertexMesh, Vertex{v.X, v.Y + 1})
+					regionPixels[v.X-1][v.Y].MarkInMesh()
 				} else {
 					vertexesToVisit = append(vertexesToVisit, Vertex{v.X, v.Y + 1})
 				}
@@ -103,22 +137,20 @@ func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
 
 	// translate all vertices by (-1, -1)
 	// necessary because we added extra space for the region up above
-	for i, v := range OuterVertexMesh {
-		OuterVertexMesh[i].X--
-		OuterVertexMesh[i].Y--
+	for i, v := range outerVertexMesh {
+		outerVertexMesh[i].X--
+		outerVertexMesh[i].Y--
 		vertexMatrix[v.X-1][v.Y-1] = true
 	}
 
-	wither(vertexMatrix)
-
-	OuterVertexMesh = slices.DeleteFunc(OuterVertexMesh, func(v Vertex) bool {
+	outerVertexMesh = slices.DeleteFunc(outerVertexMesh, func(v Vertex) bool {
 		return !vertexMatrix[v.X][v.Y]
 	})
 
 	var previousVertex Vertex
 	var isPreviousVertexSet = false
-	var currentVertex Vertex = OuterVertexMesh[0]
-	SortedOuterVertexMesh := make([]Vertex, 0, len(OuterVertexMesh))
+	var currentVertex Vertex = outerVertexMesh[0]
+	sortedOuterVertexMesh := make([]Vertex, 0, len(outerVertexMesh))
 
 	for {
 		adjacentVertices := make([]Vertex, 0, 8)
@@ -137,49 +169,10 @@ func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
 		if !isPreviousVertexSet {
 			isPreviousVertexSet = true
 			previousVertex = adjacentVertices[0]
-			SortedOuterVertexMesh = append(SortedOuterVertexMesh, previousVertex)
+			sortedOuterVertexMesh = append(sortedOuterVertexMesh, previousVertex)
 		}
 
-		SortedOuterVertexMesh = append(SortedOuterVertexMesh, currentVertex)
-
-		// scary!!!
-		if len(adjacentVertices) == 3 {
-			var a, b *Vertex = nil, nil
-			for _, v := range adjacentVertices {
-				if v != previousVertex {
-					var adjs uint8 = 0
-					forAdjacents(v.X, v.Y, len(vertexMatrix), len(vertexMatrix[0]), func(x, y uint16) {
-						if vertexMatrix[x][y] {
-							adjs++
-						}
-					})
-					if adjs == 2 {
-						if a == nil {
-							a = &v
-						} else {
-							return nil, errors.New("region-to-mesh: mesh generation failed")
-						}
-					} else if adjs == 3 {
-						if b == nil {
-							b = &v
-						} else {
-							return nil, errors.New("region-to-mesh: mesh generation failed")
-						}
-					}
-				}
-			}
-
-			if a == nil || b == nil {
-				return nil, errors.New("region-to-mesh: mesh generation failed")
-			}
-
-			vertexMatrix[a.X][a.Y] = false
-			adjacentVertices = slices.DeleteFunc(adjacentVertices, func(v Vertex) bool {
-				return v == *a
-			})
-
-			wither(vertexMatrix)
-		}
+		sortedOuterVertexMesh = append(sortedOuterVertexMesh, currentVertex)
 
 		if len(adjacentVertices) != 2 {
 			return nil, errors.New("region-to-mesh: mesh generation failed")
@@ -193,94 +186,13 @@ func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
 			currentVertex = adjacentVertices[0]
 		}
 
-		if currentVertex == SortedOuterVertexMesh[0] {
-			return &SortedOuterVertexMesh, nil
+		if currentVertex == sortedOuterVertexMesh[0] {
+			return &sortedOuterVertexMesh, nil
 		}
 
-		if len(SortedOuterVertexMesh) >= len(OuterVertexMesh) {
+		if len(sortedOuterVertexMesh) >= len(outerVertexMesh) {
 			return nil, errors.New("region-to-mesh: could not close mesh")
 		}
-	}
-}
-
-func wither(matrix [][]bool) {
-	maxX, maxY := len(matrix), len(matrix[0])
-	frames := make([]*image.Paletted, 0)
-	for {
-		frames = append(frames, MatrixToImage(matrix))
-		verticesToRemove := make([]Vertex, 0)
-		for x := uint16(0); x < uint16(maxX); x++ {
-		Y:
-			for y := uint16(0); y < uint16(maxY); y++ {
-				if matrix[x][y] {
-					// add adjacents to slice
-					adjacentVertices := make([]Vertex, 0, 8)
-					forAdjacents(x, y, maxX, maxY, func(x, y uint16) {
-						if matrix[x][y] {
-							adjacentVertices = append(adjacentVertices, Vertex{x, y})
-						}
-					})
-
-					if len(adjacentVertices) < 2 {
-						verticesToRemove = append(verticesToRemove, Vertex{x, y})
-						continue Y
-					}
-
-					for _, v := range adjacentVertices {
-						noAdjacents := true
-						for _, ov := range adjacentVertices {
-							if v != ov {
-								vX, vY, ovX, ovY := int(v.X), int(v.Y), int(ov.X), int(ov.Y)
-								noAdjacents = vX < ovX-1 || vX > ovX+1 || vY < ovY-1 || vY > ovY+1
-								if !noAdjacents {
-									break
-								}
-							}
-						}
-						if noAdjacents {
-							continue Y
-						}
-					}
-
-					verticesToRemove = append(verticesToRemove, Vertex{x, y})
-				}
-			}
-		}
-
-		if len(verticesToRemove) < 1 {
-			break
-		}
-
-		for _, v := range verticesToRemove {
-			matrix[v.X][v.Y] = false
-		}
-	}
-	frames = append(frames, MatrixToImage(matrix))
-	delays := make([]int, len(frames))
-	for i := range frames {
-		delays[i] = 15
-	}
-
-	g := &gif.GIF{
-		Image: frames,
-		Delay: delays,
-		Config: image.Config{
-			ColorModel: color.Palette{White, Black},
-			Width:      maxX,
-			Height:     maxY,
-		},
-	}
-
-	gifFile, err := os.Create("withering.gif")
-
-	if err != nil {
-		panic(err)
-	}
-
-	err = gif.EncodeAll(gifFile, g)
-
-	if err != nil {
-		panic(err)
 	}
 }
 
