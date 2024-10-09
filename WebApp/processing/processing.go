@@ -1,6 +1,7 @@
 package processing
 
 import (
+	"cmp"
 	"errors"
 	"fmt"
 	"image"
@@ -39,7 +40,8 @@ type RegionPixel byte
 const (
 	REGION_PIXEL_IN_REGION = 0b00000001
 	REGION_PIXEL_VISITED   = 0b00000010
-	REGION_PIXEL_IN_MESH   = 0b00000100
+	REGION_PIXEL_IS_OUTER  = 0b00000100
+	REGION_PIXEL_IS_INNER  = 0b00001000
 )
 
 func (r *RegionPixel) MarkInRegion() {
@@ -50,8 +52,12 @@ func (r *RegionPixel) MarkVisited() {
 	*r = *r | REGION_PIXEL_VISITED
 }
 
-func (r *RegionPixel) MarkInMesh() {
-	*r = *r | REGION_PIXEL_IN_MESH
+func (r *RegionPixel) MarkIsOuter() {
+	*r = *r | REGION_PIXEL_IS_OUTER
+}
+
+func (r *RegionPixel) MarkIsInner() {
+	*r = *r | REGION_PIXEL_IS_INNER
 }
 
 func (r RegionPixel) InRegion() bool {
@@ -62,12 +68,16 @@ func (r RegionPixel) Visited() bool {
 	return r&REGION_PIXEL_VISITED > 0
 }
 
-func (r RegionPixel) InMesh() bool {
-	return r&REGION_PIXEL_IN_MESH > 0
+func (r RegionPixel) IsOuter() bool {
+	return r&REGION_PIXEL_IS_OUTER > 0
+}
+
+func (r RegionPixel) IsInner() bool {
+	return r&REGION_PIXEL_IS_INNER > 0
 }
 
 func (r RegionPixel) String() string {
-	return fmt.Sprintf("in region: %t; visited: %t; in mesh: %t", r.InRegion(), r.Visited(), r.InMesh())
+	return fmt.Sprintf("in region: %t; visited: %t; in mesh: %t", r.InRegion(), r.Visited(), r.IsOuter())
 }
 
 func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
@@ -86,46 +96,56 @@ func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
 		regionPixels[int(v.X+1)-regionBounds.Min.X][int(v.Y+1)-regionBounds.Min.Y].MarkInRegion()
 	}
 
-	outerVertexMesh := make([]Vertex, 0, regionBounds.Dx()*2+regionBounds.Dy()*2-2)
-
-	vertexesToVisit := []Vertex{{0, 0}}
+	verticesToVisit := []Vertex{{0, 0}}
 	// visit outer pixels
-	for len(vertexesToVisit) > 0 {
-		v := vertexesToVisit[len(vertexesToVisit)-1]
-		vertexesToVisit = vertexesToVisit[:len(vertexesToVisit)-1]
+	for len(verticesToVisit) > 0 {
+		v := verticesToVisit[len(verticesToVisit)-1]
+		verticesToVisit = verticesToVisit[:len(verticesToVisit)-1]
 		if !regionPixels[v.X][v.Y].Visited() {
 			regionPixels[v.X][v.Y].MarkVisited()
-			if v.X > 0 && !regionPixels[v.X-1][v.Y].Visited() && !regionPixels[v.X-1][v.Y].InMesh() {
-				if regionPixels[v.X-1][v.Y].InRegion() {
-					outerVertexMesh = append(outerVertexMesh, Vertex{v.X - 1, v.Y})
-					regionPixels[v.X-1][v.Y].MarkInMesh()
-				} else {
-					vertexesToVisit = append(vertexesToVisit, Vertex{v.X - 1, v.Y})
+			forNonDiagonalAdjacents(v.X, v.Y, len(regionPixels), len(regionPixels[0]), func(x, y uint16) {
+				if !regionPixels[x][y].Visited() && !regionPixels[x][y].IsOuter() {
+					if regionPixels[x][y].InRegion() {
+						regionPixels[x][y].MarkIsOuter()
+					} else {
+						verticesToVisit = append(verticesToVisit, Vertex{x, y})
+					}
 				}
-			}
-			if v.X < uint16(len(regionPixels))-1 && !regionPixels[v.X+1][v.Y].Visited() && !regionPixels[v.X+1][v.Y].InMesh() {
-				if regionPixels[v.X+1][v.Y].InRegion() {
-					outerVertexMesh = append(outerVertexMesh, Vertex{v.X + 1, v.Y})
-					regionPixels[v.X-1][v.Y].MarkInMesh()
-				} else {
-					vertexesToVisit = append(vertexesToVisit, Vertex{v.X + 1, v.Y})
+			})
+
+		}
+	}
+
+	vertexMeshes := make([][]Vertex, 0, 1)
+
+	// find inner pixels
+	for y := uint16(0); y < uint16(len(regionPixels[0])); y++ {
+		for x := uint16(0); x < uint16(len(regionPixels)); x++ {
+			rp := regionPixels[x][y]
+			// check if inner pixel
+			if !rp.Visited() && !rp.IsOuter() {
+				verticesToVisit := []Vertex{{x, y}}
+				newInnerMesh := make([]Vertex, 0, regionBounds.Dx()+regionBounds.Dy())
+				// visit inner pixels
+				for len(verticesToVisit) > 0 {
+					v := verticesToVisit[len(verticesToVisit)-1]
+					verticesToVisit = verticesToVisit[:len(verticesToVisit)-1]
+					if !regionPixels[v.X][v.Y].Visited() {
+						regionPixels[v.X][v.Y].MarkVisited()
+						forNonDiagonalAdjacents(v.X, v.Y, len(regionPixels), len(regionPixels[0]), func(x, y uint16) {
+							if !regionPixels[x][y].Visited() && !regionPixels[x][y].IsInner() {
+								if regionPixels[x][y].IsOuter() {
+									regionPixels[x][y].MarkIsInner()
+									newInnerMesh = append(newInnerMesh, Vertex{x, y})
+								} else {
+									verticesToVisit = append(verticesToVisit, Vertex{x, y})
+								}
+							}
+						})
+
+					}
 				}
-			}
-			if v.Y > 0 && !regionPixels[v.X][v.Y-1].Visited() && !regionPixels[v.X][v.Y-1].InMesh() {
-				if regionPixels[v.X][v.Y-1].InRegion() {
-					outerVertexMesh = append(outerVertexMesh, Vertex{v.X, v.Y - 1})
-					regionPixels[v.X-1][v.Y].MarkInMesh()
-				} else {
-					vertexesToVisit = append(vertexesToVisit, Vertex{v.X, v.Y - 1})
-				}
-			}
-			if v.Y < uint16(len(regionPixels[0]))-1 && !regionPixels[v.X][v.Y+1].Visited() && !regionPixels[v.X][v.Y+1].InMesh() {
-				if regionPixels[v.X][v.Y+1].InRegion() {
-					outerVertexMesh = append(outerVertexMesh, Vertex{v.X, v.Y + 1})
-					regionPixels[v.X-1][v.Y].MarkInMesh()
-				} else {
-					vertexesToVisit = append(vertexesToVisit, Vertex{v.X, v.Y + 1})
-				}
+				vertexMeshes = append(vertexMeshes, newInnerMesh)
 			}
 		}
 	}
@@ -135,22 +155,26 @@ func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
 		vertexMatrix[i] = make([]bool, regionBounds.Dy())
 	}
 
+	if len(vertexMeshes) == 0 {
+		return nil, errors.New("region-to-mesh: region is too thin")
+	}
+
+	vertexMesh := slices.MaxFunc(vertexMeshes, func(a, b []Vertex) int {
+		return cmp.Compare(len(a), len(b))
+	})
+
 	// translate all vertices by (-1, -1)
 	// necessary because we added extra space for the region up above
-	for i, v := range outerVertexMesh {
-		outerVertexMesh[i].X--
-		outerVertexMesh[i].Y--
+	for i, v := range vertexMesh {
+		vertexMesh[i].X--
+		vertexMesh[i].Y--
 		vertexMatrix[v.X-1][v.Y-1] = true
 	}
 
-	outerVertexMesh = slices.DeleteFunc(outerVertexMesh, func(v Vertex) bool {
-		return !vertexMatrix[v.X][v.Y]
-	})
-
 	var previousVertex Vertex
 	var isPreviousVertexSet = false
-	var currentVertex Vertex = outerVertexMesh[0]
-	sortedOuterVertexMesh := make([]Vertex, 0, len(outerVertexMesh))
+	var currentVertex Vertex = vertexMesh[0]
+	sortedOuterVertexMesh := make([]Vertex, 0, len(vertexMesh))
 
 	for {
 		adjacentVertices := make([]Vertex, 0, 8)
@@ -159,11 +183,6 @@ func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
 			if vertexMatrix[x][y] {
 				adjacentVertices = append(adjacentVertices, Vertex{uint16(x), uint16(y)})
 			}
-		})
-
-		// sort by manhattan distance to put diagonal vertices last
-		slices.SortFunc(adjacentVertices, func(a Vertex, b Vertex) int {
-			return manhattanDistance(a, currentVertex) - manhattanDistance(b, currentVertex)
 		})
 
 		if !isPreviousVertexSet {
@@ -190,7 +209,7 @@ func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
 			return &sortedOuterVertexMesh, nil
 		}
 
-		if len(sortedOuterVertexMesh) >= len(outerVertexMesh) {
+		if len(sortedOuterVertexMesh) >= len(vertexMesh) {
 			return nil, errors.New("region-to-mesh: could not close mesh")
 		}
 	}
@@ -294,6 +313,21 @@ func SimplifyImage(img image.Image) (result image.Image, regionCount int) {
 	}
 
 	return newImg, regionCount
+}
+
+func forNonDiagonalAdjacents(x, y uint16, maxX, maxY int, function func(x, y uint16)) {
+	if y > 0 {
+		function(x, y-1)
+	}
+	if x > 0 {
+		function(x-1, y)
+	}
+	if x < uint16(maxX)-1 {
+		function(x+1, y)
+	}
+	if y < uint16(maxY)-1 {
+		function(x, y+1)
+	}
 }
 
 func forAdjacents(x, y uint16, maxX, maxY int, function func(x, y uint16)) {
