@@ -382,7 +382,6 @@ script = ExtResource("1_4byla")
 shape = SubResource("RectangleShape2D_3fiya")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(0.00663716, -0.0743851)
 sprite_frames = SubResource("SpriteFrames_mupna")
 animation = &"running"
 autoplay = "new_animation"
