@@ -49,9 +49,10 @@ func generate_nodes(json_string: String):
 		rect.set_size(Vector2(img.get_width(), img.get_height()))
 		var collision = CollisionShape2D.new()
 		collision.set_shape(rect)
-		var area = Area2D.new()
-		area.add_child(collision)
-		region.add_child(area)
+		collision.position = Vector2(img.get_width() / 2, img.get_height() / 2)
+		var yea = StaticBody2D.new()
+		yea.add_child(collision)
+		region.add_child(yea)
 		region.position = Vector2(item["cornerX"], item["cornerY"])
 		add_child(region)
 

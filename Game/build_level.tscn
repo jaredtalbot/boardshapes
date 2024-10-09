@@ -1,12 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://dt78mj5e3gxa8"]
+[gd_scene load_steps=3 format=3 uid="uid://dt78mj5e3gxa8"]
 
 [ext_resource type="Script" path="res://build_level.gd" id="1_fbyok"]
 [ext_resource type="PackedScene" uid="uid://cbbx0v3mpscgm" path="res://pick_image_file.tscn" id="2_2bk4s"]
-[ext_resource type="PackedScene" uid="uid://crgwrl3y2s3g6" path="res://player.tscn" id="2_f2prx"]
 
 [node name="BuildLevel" type="Node"]
 script = ExtResource("1_fbyok")
-
-[node name="Player" parent="." instance=ExtResource("2_f2prx")]
 
 [node name="PickImageFileDialog" parent="." instance=ExtResource("2_2bk4s")]
