@@ -37,6 +37,7 @@ func _on_response_received(result: int, response_code: int, headers: PackedStrin
 
 func generate_nodes(json_string: String):
 	var json = JSON.parse_string(json_string)
+	var level = Node.new()
 	for item in json:
 		var region = Node2D.new()
 		var byte_pool = Marshalls.base64_to_raw(item["regionImage"])
@@ -50,11 +51,13 @@ func generate_nodes(json_string: String):
 		var collision = CollisionShape2D.new()
 		collision.set_shape(rect)
 		collision.position = Vector2(img.get_width() / 2, img.get_height() / 2)
-		var yea = StaticBody2D.new()
-		yea.add_child(collision)
-		region.add_child(yea)
+		var col = StaticBody2D.new()
+		col.add_child(collision)
+		region.add_child(col)
 		region.position = Vector2(item["cornerX"], item["cornerY"])
-		add_child(region)
+		level.add_child(region)
+	add_child(level)
+	
 
 func _unhandled_key_input(event):
 	if event is InputEventKey and event.is_action_pressed("ui_accept"):
