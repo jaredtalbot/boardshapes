@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://s2dcpgi066gy"]
+[gd_scene load_steps=6 format=3 uid="uid://s2dcpgi066gy"]
 
 [ext_resource type="Script" path="res://menu.gd" id="1_py7cw"]
 [ext_resource type="Texture2D" uid="uid://bwgl64rinsl7o" path="res://boardwalk2.png" id="2_0tc77"]
+[ext_resource type="Texture2D" uid="uid://dcparl8gbox7k" path="res://Whiteboard-Vector-PNG-Photos-3289639508.png" id="2_8b62a"]
 [ext_resource type="Texture2D" uid="uid://bav6sco7npnsf" path="res://startbutton.png" id="3_flx81"]
 [ext_resource type="Texture2D" uid="uid://b5rqva6kiynp" path="res://exitbutton.png" id="4_vqtdv"]
 
@@ -17,6 +18,11 @@ offset_bottom = -80.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_py7cw")
+
+[node name="Whiteboard-vector-png-photos-3289639508" type="Sprite2D" parent="."]
+position = Vector2(760, 506.75)
+scale = Vector2(2.802, 2.36957)
+texture = ExtResource("2_8b62a")
 
 [node name="Boardwalk2" type="Sprite2D" parent="."]
 position = Vector2(840.5, 223)
