@@ -14,14 +14,18 @@ var can_jump = false
 
 @onready var test_animation = $AnimatedSprite2D
 
-func _on_coyote_timer_timeout():
-	can_jump = false
-
 func _ready():
 	test_animation.play("idle animation")
 
+func _on_coyote_timer_timeout():
+	can_jump = false
+
+
 func _physics_process(delta):
 	
+	if is_on_floor() and velocity.x == 0:
+		test_animation.play("idle animation")
+
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -71,7 +75,8 @@ func _physics_process(delta):
 				test_animation.play("running")
 			else:
 				test_animation.play("jumping")
-				test_animation.set_frame_and_progress(7, 0.0)
+				if test_animation.frame >= 7:
+					test_animation.set_frame_and_progress(7, 0.0)
 	else:
 		velocity.x = move_toward(velocity.x, 0, acceleration * delta)
 

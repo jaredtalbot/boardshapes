@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" path="res://player.gd" id="1_4byla"]
 [ext_resource type="Texture2D" uid="uid://uy82qveyrefh" path="res://chungustile.png" id="2_6ay42"]
-[ext_resource type="Texture2D" uid="uid://b5d0xcxkev8tn" path="res://akuma-s1-ezgif.com-gif-to-sprite-converter.png" id="2_rnmlw"]
-[ext_resource type="Texture2D" uid="uid://brp14mno48ivv" path="res://aku-jumpu-ezgif.com-gif-to-sprite-converter.png" id="3_x7k1x"]
-[ext_resource type="Texture2D" uid="uid://q2hlry6qp72k" path="res://akuma-wkf-ezgif.com-gif-to-sprite-converter.png" id="5_tpt42"]
-[ext_resource type="Texture2D" uid="uid://cbspy1gay7xb" path="res://aku-air4-ezgif.com-gif-to-sprite-converter.png" id="6_fxlwy"]
+[ext_resource type="Texture2D" uid="uid://b5d0xcxkev8tn" path="res://Spritesheets/akuma-s1-ezgif.com-gif-to-sprite-converter.png" id="2_rnmlw"]
+[ext_resource type="Texture2D" uid="uid://brp14mno48ivv" path="res://Spritesheets/aku-jumpu-ezgif.com-gif-to-sprite-converter.png" id="3_x7k1x"]
+[ext_resource type="Texture2D" uid="uid://q2hlry6qp72k" path="res://Spritesheets/akuma-wkf-ezgif.com-gif-to-sprite-converter.png" id="5_tpt42"]
+[ext_resource type="Texture2D" uid="uid://cbspy1gay7xb" path="res://Spritesheets/aku-air4-ezgif.com-gif-to-sprite-converter.png" id="6_fxlwy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3fiya"]
 size = Vector2(80, 120)
