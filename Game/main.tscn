@@ -1,11 +1,58 @@
-[gd_scene load_steps=3 format=3 uid="uid://s2dcpgi066gy"]
+[gd_scene load_steps=6 format=3 uid="uid://s2dcpgi066gy"]
 
-[ext_resource type="PackedScene" uid="uid://crgwrl3y2s3g6" path="res://player.tscn" id="1_3kdm3"]
-[ext_resource type="PackedScene" uid="uid://d4mickvsqnq5x" path="res://bellyrub.tscn" id="3_uj8iy"]
+[ext_resource type="Script" path="res://menu.gd" id="1_py7cw"]
+[ext_resource type="Texture2D" uid="uid://bwgl64rinsl7o" path="res://boardwalk2.png" id="2_0tc77"]
+[ext_resource type="Texture2D" uid="uid://dcparl8gbox7k" path="res://Whiteboard-Vector-PNG-Photos-3289639508.png" id="2_8b62a"]
+[ext_resource type="Texture2D" uid="uid://bav6sco7npnsf" path="res://startbutton.png" id="3_flx81"]
+[ext_resource type="Texture2D" uid="uid://b5rqva6kiynp" path="res://exitbutton.png" id="4_vqtdv"]
 
-[node name="Main" type="Node2D"]
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 120.0
+offset_top = 80.0
+offset_right = -120.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_py7cw")
 
-[node name="Player" parent="." instance=ExtResource("1_3kdm3")]
-position = Vector2(199, 289)
+[node name="Whiteboard-vector-png-photos-3289639508" type="Sprite2D" parent="."]
+position = Vector2(760, 506.75)
+scale = Vector2(2.802, 2.36957)
+texture = ExtResource("2_8b62a")
 
-[node name="bellyrub" parent="." instance=ExtResource("3_uj8iy")]
+[node name="Boardwalk2" type="Sprite2D" parent="."]
+position = Vector2(840.5, 223)
+scale = Vector2(1.05093, 1)
+texture = ExtResource("2_0tc77")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 600.0
+offset_top = 400.0
+offset_right = 1600.0
+offset_bottom = 1404.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.5, 0.5)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+alignment = 1
+
+[node name="Start" type="TextureButton" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("3_flx81")
+
+[node name="Exit" type="TextureButton" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_vqtdv")
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Exit" to="." method="_on_exit_pressed"]
