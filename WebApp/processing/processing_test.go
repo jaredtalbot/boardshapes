@@ -7,6 +7,7 @@ import (
 	"image/gif"
 	"image/png"
 	"os"
+	"regexp"
 	"slices"
 	"testing"
 )
@@ -133,21 +134,32 @@ func generateTestResultImage(name string, mesh *[]Vertex) error {
 	return file.Close()
 }
 
+var vertexMapNameRegex = regexp.MustCompile(`^test_(\w+)_vertexmap`)
+
 func TestRegion_CreateMesh(t *testing.T) {
-	tests := []struct {
+	tests := make([]struct {
 		name     string
 		region   *Region
 		wantMesh *[]Vertex
-	}{
-		{
-			name: "circle",
-		},
-		{
-			name: "rect",
-		},
-		{
-			name: "head",
-		},
+	}, 0)
+
+	testDir, err := os.ReadDir("./test_images")
+
+	if err != nil {
+		panic(err)
+	}
+
+	for _, v := range testDir {
+		if !v.IsDir() {
+			matches := vertexMapNameRegex.FindStringSubmatch(v.Name())
+			if matches != nil {
+				tests = append(tests, struct {
+					name     string
+					region   *Region
+					wantMesh *[]Vertex
+				}{name: matches[1]})
+			}
+		}
 	}
 
 	// use supplied test images
