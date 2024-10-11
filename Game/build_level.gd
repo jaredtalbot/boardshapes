@@ -46,20 +46,13 @@ func generate_nodes(json_string: String):
 		var tex_rect = TextureRect.new()
 		tex_rect.texture = ImageTexture.create_from_image(img)
 		region.add_child(tex_rect)
-		var rect = RectangleShape2D.new()
-		rect.set_size(Vector2(img.get_width(), img.get_height()))
-		var collision = CollisionShape2D.new()
-		collision.set_shape(rect)
-		collision.position = Vector2(img.get_width() / 2, img.get_height() / 2)
+		var collision = CollisionPolygon2D.new()
+		var mesh = item["mesh"] as Array
+		var vectormesh = mesh.map(func(v: Dictionary): return Vector2(v["x"], v["y"]))
+		collision.polygon = vectormesh
 		var col = StaticBody2D.new()
 		col.add_child(collision)
 		region.add_child(col)
 		region.position = Vector2(item["cornerX"], item["cornerY"])
 		level.add_child(region)
 	add_child(level)
-	
-
-func _unhandled_key_input(event):
-	if event is InputEventKey and event.is_action_pressed("ui_accept"):
-		get_tree().reload_current_scene()
-		

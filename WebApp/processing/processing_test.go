@@ -195,7 +195,7 @@ func TestRegion_CreateMesh(t *testing.T) {
 			if err != nil {
 				t.Fatalf("Error: %s", err)
 			}
-			gotMesh := *gotMeshP
+			gotMesh := gotMeshP
 			wantMesh := *tt.wantMesh
 
 			fail := func() {

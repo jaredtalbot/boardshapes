@@ -27,9 +27,9 @@ func absDiff[T int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint
 	return b - a
 }
 
-func manhattanDistance(a Vertex, b Vertex) int {
-	return absDiff(int(a.X), int(b.X)) + absDiff(int(a.Y), int(b.Y))
-}
+// func manhattanDistance(a Vertex, b Vertex) int {
+// 	return absDiff(int(a.X), int(b.X)) + absDiff(int(a.Y), int(b.Y))
+// }
 
 var ErrImageTooWide = errors.New("image is too wide")
 
@@ -80,7 +80,7 @@ func (r RegionPixel) String() string {
 	return fmt.Sprintf("in region: %t; visited: %t; in mesh: %t", r.InRegion(), r.Visited(), r.IsOuter())
 }
 
-func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
+func (region *Region) CreateMesh() (mesh []Vertex, err error) {
 	if len(*region) == 0 {
 		return nil, errors.New("region-to-mesh: region is empty")
 	}
@@ -206,7 +206,7 @@ func (region *Region) CreateMesh() (mesh *[]Vertex, err error) {
 		}
 
 		if currentVertex == sortedOuterVertexMesh[0] {
-			return &sortedOuterVertexMesh, nil
+			return sortedOuterVertexMesh, nil
 		}
 
 		if len(sortedOuterVertexMesh) >= len(vertexMesh) {

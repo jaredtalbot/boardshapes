@@ -136,13 +136,14 @@ func buildLevel(c *gin.Context) {
 		return
 	}
 
-	newImg, regionCount := processing.SimplifyImage(img)
+	newImg, _ := processing.SimplifyImage(img)
 
 	regionMap := processing.BuildRegionMap(newImg)
 
-	data := make([]regionData, regionCount)
+	numRegions := len(regionMap.GetRegions())
+	data := make([]RegionData, 0, numRegions)
 
-	for i := 0; i < regionCount; i++ {
+	for i := 0; i < numRegions; i++ {
 		region := regionMap.GetRegion(processing.RegionIndex(i))
 
 		minX, minY := processing.FindRegionPosition(region)
@@ -151,7 +152,7 @@ func buildLevel(c *gin.Context) {
 		regionImage := image.NewNRGBA(region.GetBounds())
 
 		for j := 0; j < len(region); j++ {
-			regionImage.Set(int(region[j].X), int(region[j].Y), processing.GetColorOfRegion(region, newImg))
+			regionImage.Set(int(region[j].X), int(region[j].Y), regionColor)
 		}
 
 		buf := new(bytes.Buffer)
@@ -160,8 +161,13 @@ func buildLevel(c *gin.Context) {
 		}
 		base64Region := base64.StdEncoding.EncodeToString(buf.Bytes())
 
-		r := regionData{i, regionColor, minX, minY, base64Region}
-		data[i] = r
+		mesh, err := region.CreateMesh()
+		if err != nil {
+			continue
+		}
+
+		r := RegionData{i, regionColor, minX, minY, base64Region, mesh}
+		data = append(data, r)
 	}
 
 	d, err := json.Marshal(data)
@@ -183,12 +189,13 @@ func buildLevel(c *gin.Context) {
 	c.Data(http.StatusOK, "application/json", d)
 }
 
-type regionData struct {
-	RegionNumber int         `json:"regionNumber"`
-	RegionColor  color.Color `json:"regionColor"`
-	CornerX      int         `json:"cornerX"`
-	CornerY      int         `json:"cornerY"`
-	RegionImage  string      `json:"regionImage"`
+type RegionData struct {
+	RegionNumber int                 `json:"regionNumber"`
+	RegionColor  color.Color         `json:"regionColor"`
+	CornerX      int                 `json:"cornerX"`
+	CornerY      int                 `json:"cornerY"`
+	RegionImage  string              `json:"regionImage"`
+	Mesh         []processing.Vertex `json:"mesh"`
 }
 
 type AttachedFile struct {

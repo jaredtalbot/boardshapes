@@ -11,48 +11,56 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 120.0
-offset_top = 80.0
-offset_right = -120.0
-offset_bottom = -80.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_py7cw")
 
-[node name="Whiteboard-vector-png-photos-3289639508" type="Sprite2D" parent="."]
-position = Vector2(760, 506.75)
-scale = Vector2(2.802, 2.36957)
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("2_8b62a")
-
-[node name="Boardwalk2" type="Sprite2D" parent="."]
-position = Vector2(840.5, 223)
-scale = Vector2(1.05093, 1)
-texture = ExtResource("2_0tc77")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
-anchors_preset = -1
-offset_left = 600.0
-offset_top = 400.0
-offset_right = 1600.0
-offset_bottom = 1404.0
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_right = 250.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.5, 0.5)
+theme_override_constants/margin_top = 80
+theme_override_constants/margin_bottom = 155
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 8
 alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("2_0tc77")
+expand_mode = 3
+stretch_mode = 3
 
 [node name="Start" type="TextureButton" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 texture_normal = ExtResource("3_flx81")
+ignore_texture_size = true
+stretch_mode = 3
 
 [node name="Exit" type="TextureButton" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 texture_normal = ExtResource("4_vqtdv")
+ignore_texture_size = true
+stretch_mode = 3
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Exit" to="." method="_on_exit_pressed"]
