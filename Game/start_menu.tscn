@@ -1,0 +1,51 @@
+[gd_scene load_steps=4 format=3 uid="uid://bpgex31naxj1w"]
+
+[ext_resource type="Script" path="res://start_menu.gd" id="1_bp1fp"]
+[ext_resource type="Script" path="res://web_pick_image_file.gd" id="2_v3sgg"]
+[ext_resource type="PackedScene" uid="uid://64bqxwu4em4s" path="res://image_confirmation.tscn" id="3_iojqf"]
+
+[node name="StartMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bp1fp")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 64
+
+[node name="UploadImageButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 128
+text = "Upload Image..."
+
+[node name="BackButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 128
+text = "Back"
+
+[node name="WebPickImageFile" type="Node" parent="."]
+script = ExtResource("2_v3sgg")
+
+[node name="ImageConfirmation" parent="." instance=ExtResource("3_iojqf")]
+
+[connection signal="pressed" from="VBoxContainer/UploadImageButton" to="." method="_on_upload_image_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="file_loaded" from="WebPickImageFile" to="." method="_on_web_pick_image_file_file_loaded"]
+[connection signal="confirmed" from="ImageConfirmation" to="." method="_on_image_confirmation_confirmed"]

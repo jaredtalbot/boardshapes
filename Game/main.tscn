@@ -45,22 +45,22 @@ alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 texture = ExtResource("2_0tc77")
-expand_mode = 3
+expand_mode = 1
 stretch_mode = 3
 
 [node name="Start" type="TextureButton" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
-size_flags_vertical = 3
 texture_normal = ExtResource("3_flx81")
 ignore_texture_size = true
-stretch_mode = 3
+stretch_mode = 5
 
 [node name="Exit" type="TextureButton" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
-size_flags_vertical = 3
 texture_normal = ExtResource("4_vqtdv")
 ignore_texture_size = true
-stretch_mode = 3
+stretch_mode = 5
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Exit" to="." method="_on_exit_pressed"]
