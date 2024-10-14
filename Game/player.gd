@@ -20,27 +20,34 @@ func _ready():
 func _on_coyote_timer_timeout():
 	can_jump = false
 
+var air_time := 0.0
 
 func _physics_process(delta):
-	
-	if is_on_floor() and velocity.x == 0:
-		test_animation.play("idle animation")
-
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
-		
-	if can_jump == false and is_on_floor() == true:
+		air_time += delta
+		if air_time > 0.25 and test_animation.animation != &"jumping":
+			test_animation.play(&"jumping")
+			test_animation.set_frame_and_progress(7, 0.0)
+		if test_animation.animation == &"jumping":
+			if test_animation.frame >= 7 and velocity.y < 0:
+				test_animation.set_frame_and_progress(7, 0.0)
+	else:
+		air_time = 0.0
 		can_jump = true
 	
 	if is_on_floor() == false and can_jump == true and $coyote_timer.is_stopped():
 		$coyote_timer.start()
 	
+	if is_on_floor() and velocity.x == 0:
+		test_animation.play("idle animation")
+	
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and can_jump == true:
 		velocity.y = JUMP_VELOCITY
 		can_jump = false
-		test_animation.play("jumping")
+		test_animation.play(&"jumping")
 		if velocity.x > 0:
 			test_animation.flip_h = false
 		elif velocity.x < 0:
@@ -73,10 +80,6 @@ func _physics_process(delta):
 				test_animation.flip_h = true
 			if is_on_floor():
 				test_animation.play("running")
-			else:
-				test_animation.play("jumping")
-				if test_animation.frame >= 7:
-					test_animation.set_frame_and_progress(7, 0.0)
 	else:
 		velocity.x = move_toward(velocity.x, 0, acceleration * delta)
 
