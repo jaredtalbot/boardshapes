@@ -185,6 +185,10 @@ func (region *Region) CreateMesh() (mesh []Vertex, err error) {
 			}
 		})
 
+		if len(adjacentVertices) != 2 {
+			return nil, errors.New("region-to-mesh: mesh generation failed")
+		}
+
 		if !isPreviousVertexSet {
 			isPreviousVertexSet = true
 			previousVertex = adjacentVertices[0]
@@ -192,10 +196,6 @@ func (region *Region) CreateMesh() (mesh []Vertex, err error) {
 		}
 
 		sortedOuterVertexMesh = append(sortedOuterVertexMesh, currentVertex)
-
-		if len(adjacentVertices) != 2 {
-			return nil, errors.New("region-to-mesh: mesh generation failed")
-		}
 
 		if adjacentVertices[0] == previousVertex {
 			previousVertex = currentVertex
