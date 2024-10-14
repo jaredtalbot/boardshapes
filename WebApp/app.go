@@ -295,6 +295,9 @@ func main() {
 	logged := router.Group("") // I don't like seeing auth tokens in my terminal so we're not logging the websocket requests
 	logged.Use(gin.Logger())
 
+	// cors
+	logged.Use(func(ctx *gin.Context) { ctx.Header("Access-Control-Allow-Origin", "http://localhost:8060") })
+
 	logged.POST("/api/simplify", simplifyImage)
 	logged.POST("/api/build-level", buildLevel)
 	router.GET("/api/ws", connectWebsocket)

@@ -1,5 +1,7 @@
 extends Control
 
+@export var level_scene: PackedScene
+
 @onready var web_pick_image_file = $WebPickImageFile
 @onready var image_confirmation = $ImageConfirmation
 
@@ -26,4 +28,10 @@ func _on_web_pick_image_file_file_loaded(content: PackedByteArray, filename: Str
 	image_confirmation.show()
 
 func _on_image_confirmation_confirmed():
-	pass #todo
+	var img = image_confirmation.get_image()
+	if img == null:
+		return
+	var level = level_scene.instantiate()
+	add_sibling(level)
+	level.create_level(img)
+	queue_free()

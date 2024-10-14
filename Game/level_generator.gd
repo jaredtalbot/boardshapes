@@ -1,11 +1,12 @@
-extends Node
+@icon("res://icons/hammericon.png")
+class_name LevelGenerator extends Node
 
-func generate_nodes(json_string: String) -> bool:
+func generate_nodes(json_string: String) -> Node:
 	var json = JSON.parse_string(json_string)
 	if json is not Array:
-		return false
+		return null
 	if !json.all(checkItem):
-		return false
+		return null
 	var level = Node.new()
 	for item in json:
 		var region = Node2D.new()
@@ -24,8 +25,8 @@ func generate_nodes(json_string: String) -> bool:
 		region.add_child(col)
 		region.position = Vector2(item["cornerX"], item["cornerY"])
 		level.add_child(region)
-	return true
+	return level
 
 func checkItem(item: Variant) -> bool:
 	return item is Dictionary and item.get("regionImage") is String and item.get("mesh") is Array \
-		and item["mesh"].all(func(m): m is Dictionary and m.has_all(["x", "y"])) and item.has_all(["cornerX", "cornerY"])
+		and item["mesh"].all(func(m): return m is Dictionary and m.has_all(["x", "y"])) and item.has_all(["cornerX", "cornerY"])

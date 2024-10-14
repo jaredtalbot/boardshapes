@@ -6,16 +6,16 @@ const filler_chars = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv
 var nfiller_chars = filler_chars.length()
 
 func upload_file(url: String, filepath: String, method: HTTPClient.Method, fieldname: String = "file") -> HTTPRequest:
-	var boundary = generate_boundary(16)
-	
 	var file_data = FileAccess.get_file_as_bytes(filepath)
-	
 	if file_data.size() <= 0:
 		print(FileAccess.get_open_error())
 		return null
-		
-	var filename = filepath.get_file()
-	var extension = filepath.get_extension()
+	return upload_buffer(url, file_data, filepath.get_file(), method, fieldname)
+
+func upload_buffer(url: String, buffer: PackedByteArray, filename: String, method: HTTPClient.Method, fieldname: String = "file") -> HTTPRequest:
+	var boundary = generate_boundary(16)
+	
+	var extension = filename.get_extension()
 	var mime_type: String
 	match extension:
 		"jpg", "jpeg":
@@ -30,9 +30,9 @@ func upload_file(url: String, filepath: String, method: HTTPClient.Method, field
 	body.append_array("--".to_utf8_buffer())
 	body.append_array(boundary)
 	body.append_array(("\r\nContent-Disposition: form-data; name=\"%s\"; filename=\"%s\"" \
-		% [fieldname, filepath.get_file()]).to_utf8_buffer())
+		% [fieldname, filename]).to_utf8_buffer())
 	body.append_array(("\r\nContent-Type: %s\r\n\r\n" % mime_type).to_utf8_buffer())
-	body.append_array(file_data)
+	body.append_array(buffer)
 	body.append_array("\r\n--".to_utf8_buffer())
 	body.append_array(boundary)
 	body.append_array("--\r\n".to_utf8_buffer())

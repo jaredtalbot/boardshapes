@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://bpgex31naxj1w"]
+[gd_scene load_steps=5 format=3 uid="uid://bpgex31naxj1w"]
 
 [ext_resource type="Script" path="res://start_menu.gd" id="1_bp1fp"]
 [ext_resource type="Script" path="res://web_pick_image_file.gd" id="2_v3sgg"]
+[ext_resource type="PackedScene" uid="uid://xklntftxk1rp" path="res://level.tscn" id="2_w46sc"]
 [ext_resource type="PackedScene" uid="uid://64bqxwu4em4s" path="res://image_confirmation.tscn" id="3_iojqf"]
 
 [node name="StartMenu" type="Control"]
@@ -14,6 +15,7 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_bp1fp")
+level_scene = ExtResource("2_w46sc")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
