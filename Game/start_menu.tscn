@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://bpgex31naxj1w"]
+[gd_scene load_steps=6 format=3 uid="uid://bpgex31naxj1w"]
 
 [ext_resource type="Script" path="res://start_menu.gd" id="1_bp1fp"]
 [ext_resource type="Script" path="res://web_pick_image_file.gd" id="2_v3sgg"]
 [ext_resource type="PackedScene" uid="uid://xklntftxk1rp" path="res://level.tscn" id="2_w46sc"]
 [ext_resource type="PackedScene" uid="uid://64bqxwu4em4s" path="res://image_confirmation.tscn" id="3_iojqf"]
+[ext_resource type="PackedScene" uid="uid://cbbx0v3mpscgm" path="res://pick_image_file.tscn" id="5_lnlgg"]
 
 [node name="StartMenu" type="Control"]
 layout_mode = 3
@@ -47,7 +48,10 @@ script = ExtResource("2_v3sgg")
 
 [node name="ImageConfirmation" parent="." instance=ExtResource("3_iojqf")]
 
+[node name="PickImageFileDialog" parent="." instance=ExtResource("5_lnlgg")]
+
 [connection signal="pressed" from="VBoxContainer/UploadImageButton" to="." method="_on_upload_image_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="file_loaded" from="WebPickImageFile" to="." method="_on_web_pick_image_file_file_loaded"]
 [connection signal="confirmed" from="ImageConfirmation" to="." method="_on_image_confirmation_confirmed"]
+[connection signal="file_selected" from="PickImageFileDialog" to="." method="_on_pick_image_file_dialog_file_selected"]

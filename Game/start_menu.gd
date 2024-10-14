@@ -2,14 +2,25 @@ extends Control
 
 @export var level_scene: PackedScene
 
+@onready var pick_image_file_dialog = $PickImageFileDialog
 @onready var web_pick_image_file = $WebPickImageFile
 @onready var image_confirmation = $ImageConfirmation
 
 #todo: add non-web file picker
 
 func _on_upload_image_button_pressed():
-	web_pick_image_file.show()
-	
+	if OS.has_feature("web"):
+		web_pick_image_file.show()
+	else:
+		pick_image_file_dialog.show()
+
+func _on_pick_image_file_dialog_file_selected(path):
+	var img = Image.load_from_file(path)
+	if img == null:
+		return
+	image_confirmation.set_image(img)
+	image_confirmation.show()
+
 func _on_back_button_pressed():
 	get_tree().change_scene_to_file("res://main.tscn")
 

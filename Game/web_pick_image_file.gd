@@ -6,6 +6,9 @@ var _onload = JavaScriptBridge.create_callback(_file_loaded_callback)
 signal file_loaded(content: PackedByteArray, filename: String)
 
 func _ready():
+	if not OS.has_feature("web"):
+		queue_free()
+		return
 	JavaScriptBridge.eval("""
 var uploadedFile = null;
 var uploadedFileType = "";
