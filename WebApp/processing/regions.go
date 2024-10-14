@@ -30,7 +30,8 @@ type Pixel struct {
 }
 
 type Vertex struct {
-	X, Y uint16
+	X uint16 `json:"x"`
+	Y uint16 `json:"y"`
 }
 
 type RegionIndex int

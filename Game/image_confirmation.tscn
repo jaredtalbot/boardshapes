@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://64bqxwu4em4s"]
+
+[ext_resource type="Script" path="res://image_confirmation.gd" id="1_q2vt0"]
+
+[node name="ImageConfirmation" type="ConfirmationDialog"]
+initial_position = 1
+size = Vector2i(600, 600)
+ok_button_text = "Yes"
+cancel_button_text = "No"
+script = ExtResource("1_q2vt0")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 592.0
+offset_bottom = 551.0
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Is this the image you would like to upload?"
+horizontal_alignment = 1
