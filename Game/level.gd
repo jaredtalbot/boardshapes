@@ -25,4 +25,22 @@ func _on_response_received(result: int, response_code: int, headers: PackedStrin
 		return
 		
 	add_child(generated_level)
+	add_player()
 	loading_indicator.hide()
+
+func add_player():
+	var ray_cast = RayCast2D.new()
+	ray_cast.target_position = Vector2(0, 1080)
+	add_child(ray_cast)
+	for i in range(1920):
+		ray_cast.position.x = i
+		ray_cast.force_raycast_update()
+		if ray_cast.is_colliding():
+			var player = preload("res://player.tscn").instantiate()
+			player.position = Vector2(i, -100)
+			add_child(player)
+			ray_cast.queue_free()
+			return
+	ray_cast.queue_free()
+	
+	
