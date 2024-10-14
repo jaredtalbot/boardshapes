@@ -44,4 +44,5 @@ func add_player():
 			return
 	ray_cast.queue_free()
 	
-	
+func _on_back_button_pressed():
+	get_tree().change_scene_to_file("res://start_menu.tscn")
