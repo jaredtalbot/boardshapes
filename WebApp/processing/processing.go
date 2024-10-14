@@ -268,12 +268,14 @@ func SimplifyImage(img image.Image) (result image.Image, regionCount int) {
 
 	for y := bd.Min.Y; y < bd.Max.Y; y++ {
 		for x := bd.Min.X; x < bd.Max.X; x++ {
-			r, g, b, _ := img.At(x, y).RGBA()
+			r, g, b, a := img.At(x, y).RGBA()
 			r, g, b = r/256, g/256, b/256
 
 			var newPixelColor color.NRGBA
 			avg := (r + g + b) / 3
-			if max(absDiff(avg, r), absDiff(avg, g), absDiff(avg, b)) < 10 {
+			if a < 10 {
+				newPixelColor = White
+			} else if max(absDiff(avg, r), absDiff(avg, g), absDiff(avg, b)) < 10 {
 				// todo: better way to detect black maybe
 				if max(r, g, b) > 115 {
 					newPixelColor = White

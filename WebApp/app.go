@@ -298,6 +298,7 @@ func main() {
 	// cors
 	logged.Use(func(ctx *gin.Context) { ctx.Header("Access-Control-Allow-Origin", "http://localhost:8060") })
 
+	logged.Static("/game", "./exported-game")
 	logged.POST("/api/simplify", simplifyImage)
 	logged.POST("/api/build-level", buildLevel)
 	router.GET("/api/ws", connectWebsocket)

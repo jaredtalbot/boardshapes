@@ -30,6 +30,7 @@ func _on_response_received(result: int, response_code: int, headers: PackedStrin
 
 func add_player():
 	var ray_cast = RayCast2D.new()
+	ray_cast.position = Vector2(0, -50)
 	ray_cast.target_position = Vector2(0, 1080)
 	add_child(ray_cast)
 	for i in range(1920):
@@ -37,7 +38,7 @@ func add_player():
 		ray_cast.force_raycast_update()
 		if ray_cast.is_colliding():
 			var player = preload("res://player.tscn").instantiate()
-			player.position = Vector2(i, -100)
+			player.position = Vector2(i + player.get_node("CollisionShape2D").shape.get_rect().size.x/2, -100)
 			add_child(player)
 			ray_cast.queue_free()
 			return
