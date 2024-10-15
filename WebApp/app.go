@@ -296,7 +296,20 @@ func main() {
 	logged.Use(gin.Logger())
 
 	// cors
-	logged.Use(func(ctx *gin.Context) { ctx.Header("Access-Control-Allow-Origin", "http://localhost:8060") })
+	logged.Use(func(ctx *gin.Context) {
+		origin := ctx.Request.Header.Get("Origin")
+		originUrl, err := url.Parse(origin)
+		if err != nil {
+			return
+		}
+		hostname := originUrl.Hostname()
+
+		switch hostname {
+		case "cmps401fa2024.onrender.com", "www.boardmesh.app", "boardmesh.app", "localhost":
+			ctx.Header("Access-Control-Allow-Origin", origin)
+			ctx.Header("Vary", "Origin")
+		}
+	})
 
 	logged.Static("/boardwalk", "./exported-game")
 	logged.GET("/", func(ctx *gin.Context) { ctx.Redirect(http.StatusTemporaryRedirect, "/boardwalk") })
