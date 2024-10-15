@@ -15,7 +15,7 @@ run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 boot_splash/image="res://boardwalkbetalogo.png"
 config/icon="res://icon.svg"
-boardwalk/web_server_url="https://cmps401fa2024.onrender.com"
+boardwalk/web_server_url="https://boardwalk.app"
 
 [autoload]
 

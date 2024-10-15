@@ -1,6 +1,6 @@
-# cmps401fa2024
+# Boardmesh
 
-To run a project:
+To run a Go project:
 
 - [Install Go](https://go.dev/dl/)
 
@@ -17,3 +17,7 @@ To run a project:
   go mod tidy
   go run .
   ```
+
+# Boardwalk
+
+To run Boardwalk, run it through the Godot Engine on desktop, [or play it here!](https://boardwalk.app)
