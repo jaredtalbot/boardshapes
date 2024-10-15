@@ -14,5 +14,6 @@ cp ./templates/web_nothreads_debug.zip ~/.local/share/godot/export_templates/4.3
 cp ./templates/web_nothreads_debug.zip ~/.local/share/godot/export_templates/4.3.stable/web_nothreads_release.zip
 chmod +xr godot.x86_64
 echo Exporting project...
+mkdir exported-game
 ./godot.x86_64 --export-release Web ../WebApp/exported-game/index.html --path ../Game --headless
 echo Godot project exported.
