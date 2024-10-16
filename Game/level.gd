@@ -14,14 +14,23 @@ func create_level(img: Image):
 
 func _on_response_received(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray):
 	if response_code != HTTPClient.RESPONSE_OK:
-		#todo: error handling!!!
+		var error_dialog = ErrorDialog.new()
+		error_dialog.set_text_to_error_message(body, response_code)
+		error_dialog.show()
+		add_child(error_dialog)
+		error_dialog.confirmed.connect(go_back)
+		error_dialog.canceled.connect(go_back)
 		return
 	
 	var level_data = body.get_string_from_utf8()
 	var generated_level = level_generator.generate_nodes(level_data)
 	if generated_level == null:
-		JavaScriptBridge.eval("console.log(\"level generation was not successful\")", true)
-		#todo: error handling!!!
+		var error_dialog = ErrorDialog.new()
+		error_dialog.set_text_to_error_message("Could not generate level with server response.")
+		error_dialog.show()
+		add_child(error_dialog)
+		error_dialog.confirmed.connect(go_back)
+		error_dialog.canceled.connect(go_back)
 		return
 		
 	add_child(generated_level)
@@ -45,4 +54,7 @@ func add_player():
 	ray_cast.queue_free()
 	
 func _on_back_button_pressed():
+	go_back()
+	
+func go_back():
 	get_tree().change_scene_to_file("res://start_menu.tscn")
