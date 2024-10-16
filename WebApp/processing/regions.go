@@ -1,13 +1,14 @@
 package processing
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"slices"
 )
 
 func BuildRegionMap(img image.Image) *RegionMap {
-	regionMap := RegionMap{make([]*Region, 0, 20), make(map[Pixel]RegionIndex, (img.Bounds().Dx()*img.Bounds().Dy())/4)}
+	regionMap := RegionMap{make([]*Region, 0, 20), make(map[Pixel]*RegionIndex, (img.Bounds().Dx()*img.Bounds().Dy())/4), make([]*RegionIndex, 0)}
 
 	bd := img.Bounds()
 
@@ -20,7 +21,6 @@ func BuildRegionMap(img image.Image) *RegionMap {
 			}
 		}
 	}
-
 	regionMap.CleanupRegionMap()
 	return &regionMap
 }
@@ -38,20 +38,31 @@ type RegionIndex int
 type Region []Pixel
 
 type RegionMap struct {
-	regions []*Region
-	pixels  map[Pixel]RegionIndex
+	regions        []*Region
+	pixels         map[Pixel]*RegionIndex
+	regionPointers []*RegionIndex
 }
 
-func (rm *RegionMap) NewRegion(pixel Pixel) (region RegionIndex) {
-	region = RegionIndex(len(rm.regions))
+func (rm *RegionMap) NewRegion(pixel Pixel) (region *RegionIndex) {
+	region = new(RegionIndex)
+	*region = RegionIndex(len(rm.regions))
 	rm.regions = append(rm.regions, &Region{pixel})
 	rm.pixels[pixel] = region
+	rm.regionPointers = append(rm.regionPointers, region)
 	return
 }
 
-func (rm *RegionMap) AddPixelToRegion(pixel Pixel, region RegionIndex) {
-	newPixelArray := append((*rm.regions[region]), pixel)
-	rm.regions[region] = &newPixelArray
+func (rm *RegionMap) AddPixelToRegion(pixel Pixel, region *RegionIndex) {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(region)
+			fmt.Println(rm.regions)
+			fmt.Println(pixel)
+			panic(err)
+		}
+	}()
+	newPixelArray := append((*rm.regions[*region]), pixel)
+	rm.regions[*region] = &newPixelArray
 	rm.pixels[pixel] = region
 }
 
@@ -62,18 +73,22 @@ func (rm *RegionMap) AddPixelToRegionMap(pixel Pixel, img image.Image) {
 	regionAbove, hasRegionAbove := rm.pixels[Pixel{pixel.X, pixel.Y - 1}]
 	colorAbove := img.At(int(pixel.X), int(pixel.Y)-1)
 	if hasRegionLeft && ColorRegionEquivalence(colorP, colorLeft) {
-		if hasRegionAbove && ColorRegionEquivalence(colorP, colorAbove) && regionLeft != regionAbove { // time to merge regions
-			pixelsInRegionAbove := rm.regions[regionAbove]
+		if hasRegionAbove && ColorRegionEquivalence(colorP, colorAbove) && *regionLeft != *regionAbove { // time to merge regions
+			pixelsInRegionAbove := rm.regions[*regionAbove]
 			// grow left region to fit the above region
-			mergedRegion := slices.Grow(*rm.regions[regionLeft], len(*rm.regions[regionLeft])+len(*pixelsInRegionAbove)+1)
+			mergedRegion := slices.Grow(*rm.regions[*regionLeft], len(*rm.regions[*regionLeft])+len(*pixelsInRegionAbove)+1)
 			// add all pixels in the above region to the left region
 			mergedRegion = append(mergedRegion, *pixelsInRegionAbove...)
-			rm.regions[regionLeft] = &mergedRegion
+			rm.regions[*regionLeft] = &mergedRegion
+
 			// fix pixel map for all pixels in the above region
-			for _, p := range *pixelsInRegionAbove {
-				rm.pixels[p] = regionLeft
+			rm.regions[*regionAbove] = nil
+			for _, v := range rm.regionPointers {
+				if v != regionAbove && *v == *regionAbove {
+					*v = *regionLeft
+				}
 			}
-			rm.regions[regionAbove] = nil
+			*regionAbove = *regionLeft
 		}
 		rm.AddPixelToRegion(pixel, regionLeft)
 	} else if hasRegionAbove && ColorRegionEquivalence(colorP, colorAbove) {
@@ -91,10 +106,12 @@ func (rm *RegionMap) CleanupRegionMap() {
 		pixelsInRegions += len(*region)
 	}
 	// new fresh map
-	rm.pixels = make(map[Pixel]RegionIndex, pixelsInRegions)
+	rm.pixels = make(map[Pixel]*RegionIndex, pixelsInRegions)
 	for regionIndex, region := range rm.regions {
 		for _, pixel := range *region {
-			rm.pixels[pixel] = RegionIndex(regionIndex)
+			newregion := new(RegionIndex)
+			*newregion = RegionIndex(regionIndex)
+			rm.pixels[pixel] = newregion
 		}
 	}
 }
@@ -104,7 +121,7 @@ func (rm *RegionMap) GetPixelHasRegion(pixel Pixel) (hasRegion bool) {
 	return
 }
 
-func (rm *RegionMap) GetRegionOfPixel(pixel Pixel) (regionIndex RegionIndex, hasRegion bool) {
+func (rm *RegionMap) GetRegionOfPixel(pixel Pixel) (regionIndex *RegionIndex, hasRegion bool) {
 	regionIndex, hasRegion = rm.pixels[pixel]
 	return
 }
