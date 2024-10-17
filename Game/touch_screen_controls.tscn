@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://ca40sxi6lp5lx"]
+
+[ext_resource type="Texture2D" uid="uid://bpr2lo5muq254" path="res://icon.svg" id="1_3m3jo"]
+[ext_resource type="Texture2D" uid="uid://cqrp32axk6iw7" path="res://icons/left.png" id="1_5lkvv"]
+[ext_resource type="Texture2D" uid="uid://deq5sgrvhqnye" path="res://icons/right.png" id="2_4f7m8"]
+[ext_resource type="Texture2D" uid="uid://bn4bsrph50pg0" path="res://icons/jump.png" id="3_jlthd"]
+
+[node name="TouchScreenControls" type="CanvasLayer"]
+
+[node name="LeftButton" type="TouchScreenButton" parent="."]
+position = Vector2(89, 800)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("1_5lkvv")
+action = "left"
+visibility_mode = 1
+
+[node name="RightButton" type="TouchScreenButton" parent="."]
+position = Vector2(292, 800)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("2_4f7m8")
+action = "right"
+visibility_mode = 1
+
+[node name="JumpButton" type="TouchScreenButton" parent="."]
+position = Vector2(1512, 815)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("3_jlthd")
+action = "jump"
+visibility_mode = 1
+
+[node name="DashButton" type="TouchScreenButton" parent="."]
+position = Vector2(1702, 751)
+texture_normal = ExtResource("1_3m3jo")
+action = "Dash"
+visibility_mode = 1
