@@ -166,7 +166,6 @@ func buildLevel(c *gin.Context) {
 		if err != nil {
 			continue
 		}
-		//
 		optimizedMesh := processing.StraightOpt(mesh)
 		r := RegionData{i, regionColor, minX, minY, base64Region, optimizedMesh}
 		data = append(data, r)
