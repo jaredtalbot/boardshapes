@@ -40,6 +40,7 @@ func add_player():
 			var player = preload("res://player.tscn").instantiate()
 			player.position = Vector2(i + player.get_node("CollisionShape2D").shape.get_rect().size.x/2, -100)
 			add_child(player)
+			$AudioStreamPlayer.play()
 			ray_cast.queue_free()
 			return
 	ray_cast.queue_free()
