@@ -1,7 +1,6 @@
 package processing
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"slices"
@@ -62,14 +61,6 @@ func (rm *RegionMap) NewRegion(pixel Pixel) (region *RegionIndex) {
 }
 
 func (rm *RegionMap) AddPixelToRegion(pixel Pixel, region *RegionIndex) {
-	defer func() {
-		if err := recover(); err != nil {
-			fmt.Println(region)
-			fmt.Println(rm.regions)
-			fmt.Println(pixel)
-			panic(err)
-		}
-	}()
 	newPixelArray := append((*rm.regions[*region]), pixel)
 	rm.regions[*region] = &newPixelArray
 	rm.pixels[pixel] = region
