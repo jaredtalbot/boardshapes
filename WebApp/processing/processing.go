@@ -215,6 +215,30 @@ func (region *Region) CreateMesh() (mesh []Vertex, err error) {
 	}
 }
 
+func DotProduct(x1, x2, y1, y2 float64) float64 {
+	answer := (x1 * x2) + (y1 * y2)
+	return answer
+}
+
+func (v1 Vertex) DirectionTo(v2 Vertex) (x, y float64) {
+	answerX := float64(v2.X - v1.X)
+	answerY := float64(v2.Y - v1.Y)
+	mag := math.Sqrt((answerX * answerX) + (answerY * answerY))
+	return (answerX / mag), (answerY / mag)
+}
+
+func StraightOpt(sortedVertexMesh []Vertex) []Vertex {
+	for i := 2; i < len(sortedVertexMesh); i++ {
+		x1, y1 := sortedVertexMesh[i-2].DirectionTo(sortedVertexMesh[i-1])
+		x2, y2 := sortedVertexMesh[i-1].DirectionTo(sortedVertexMesh[i])
+		if x1 == x2 && y1 == y2 {
+			sortedVertexMesh = append(sortedVertexMesh[:i-1], sortedVertexMesh[i:]...)
+			i--
+		}
+	}
+	return sortedVertexMesh
+}
+
 func PrintMatrix(matrix [][]bool) {
 	for _, s := range matrix {
 		for _, v := range s {

@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://xklntftxk1rp"]
+[gd_scene load_steps=5 format=3 uid="uid://xklntftxk1rp"]
 
 [ext_resource type="Script" path="res://level.gd" id="1_rfdv8"]
 [ext_resource type="Script" path="res://level_generator.gd" id="1_rygds"]
 [ext_resource type="PackedScene" uid="uid://blw1ecr3vvp3q" path="res://loading_indicator.tscn" id="2_07l0p"]
+[ext_resource type="AudioStream" uid="uid://dc6j2kwx7w3yk" path="res://BoardWalk (1).mp3" id="4_mumaq"]
 
 [node name="Level" type="Node"]
 script = ExtResource("1_rfdv8")
@@ -27,5 +28,9 @@ grow_horizontal = 0
 grow_vertical = 0
 text = "Back"
 alignment = 2
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_mumaq")
+parameters/looping = true
 
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
