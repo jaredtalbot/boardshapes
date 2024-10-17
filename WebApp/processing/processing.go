@@ -215,6 +215,29 @@ func (region *Region) CreateMesh() (mesh []Vertex, err error) {
 	}
 }
 
+func StraightOpt(sortedVertexMesh []Vertex) []Vertex {
+	for i := 2; i < len(sortedVertexMesh); i++ {
+		if sortedVertexMesh[i].X == sortedVertexMesh[(i-1)].X && sortedVertexMesh[(i-1)].X == sortedVertexMesh[(i-2)].X {
+			sortedVertexMesh = append(sortedVertexMesh[:(i-1)], sortedVertexMesh[:i]...)
+			i--
+		} else if sortedVertexMesh[i].Y == sortedVertexMesh[(i-1)].Y && sortedVertexMesh[(i-1)].Y == sortedVertexMesh[(i-2)].Y {
+			sortedVertexMesh = append(sortedVertexMesh[:(i-1)], sortedVertexMesh[:i]...)
+			i--
+		}
+	}
+
+	return sortedVertexMesh
+}
+
+// func StraightOpt2(sortedVertexMesh []Vertex) []Vertex{
+// 	for i:= 2; i < len(sortedVertexMesh); i++ {
+// 		if ((sortedVertexMesh[(i - 2)] - sortedVertexMesh[(i - 1)]) == (sortedVertexMesh[(i - 1)] - sortedVertexMesh[i])) {
+// 			sortedVertexMesh = append(sortedVertexMesh[:(i-1)], sortedVertexMesh[:i]...)
+// 			i--
+// 		}
+// 	}
+// }
+
 func PrintMatrix(matrix [][]bool) {
 	for _, s := range matrix {
 		for _, v := range s {
