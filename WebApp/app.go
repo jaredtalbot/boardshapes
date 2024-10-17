@@ -72,7 +72,7 @@ func simplifyImage(c *gin.Context) {
 		return
 	}
 
-	newImg, regionCount := processing.SimplifyImage(img)
+	newImg, regionCount, _ := processing.SimplifyImage(img)
 
 	buf := new(bytes.Buffer)
 	if err := png.Encode(buf, newImg); err != nil {
@@ -137,9 +137,7 @@ func buildLevel(c *gin.Context) {
 		return
 	}
 
-	newImg, _ := processing.SimplifyImage(img)
-
-	regionMap := processing.BuildRegionMap(newImg)
+	newImg, _, regionMap := processing.SimplifyImage(img)
 
 	numRegions := len(regionMap.GetRegions())
 	data := make([]RegionData, 0, numRegions)

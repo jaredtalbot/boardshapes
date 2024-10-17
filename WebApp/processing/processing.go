@@ -261,7 +261,7 @@ func ResizeImage(img image.Image) (image.Image, error) {
 	return img, nil
 }
 
-func SimplifyImage(img image.Image) (result image.Image, regionCount int) {
+func SimplifyImage(img image.Image) (result image.Image, regionCount int, regionMap *RegionMap) {
 	bd := img.Bounds()
 	newImg := image.NewPaletted(bd, color.Palette{White, Black, Red, Green, Blue})
 	// newImg := image.NewNRGBA(bd)
@@ -295,26 +295,19 @@ func SimplifyImage(img image.Image) (result image.Image, regionCount int) {
 		}
 	}
 
-	regionMap := BuildRegionMap(newImg)
-
-	// colors := []color.Color{Black, Red, Green, Blue}
-	for region := range regionMap.GetRegions() {
-		region := regionMap.GetRegion(RegionIndex(region))
-		// randColor := color.NRGBA{uint8(rand.Intn(256)), uint8(rand.Intn(256)), uint8(rand.Intn(256)), uint8(255)}
-		// randColor := colors[rand.Intn(len(colors))]
-		if len(region) < MINIMUM_NUMBER_OF_PIXELS_FOR_VALID_REGION {
-			for _, pixel := range region {
+	regionMap = BuildRegionMap(newImg, func(r *Region) bool {
+		if len(*r) < MINIMUM_NUMBER_OF_PIXELS_FOR_VALID_REGION {
+			for _, pixel := range *r {
 				newImg.Set(int(pixel.X), int(pixel.Y), White)
 			}
+			return false
 		} else {
 			regionCount++
-			// for _, pixel := range region {
-			// 	newImg.Set(int(pixel.X), int(pixel.Y), Black)
-			// }
+			return true
 		}
-	}
+	})
 
-	return newImg, regionCount
+	return newImg, regionCount, regionMap
 }
 
 func forNonDiagonalAdjacents(x, y uint16, maxX, maxY int, function func(x, y uint16)) {
