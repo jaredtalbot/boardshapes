@@ -20,4 +20,4 @@ To run a Go project:
 
 # Boardwalk
 
-To run Boardwalk, run it through the Godot Engine on desktop, [or play it here!](https://boardwalk.app)
+To run Boardwalk, run it through the Godot Engine on desktop, [or play it here!](https://boardmesh.app)
