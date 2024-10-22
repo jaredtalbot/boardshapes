@@ -18,16 +18,16 @@ grow_vertical = 0
 
 [node name="LeftButton" type="TouchScreenButton" parent="Control"]
 modulate = Color(1, 1, 1, 0.294118)
-position = Vector2(89, -240)
-scale = Vector2(2.5, 2.5)
+position = Vector2(84, -240)
+scale = Vector2(3, 3)
 texture_normal = ExtResource("1_5lkvv")
 action = "left"
 visibility_mode = 1
 
 [node name="RightButton" type="TouchScreenButton" parent="Control"]
 modulate = Color(1, 1, 1, 0.294118)
-position = Vector2(292, -240)
-scale = Vector2(2.5, 2.5)
+position = Vector2(323, -240)
+scale = Vector2(3, 3)
 texture_normal = ExtResource("2_4f7m8")
 action = "right"
 visibility_mode = 1
@@ -46,16 +46,16 @@ grow_vertical = 0
 
 [node name="JumpButton" type="TouchScreenButton" parent="Control2"]
 modulate = Color(1, 1, 1, 0.294118)
-position = Vector2(-348, -211)
-scale = Vector2(2.5, 2.5)
+position = Vector2(-400, -211)
+scale = Vector2(3, 3)
 texture_normal = ExtResource("3_jlthd")
 action = "jump"
 visibility_mode = 1
 
 [node name="DashButton" type="TouchScreenButton" parent="Control2"]
 modulate = Color(1, 1, 1, 0.294118)
-position = Vector2(-150, -291)
-scale = Vector2(2.5, 2.5)
+position = Vector2(-187, -315)
+scale = Vector2(3, 3)
 texture_normal = ExtResource("4_8al0l")
 action = "Dash"
 visibility_mode = 1
