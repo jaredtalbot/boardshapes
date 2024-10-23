@@ -25,7 +25,7 @@ func _on_coyote_timer_timeout():
 var air_time := 0.0
 
 func _physics_process(delta):
-	if (position.y > 1092.31863281):
+	if (position.y > get_viewport_rect().end.y):
 		velocity.x = 0
 		velocity.y = 0 
 		test_animation.play("death")
