@@ -25,7 +25,7 @@ func _on_coyote_timer_timeout():
 var air_time := 0.0
 
 func _physics_process(delta):
-	if (position.y > 1092.31863281):
+	if (position.y > get_viewport_rect().end.y):
 		velocity.x = 0
 		velocity.y = 0 
 		test_animation.play("death")
@@ -118,16 +118,3 @@ func _on_dash_timer_timeout():
 
 func _on_dash_cooldown_timer_timeout():
 	$dash_cooldown_timer.stop()
-
-
-#func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
-########		velocity.y = 0 
-		#test_animation.play("death")
-		#set_physics_process(false)
-		#var death_timer = get_tree().create_timer(1.0416)
-		#await death_timer.timeout
-		#set_physics_process(true)
-		#position = initial_position
-	
-	
-	# Replace with function body.
