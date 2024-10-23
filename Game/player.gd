@@ -104,7 +104,7 @@ func _physics_process(delta):
 		elif velocity.x < 0:
 			test_animation.flip_h = true
 	
-	if is_on_wall() and Input.is_action_pressed("jump"):
+	if is_on_wall() and Input.is_action_just_pressed("jump"):
 		$wall_timer.start()
 		velocity.y = JUMP_VELOCITY
 		velocity.x = get_wall_normal().x * wall_jump_power

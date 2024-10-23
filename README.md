@@ -9,7 +9,7 @@ To run a Go project:
   - `cd WebApp`
   - `cd DiscordBot`
 
-- Set environment variables. Ask Jared.
+- Set environment variables if necessary. This is only required if you are running the Discord bot.
 
 - Enter in terminal:
   ```ps
@@ -20,4 +20,4 @@ To run a Go project:
 
 # Boardwalk
 
-To run Boardwalk, run it through the Godot Engine on desktop, [or play it here!](https://boardwalk.app)
+To run Boardwalk, run it on [Godot Engine v4.3](https://godotengine.org/download) on desktop, [or play it online on boardmesh.app!](https://boardmesh.app)
