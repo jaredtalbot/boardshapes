@@ -1,11 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://xklntftxk1rp"]
+[gd_scene load_steps=6 format=3 uid="uid://xklntftxk1rp"]
 
 [ext_resource type="Script" path="res://level.gd" id="1_rfdv8"]
 [ext_resource type="Script" path="res://level_generator.gd" id="1_rygds"]
+[ext_resource type="PackedScene" uid="uid://ca40sxi6lp5lx" path="res://touch_screen_controls.tscn" id="2_1knc0"]
 [ext_resource type="PackedScene" uid="uid://blw1ecr3vvp3q" path="res://loading_indicator.tscn" id="2_07l0p"]
+[ext_resource type="AudioStream" uid="uid://dc6j2kwx7w3yk" path="res://BoardWalk (1).mp3" id="4_mumaq"]
 
 [node name="Level" type="Node"]
 script = ExtResource("1_rfdv8")
+
+[node name="TouchScreenControls" parent="." instance=ExtResource("2_1knc0")]
 
 [node name="LevelGenerator" type="Node" parent="."]
 script = ExtResource("1_rygds")
@@ -14,7 +18,7 @@ script = ExtResource("1_rygds")
 visible = false
 
 [node name="BackButton" type="Button" parent="."]
-anchors_preset = -1
+anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -27,5 +31,9 @@ grow_horizontal = 0
 grow_vertical = 0
 text = "Back"
 alignment = 2
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_mumaq")
+parameters/looping = true
 
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
