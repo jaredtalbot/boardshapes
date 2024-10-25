@@ -34,7 +34,7 @@ func _on_response_received(result: int, response_code: int, headers: PackedStrin
 		return
 		
 	add_child(generated_level)
-	add_player()
+	add_player()	
 	loading_indicator.hide()
 
 func add_player():
@@ -59,3 +59,7 @@ func _on_back_button_pressed():
 	
 func go_back():
 	get_tree().change_scene_to_file("res://start_menu.tscn")
+
+
+func _on_audio_stream_player_finished():
+	$AudioStreamPlayer.play()
