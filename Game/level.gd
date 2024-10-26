@@ -34,7 +34,7 @@ func _on_response_received(result: int, response_code: int, headers: PackedStrin
 		return
 		
 	add_child(generated_level)
-	add_player()	
+	add_player()
 	loading_indicator.hide()
 
 func add_player():
