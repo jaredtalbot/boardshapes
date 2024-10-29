@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://level_generator.gd" id="1_rygds"]
 [ext_resource type="PackedScene" uid="uid://ca40sxi6lp5lx" path="res://touch_screen_controls.tscn" id="2_1knc0"]
 [ext_resource type="PackedScene" uid="uid://blw1ecr3vvp3q" path="res://loading_indicator.tscn" id="2_07l0p"]
-[ext_resource type="AudioStream" uid="uid://dc6j2kwx7w3yk" path="res://BoardWalk (1).mp3" id="4_mumaq"]
+[ext_resource type="AudioStream" uid="uid://dffdk5u7kadrd" path="res://BoardWalk (1).ogg" id="5_4w55l"]
 
 [node name="Level" type="Node"]
 script = ExtResource("1_rfdv8")
@@ -33,7 +33,8 @@ text = "Back"
 alignment = 2
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("4_mumaq")
-parameters/looping = true
+stream = ExtResource("5_4w55l")
+parameters/looping = false
 
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="finished" from="AudioStreamPlayer" to="." method="_on_audio_stream_player_finished"]
