@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://bs3wmhvsov3to"]
+
+[ext_resource type="Script" path="res://file_upload_example.gd" id="1_fwyx8"]
+[ext_resource type="PackedScene" uid="uid://cbbx0v3mpscgm" path="res://pick_image_file.tscn" id="1_v8buk"]
+
+[node name="FileUploadExample" type="Node"]
+script = ExtResource("1_fwyx8")
+
+[node name="PickImageFileDialog" parent="." instance=ExtResource("1_v8buk")]

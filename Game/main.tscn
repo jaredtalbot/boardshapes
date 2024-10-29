@@ -1,11 +1,66 @@
-[gd_scene load_steps=3 format=3 uid="uid://s2dcpgi066gy"]
+[gd_scene load_steps=6 format=3 uid="uid://s2dcpgi066gy"]
 
-[ext_resource type="PackedScene" uid="uid://crgwrl3y2s3g6" path="res://player.tscn" id="1_3kdm3"]
-[ext_resource type="PackedScene" uid="uid://cokv41yrvmq5l" path="res://bellyrub.tscn" id="3_uj8iy"]
+[ext_resource type="Script" path="res://menu.gd" id="1_py7cw"]
+[ext_resource type="Texture2D" uid="uid://bwgl64rinsl7o" path="res://boardwalk2.png" id="2_0tc77"]
+[ext_resource type="Texture2D" uid="uid://dcparl8gbox7k" path="res://Whiteboard-Vector-PNG-Photos-3289639508.png" id="2_8b62a"]
+[ext_resource type="Texture2D" uid="uid://bav6sco7npnsf" path="res://startbutton.png" id="3_flx81"]
+[ext_resource type="Texture2D" uid="uid://b5rqva6kiynp" path="res://exitbutton.png" id="4_vqtdv"]
 
-[node name="Main" type="Node2D"]
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_py7cw")
 
-[node name="Player" parent="." instance=ExtResource("1_3kdm3")]
-position = Vector2(199, 289)
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_8b62a")
 
-[node name="bellyrub" parent="." instance=ExtResource("3_uj8iy")]
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_right = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_top = 80
+theme_override_constants/margin_bottom = 155
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("2_0tc77")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="Start" type="TextureButton" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+texture_normal = ExtResource("3_flx81")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Exit" type="TextureButton" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+texture_normal = ExtResource("4_vqtdv")
+ignore_texture_size = true
+stretch_mode = 5
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Exit" to="." method="_on_exit_pressed"]

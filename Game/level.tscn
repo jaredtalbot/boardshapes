@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://xklntftxk1rp"]
+
+[ext_resource type="Script" path="res://level.gd" id="1_rfdv8"]
+[ext_resource type="Script" path="res://level_generator.gd" id="1_rygds"]
+[ext_resource type="PackedScene" uid="uid://blw1ecr3vvp3q" path="res://loading_indicator.tscn" id="2_07l0p"]
+
+[node name="Level" type="Node"]
+script = ExtResource("1_rfdv8")
+
+[node name="LevelGenerator" type="Node" parent="."]
+script = ExtResource("1_rygds")
+
+[node name="LoadingIndicator" parent="." instance=ExtResource("2_07l0p")]
+visible = false
+
+[node name="BackButton" type="Button" parent="."]
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -23.0
+offset_top = -24.0
+offset_right = -15.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Back"
+alignment = 2
+
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
