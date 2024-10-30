@@ -13,9 +13,11 @@ var can_jump = false
 @export var wall_jump_power = 500
 
 @onready var test_animation = $AnimatedSprite2D
-
+var initial_position : Vector2
+	
 func _ready():
 	test_animation.play("idle animation")
+	initial_position = position
 
 func _on_coyote_timer_timeout():
 	can_jump = false
@@ -23,6 +25,15 @@ func _on_coyote_timer_timeout():
 var air_time := 0.0
 
 func _physics_process(delta):
+	if (position.y > get_viewport_rect().end.y):
+		velocity.x = 0
+		velocity.y = 0 
+		test_animation.play("death")
+		set_physics_process(false)
+		var death_timer = get_tree().create_timer(1.0416)
+		await death_timer.timeout
+		set_physics_process(true)
+		position = initial_position
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
