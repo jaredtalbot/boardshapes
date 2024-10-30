@@ -125,6 +125,16 @@ func _physics_process(delta):
 		
 		if collision.get_collider().is_in_group("Red"):
 			_death()
+		elif collision.get_collider().is_in_group("Green"):
+			if velocity.x > 0:
+				velocity.x = SPEED * 2
+			elif velocity.x < 0:
+				velocity.x = -SPEED * 2
+		elif collision.get_collider().is_in_group("Blue"):
+			velocity.y = -750
+			
+
+			
 		
 
 func _on_dash_timer_timeout():
