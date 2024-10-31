@@ -147,6 +147,18 @@ func buildLevel(c *gin.Context) {
 
 		minX, minY := processing.FindRegionPosition(region)
 		regionColor := processing.GetColorOfRegion(region, newImg)
+		var regionColorString string
+
+		switch regionColor {
+		case processing.Red:
+			regionColorString = "Red"
+		case processing.Green:
+			regionColorString = "Green"
+		case processing.Blue:
+			regionColorString = "Blue"
+		case processing.Black:
+			regionColorString = "Black"
+		}
 
 		regionImage := image.NewNRGBA(region.GetBounds())
 
@@ -165,7 +177,7 @@ func buildLevel(c *gin.Context) {
 			continue
 		}
 		optimizedMesh := processing.StraightOpt(mesh)
-		r := RegionData{i, regionColor, minX, minY, base64Region, optimizedMesh}
+		r := RegionData{i, regionColor, regionColorString, minX, minY, base64Region, optimizedMesh}
 		data = append(data, r)
 	}
 
@@ -189,12 +201,13 @@ func buildLevel(c *gin.Context) {
 }
 
 type RegionData struct {
-	RegionNumber int                 `json:"regionNumber"`
-	RegionColor  color.Color         `json:"regionColor"`
-	CornerX      int                 `json:"cornerX"`
-	CornerY      int                 `json:"cornerY"`
-	RegionImage  string              `json:"regionImage"`
-	Mesh         []processing.Vertex `json:"mesh"`
+	RegionNumber      int                 `json:"regionNumber"`
+	RegionColor       color.Color         `json:"regionColor"`
+	RegionColorString string              `json:"regionColorString"`
+	CornerX           int                 `json:"cornerX"`
+	CornerY           int                 `json:"cornerY"`
+	RegionImage       string              `json:"regionImage"`
+	Mesh              []processing.Vertex `json:"mesh"`
 }
 
 type AttachedFile struct {

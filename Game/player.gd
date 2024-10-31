@@ -24,16 +24,17 @@ func _on_coyote_timer_timeout():
 
 var air_time := 0.0
 
+func _death():
+	velocity.x = 0
+	velocity.y = 0
+	test_animation.play("death")
+	set_physics_process(false)
+	var death_timer = get_tree().create_timer(1.0416)
+	await death_timer.timeout
+	set_physics_process(true)
+	position = initial_position
+
 func _physics_process(delta):
-	if (position.y > get_viewport_rect().end.y):
-		velocity.x = 0
-		velocity.y = 0 
-		test_animation.play("death")
-		set_physics_process(false)
-		var death_timer = get_tree().create_timer(1.0416)
-		await death_timer.timeout
-		set_physics_process(true)
-		position = initial_position
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -53,6 +54,7 @@ func _physics_process(delta):
 	
 	if is_on_floor() and velocity.x == 0:
 		test_animation.play("idle animation")
+			
 	
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and can_jump == true:
@@ -109,6 +111,30 @@ func _physics_process(delta):
 		velocity.y = JUMP_VELOCITY
 		velocity.x = get_wall_normal().x * wall_jump_power
 		can_jump = false
+
+	if (position.y > get_viewport_rect().end.y):
+		_death()
+	
+	for index in range(get_slide_collision_count()):
+		# We get one of the collisions with the player
+		var collision = get_slide_collision(index)
+
+		# If the collision is with ground
+		if collision.get_collider() == null:
+			continue
+		
+		if collision.get_collider().is_in_group("Red"):
+			_death()
+		elif collision.get_collider().is_in_group("Green"):
+			if velocity.x > 0:
+				velocity.x = SPEED * 2
+			elif velocity.x < 0:
+				velocity.x = -SPEED * 2
+		elif collision.get_collider().is_in_group("Blue"):
+			velocity.y = -750
+			
+
+			
 		
 
 func _on_dash_timer_timeout():
