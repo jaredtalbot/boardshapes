@@ -2,16 +2,21 @@ package main
 
 import (
 	"flag"
-	"image"
+	"fmt"
 )
 
-var rFlag = flag.Int(r, image.Bounds, "this should be checking image bounds and resizing ")
-var sFlag = flag.String(s, userFilePath, "Should allow a user to input a file path. Unsure on this")
-var mFlag = flag.Bool(m, false, "Should meshify regions.")
-var fileInput = flag.Args()
+var rFlag = flag.Bool("r", false, "this should be resizing if called")
+var sFlag = flag.String("s", "/image.out", "Should allow a user to input a file path. Unsure on this")
+var mFlag = flag.Bool("m", false, "Should meshify regions.")
 
 func main() {
 	flag.Parse()
+	var fileInput = flag.Args()
+
+	fmt.Println("1:", *rFlag)
+	fmt.Println("2:", *sFlag)
+	fmt.Println("3:", *mFlag)
+	fmt.Println("4:", fileInput)
 
 }
 
