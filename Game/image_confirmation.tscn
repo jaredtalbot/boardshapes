@@ -4,7 +4,9 @@
 
 [node name="ImageConfirmation" type="ConfirmationDialog"]
 initial_position = 1
-size = Vector2i(600, 600)
+size = Vector2i(1600, 1000)
+content_scale_mode = 1
+content_scale_factor = 4.0
 ok_button_text = "Yes"
 cancel_button_text = "No"
 script = ExtResource("1_q2vt0")
@@ -12,8 +14,8 @@ script = ExtResource("1_q2vt0")
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 offset_left = 8.0
 offset_top = 8.0
-offset_right = 592.0
-offset_bottom = 551.0
+offset_right = 392.0
+offset_bottom = 201.0
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
 layout_mode = 2

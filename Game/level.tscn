@@ -1,10 +1,14 @@
-[gd_scene load_steps=6 format=3 uid="uid://xklntftxk1rp"]
+[gd_scene load_steps=8 format=3 uid="uid://xklntftxk1rp"]
 
 [ext_resource type="Script" path="res://level.gd" id="1_rfdv8"]
 [ext_resource type="Script" path="res://level_generator.gd" id="1_rygds"]
 [ext_resource type="PackedScene" uid="uid://ca40sxi6lp5lx" path="res://touch_screen_controls.tscn" id="2_1knc0"]
 [ext_resource type="PackedScene" uid="uid://blw1ecr3vvp3q" path="res://loading_indicator.tscn" id="2_07l0p"]
 [ext_resource type="AudioStream" uid="uid://dffdk5u7kadrd" path="res://BoardWalk (1).ogg" id="5_4w55l"]
+
+[sub_resource type="Theme" id="Theme_1nwa3"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2uk85"]
 
 [node name="Level" type="Node"]
 script = ExtResource("1_rfdv8")
@@ -17,24 +21,79 @@ script = ExtResource("1_rygds")
 [node name="LoadingIndicator" parent="." instance=ExtResource("2_07l0p")]
 visible = false
 
-[node name="BackButton" type="Button" parent="."]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_4w55l")
+parameters/looping = false
+
+[node name="QuitButton" type="Button" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -100.0
+offset_top = 16.0
+offset_right = -58.0
+offset_bottom = 47.0
+grow_horizontal = 0
+scale = Vector2(2, 2)
+text = "Quit"
+
+[node name="QuitMenu" type="CanvasLayer" parent="."]
+process_mode = 2
+
+[node name="QuitWindow" type="Window" parent="QuitMenu"]
+transparent_bg = true
+title = "Quit Level"
+initial_position = 1
+size = Vector2i(800, 600)
+visible = false
+content_scale_mode = 1
+content_scale_stretch = 1
+content_scale_factor = 3.0
+theme = SubResource("Theme_1nwa3")
+
+[node name="Label" type="Label" parent="QuitMenu/QuitWindow"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -115.0
+offset_top = -11.5
+offset_right = 115.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Do you want to quit the level?"
+label_settings = SubResource("LabelSettings_2uk85")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackButton" type="Button" parent="QuitMenu/QuitWindow"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = -50.0
+offset_right = 95.0
+offset_bottom = -19.0
+grow_vertical = 0
+text = "Yes"
+
+[node name="ResumeButton" type="Button" parent="QuitMenu/QuitWindow"]
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -23.0
-offset_top = -24.0
-offset_right = -15.0
-offset_bottom = -16.0
+offset_left = -81.0
+offset_top = -50.0
+offset_right = -36.0
+offset_bottom = -19.0
 grow_horizontal = 0
 grow_vertical = 0
-text = "Back"
-alignment = 2
+text = "No"
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("5_4w55l")
-parameters/looping = false
-
-[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="finished" from="AudioStreamPlayer" to="." method="_on_audio_stream_player_finished"]
+[connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="QuitMenu/QuitWindow/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="QuitMenu/QuitWindow/ResumeButton" to="." method="_on_no_button_pressed"]

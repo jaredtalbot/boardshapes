@@ -54,6 +54,14 @@ func add_player():
 			return
 	ray_cast.queue_free()
 	
+func _on_quit_button_pressed():
+	get_node("./QuitMenu/QuitWindow").show()
+	get_tree().paused = true
+
+func _on_no_button_pressed():
+	get_node("./QuitMenu/QuitWindow").hide()
+	get_tree().paused = false
+
 func _on_back_button_pressed():
 	go_back()
 	
