@@ -9,6 +9,12 @@
     {
       "name": "DevOps",
       "path": ".github"
+    },
+    {
+      "path": "Game"
+    },
+    {
+      "path": "Boardnet"
     }
   ],
   "settings": {}
