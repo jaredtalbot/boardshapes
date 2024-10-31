@@ -15,7 +15,7 @@ script = ExtResource("1_rfdv8")
 
 [node name="TouchScreenControls" parent="." instance=ExtResource("2_1knc0")]
 
-[node name="LevelGenerator" type="Node" parent="."]
+[node name="LevelGenerator" type="Node" parent="." groups=["Blue", "Green", "Red"]]
 script = ExtResource("1_rygds")
 
 [node name="LoadingIndicator" parent="." instance=ExtResource("2_07l0p")]

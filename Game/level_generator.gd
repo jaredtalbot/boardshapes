@@ -24,6 +24,16 @@ func generate_nodes(json_string: String) -> Node:
 		col.add_child(collision)
 		region.add_child(col)
 		region.position = Vector2(item["cornerX"], item["cornerY"])
+		var color = item["regionColorString"]
+		match color:
+			"Red":
+				col.add_to_group("Red")
+			"Green":
+				col.add_to_group("Green")
+			"Blue":
+				col.add_to_group("Blue")
+			"Black":
+				pass
 		level.add_child(region)
 	return level
 
