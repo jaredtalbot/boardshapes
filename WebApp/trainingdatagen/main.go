@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"codejester27/cmps401fa2024/web-app/processing"
+	"compress/gzip"
 	"encoding/binary"
 	"errors"
 	"flag"
@@ -11,7 +12,11 @@ import (
 	"image/color"
 	"image/png"
 	"io"
+	"io/fs"
+	"log"
 	"os"
+	"slices"
+	"strings"
 	"time"
 )
 
@@ -24,8 +29,10 @@ const (
 )
 
 var (
-	inputImagePath      = flag.String("i", "input.png", "Path of the non-simplified file used.")
-	simplifiedImagePath = flag.String("s", "", "Path of the simplified file used.")
+	pixelImagePath      = flag.String("ip", "input.png", "Path of the non-simplified file used for pixel data.")
+	labelImagePath      = flag.String("il", "", "Path of the simplified file used for labels.")
+	pixelDataOutputPath = flag.String("op", "pixel_data.tpixeldata", "Path to output pixel data.")
+	labelDataOutputPath = flag.String("ol", "label_data.tlabeldata", "Path to output label data.")
 
 	matrixSize = flag.Int("m", 5, "Set the size of the matrix generated for each pixel.")
 )
@@ -38,178 +45,116 @@ var Black color.NRGBA = color.NRGBA{uint8(0), uint8(0), uint8(0), uint8(255)}
 
 var progress, megabytes float64
 
-func oldMatrixDataThing() {
-	var buffer bytes.Buffer
-
-	inputFile, err := os.Open(*inputImagePath)
-	if err != nil {
-		panic(err)
-	}
-
-	img, err := png.Decode(inputFile)
-	if err != nil {
-		panic(err)
-	}
-
-	bds := img.Bounds()
-
-	go func() {
-		fmt.Println()
-		for {
-			fmt.Printf("\rProgress: %.2f%% | Current Size: %0.3f MB", progress, megabytes)
-			time.Sleep(100 * time.Millisecond)
-		}
-	}()
-
-	buffer.Write(binary.BigEndian.AppendUint16(make([]byte, 0), uint16((*matrixSize)*(*matrixSize))))
-
-	for y := bds.Min.Y; y < bds.Max.Y; y++ {
-		for x := bds.Min.X; x < bds.Max.X; x++ {
-			px := x - bds.Min.X
-			py := y - bds.Min.Y
-			progress, megabytes = (float64(px+py*bds.Dx())/float64(bds.Dx()*bds.Dy()))*100.0, float64(buffer.Len())/1_000_000
-			for yr := y - *matrixSize/2; yr <= y+*matrixSize/2; yr++ {
-				for xr := x - *matrixSize/2; xr <= x+*matrixSize/2; xr++ {
-					var r, g, b uint32
-					c := img.At(xr, yr)
-
-					if xr < bds.Min.X || yr < bds.Min.Y || xr >= bds.Max.X || yr >= bds.Max.Y {
-						r, g, b = uint32(255), uint32(255), uint32(255)
-					} else if nrgba, ok := c.(color.NRGBA); ok {
-						// use non-alpha-premultiplied colors
-						r, g, b = uint32(nrgba.R), uint32(nrgba.G), uint32(nrgba.B)
-					} else {
-						var a uint32
-						// use alpha-premultiplied colors
-						r, g, b, a = c.RGBA()
-						mult := 65535 / float64(a)
-						// undo alpha-premultiplication
-						r, g, b = uint32(float64(r)*mult), uint32(float64(g)*mult), uint32(float64(b)*mult)
-						// reduce from 0-65535 to 0-255
-						r, g, b = r/256, g/256, b/256
-					}
-
-					buffer.Write([]byte{byte(r), byte(g), byte(b)})
-				}
-			}
-		}
-	}
-
-	output, err := os.Create("output.dat")
-	if err != nil {
-		panic(err)
-	}
-	defer output.Close()
-
-	_, err = io.Copy(output, &buffer)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func packMatrixData() {
+func packData(pixelFiles, labelFiles []*os.File) {
 	var pixelDataBuffer bytes.Buffer
 	var labelBuffer bytes.Buffer
 
-	generateLabels := *simplifiedImagePath != ""
+	// matrix
+	pixelDataBuffer.Write(binary.BigEndian.AppendUint16(make([]byte, 0), uint16(*matrixSize*(*matrixSize))))
 
-	inputFile, err := os.Open(*inputImagePath)
-	if err != nil {
-		panic(err)
-	}
+	for i := range pixelFiles {
+		var pixelFile, labelFile *os.File
+		pixelFile = pixelFiles[i]
+		if labelFiles != nil {
+			labelFile = labelFiles[i]
+		}
 
-	var simplifiedImgFile *os.File
-	if generateLabels {
-		simplifiedImgFile, err = os.Open(*simplifiedImagePath)
+		var pixelImg, labelImg image.Image
+
+		pixelImg, err := png.Decode(pixelFile)
 		if err != nil {
 			panic(err)
 		}
-	}
-
-	inputImg, err := png.Decode(inputFile)
-	if err != nil {
-		panic(err)
-	}
-
-	var simplifiedImg image.Image
-	if generateLabels {
-		simplifiedImg, err = png.Decode(simplifiedImgFile)
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	bds := inputImg.Bounds()
-	if generateLabels && simplifiedImg.Bounds() != bds {
-		panic(errors.New("pack-data: non-simplified and simplified images have different bounds"))
-	}
-
-	closePrinter := make(chan struct{})
-	defer close(closePrinter)
-
-	go func() {
-		fmt.Println()
-		for {
-			select {
-			case <-closePrinter:
-				return
-			default:
-				fmt.Printf("\rProgress: %.2f%% | Current Size: %0.3f MB", progress, megabytes)
-				time.Sleep(100 * time.Millisecond)
+		if labelFile != nil {
+			labelImg, err = png.Decode(labelFile)
+			if err != nil {
+				panic(err)
 			}
 		}
-	}()
 
-	// stride
-	pixelDataBuffer.Write(binary.BigEndian.AppendUint16(make([]byte, 0), uint16(bds.Dx())))
+		bds := pixelImg.Bounds()
+		if labelImg != nil && labelImg.Bounds() != bds {
+			panic(errors.New("pack-data: non-simplified and simplified images have different bounds"))
+		}
 
-	for y := bds.Min.Y; y < bds.Max.Y; y++ {
-		for x := bds.Min.X; x < bds.Max.X; x++ {
-			px := x - bds.Min.X
-			py := y - bds.Min.Y
-			progress, megabytes = (float64(px+py*bds.Dx())/float64(bds.Dx()*bds.Dy()))*100.0, float64(pixelDataBuffer.Len())/1_000_000
-			c := processing.GetNRGBA(inputImg.At(x, y))
+		closePrinter := make(chan struct{})
 
-			pixelDataBuffer.Write([]byte{c.R, c.G, c.B})
-
-			if generateLabels {
-				sc := processing.GetNRGBA(simplifiedImg.At(x, y))
-
-				var label uint8
-				switch sc {
-				case White:
-					label = WHITE_LABEL
-				case Black:
-					label = BLACK_LABEL
-				case Red:
-					label = RED_LABEL
-				case Green:
-					label = GREEN_LABEL
-				case Blue:
-					label = BLUE_LABEL
+		go func() {
+			fmt.Println()
+			for {
+				select {
+				case <-closePrinter:
+					return
 				default:
-					panic(fmt.Errorf("pack-data: simplified image is not simple (pixel with %v)", sc))
+					fmt.Printf("\rProgress: %.2f%% | Current Size: %0.3f MB", progress, megabytes)
+					time.Sleep(100 * time.Millisecond)
 				}
-
-				labelBuffer.WriteByte(label)
 			}
+		}()
 
+		for y := bds.Min.Y; y < bds.Max.Y; y++ {
+			for x := bds.Min.X; x < bds.Max.X; x++ {
+				px := x - bds.Min.X
+				py := y - bds.Min.Y
+				progress, megabytes = (float64(px+py*bds.Dx())/float64(bds.Dx()*bds.Dy()))*100.0, float64(pixelDataBuffer.Len())/1_000_000
+				for yr := y - *matrixSize/2; yr <= y+*matrixSize/2; yr++ {
+					for xr := x - *matrixSize/2; xr <= x+*matrixSize/2; xr++ {
+						c := processing.GetNRGBA(pixelImg.At(xr, yr))
+
+						pixelDataBuffer.Write([]byte{c.R, c.G, c.B})
+					}
+				}
+				if labelImg != nil {
+					sc := processing.GetNRGBA(labelImg.At(x, y))
+
+					var label uint8
+					switch sc {
+					case White:
+						label = WHITE_LABEL
+					case Black:
+						label = BLACK_LABEL
+					case Red:
+						label = RED_LABEL
+					case Green:
+						label = GREEN_LABEL
+					case Blue:
+						label = BLUE_LABEL
+					default:
+						panic(fmt.Errorf("pack-data: simplified image is not simple (pixel with %v at %d %d)", sc, x, y))
+					}
+
+					labelBuffer.WriteByte(label)
+				}
+			}
 		}
+		close(closePrinter)
 	}
 
-	pixelDataFile, err := os.Create("pixel_data.dat")
+	var compressedDataBuffer bytes.Buffer
+	compressor := gzip.NewWriter(&compressedDataBuffer)
+	_, err := io.Copy(compressor, &pixelDataBuffer)
+	if err != nil {
+		panic(err)
+	}
+
+	err = compressor.Close()
+	if err != nil {
+		panic(err)
+	}
+
+	pixelDataFile, err := os.Create(*pixelDataOutputPath)
 	if err != nil {
 		panic(err)
 	}
 	defer pixelDataFile.Close()
 
-	_, err = io.Copy(pixelDataFile, &pixelDataBuffer)
+	_, err = io.Copy(pixelDataFile, &compressedDataBuffer)
 	if err != nil {
 		panic(err)
 	}
 
-	if generateLabels {
-		labelDataFile, err := os.Create("label_data.dat")
+	if labelFiles != nil {
+		labelDataFile, err := os.Create(*labelDataOutputPath)
 		if err != nil {
 			panic(err)
 		}
@@ -223,6 +168,73 @@ func packMatrixData() {
 
 }
 
+func getFiles() (pixelFiles, labelFiles []*os.File) {
+
+	if pixelDir, err := os.ReadDir(*pixelImagePath); err == nil {
+		pixelDir = slices.DeleteFunc(pixelDir, func(e fs.DirEntry) bool { return e.IsDir() || e.Name() == strings.TrimSuffix(e.Name(), ".png") })
+		if len(pixelDir) == 0 {
+			log.Fatalf("%s has no files", *pixelImagePath)
+		}
+
+		pixelFileNames := make([]string, len(pixelDir))
+		for i, v := range pixelDir {
+			pixelFileNames[i] = v.Name()
+		}
+
+		if *labelImagePath != "" {
+			labelDir, err := os.ReadDir(*pixelImagePath)
+			if err != nil {
+				panic(err)
+			}
+			labelDir = slices.DeleteFunc(labelDir, func(e fs.DirEntry) bool { return e.IsDir() || e.Name() == strings.TrimSuffix(e.Name(), ".png") })
+			if len(pixelDir) != len(labelDir) {
+				log.Fatalln("pixel and label dirs have inequal length")
+			}
+
+			labelFileNames := make([]string, len(labelDir))
+			for i, v := range labelDir {
+				labelFileNames[i] = v.Name()
+			}
+
+			slices.Sort(labelFileNames)
+
+			labelFiles = make([]*os.File, len(labelFileNames))
+			for i, v := range labelFileNames {
+				labelFiles[i], err = os.Open(*labelImagePath + "/" + v)
+				if err != nil {
+					panic(err)
+				}
+			}
+		}
+
+		slices.Sort(pixelFileNames)
+		pixelFiles = make([]*os.File, len(pixelFileNames))
+		for i, v := range pixelFileNames {
+			pixelFiles[i], err = os.Open(*pixelImagePath + "/" + v)
+			if err != nil {
+				panic(err)
+			}
+		}
+		return
+	}
+
+	pixelFile, err := os.Open(*pixelImagePath)
+	if err != nil {
+		panic(err)
+	}
+
+	pixelFiles = []*os.File{pixelFile}
+
+	if *labelImagePath != "" {
+		labelFile, err := os.Open(*labelImagePath)
+		if err != nil {
+			panic(err)
+		}
+		labelFiles = []*os.File{labelFile}
+	}
+	return
+}
+
 func main() {
 	flag.Parse()
 
@@ -234,5 +246,7 @@ func main() {
 		panic(errors.New("matrix size must be odd"))
 	}
 
-	packMatrixData()
+	pixelFiles, labelFiles := getFiles()
+
+	packData(pixelFiles, labelFiles)
 }

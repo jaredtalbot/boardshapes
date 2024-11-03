@@ -22,10 +22,10 @@ func main() {
 		panic(err)
 	}
 	io.Copy(&buff, file)
-	img := image.NewPaletted(image.Rect(0, 0, 1080, 1400), color.Palette{White, Black, Red, Green, Blue})
+	img := image.NewPaletted(image.Rect(0, 0, 1920, 1080), color.Palette{White, Black, Red, Green, Blue})
 
-	for y := 0; y < 1400; y++ {
-		for x := 0; x < 1080; x++ {
+	for y := 0; y < 1080; y++ {
+		for x := 0; x < 1920; x++ {
 			label, err := buff.ReadByte()
 			if err != nil {
 				panic(err)
