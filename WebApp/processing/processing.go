@@ -27,6 +27,22 @@ func absDiff[T int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint
 	return b - a
 }
 
+func GetNRGBA(c color.Color) color.NRGBA {
+	var r, g, b, a uint32
+
+	if nrgba, ok := c.(color.NRGBA); ok {
+		// use non-alpha-premultiplied colors
+		return nrgba
+	}
+	// use alpha-premultiplied colors
+	r, g, b, a = c.RGBA()
+	mult := 65535 / float64(a)
+	// undo alpha-premultiplication
+	r, g, b = uint32(float64(r)*mult), uint32(float64(g)*mult), uint32(float64(b)*mult)
+	// reduce from 0-65535 to 0-255
+	return color.NRGBA{uint8(r / 256), uint8(g / 256), uint8(b / 256), uint8(a / 256)}
+}
+
 // func manhattanDistance(a Vertex, b Vertex) int {
 // 	return absDiff(int(a.X), int(b.X)) + absDiff(int(a.Y), int(b.Y))
 // }
@@ -292,9 +308,8 @@ func SimplifyImage(img image.Image) (result image.Image, regionCount int, region
 
 	for y := bd.Min.Y; y < bd.Max.Y; y++ {
 		for x := bd.Min.X; x < bd.Max.X; x++ {
-			r, g, b, a := img.At(x, y).RGBA()
-			r, g, b = r/256, g/256, b/256
-
+			c := GetNRGBA(img.At(x, y))
+			r, g, b, a := int(c.R), int(c.G), int(c.B), int(c.A)
 			var newPixelColor color.NRGBA
 			avg := (r + g + b) / 3
 			if a < 10 {
