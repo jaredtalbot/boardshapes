@@ -13,7 +13,6 @@ import (
 
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"runtime"
 	"slices"
@@ -309,18 +308,7 @@ func main() {
 
 	// cors
 	logged.Use(func(ctx *gin.Context) {
-		origin := ctx.Request.Header.Get("Origin")
-		originUrl, err := url.Parse(origin)
-		if err != nil {
-			return
-		}
-		hostname := originUrl.Hostname()
-
-		switch hostname {
-		case "cmps401fa2024.onrender.com", "www.boardmesh.app", "boardmesh.app", "localhost":
-			ctx.Header("Access-Control-Allow-Origin", origin)
-			ctx.Header("Vary", "Origin")
-		}
+		ctx.Header("Access-Control-Allow-Origin", "*")
 	})
 
 	logged.StaticFile("/", "./website/homepage.html")
