@@ -323,10 +323,10 @@ func main() {
 		}
 	})
 
-	logged.StaticFile("/", "./homepage/my-vue-app/dist/index.html")
-	logged.StaticFile("/image2vector (2).svg", "./homepage/my-vue-app/dist/image2vector (2).svg")
-	logged.StaticFile("/vite.svg", "./homepage/my-vue-app/dist/vite.svg")
-	logged.Static("/assets", "./homepage/my-vue-app/dist/assets")
+	logged.StaticFile("/", "./homepage/boardsite/dist/index.html")
+	logged.StaticFile("/image2vector (2).svg", "./homepage/boardsite/dist/image2vector (2).svg")
+	logged.StaticFile("/vite.svg", "./homepage/boardsite/dist/vite.svg")
+	logged.Static("/assets", "./homepage/boardsite/dist/assets")
 	logged.Static("/boardwalk", "./exported-game")
 	logged.StaticFile("/manual", "./exported-manual/Prototype User Manual.pdf")
 	logged.POST("/api/simplify", simplifyImage)
