@@ -323,10 +323,9 @@ func main() {
 		}
 	})
 
-	logged.StaticFile("/", "./homepage/boardsite/dist/index.html")
-	logged.StaticFile("/image2vector (2).svg", "./homepage/boardsite/dist/image2vector (2).svg")
-	logged.StaticFile("/vite.svg", "./homepage/boardsite/dist/vite.svg")
-	logged.Static("/assets", "./homepage/boardsite/dist/assets")
+	logged.StaticFile("/", "./homepage/board-site/dist/index.html")
+	logged.StaticFile("/board.svg", "./homepage/board-site/dist/board.svg")
+	logged.Static("/assets", "./homepage/board-site/dist/assets")
 	logged.Static("/boardwalk", "./exported-game")
 	logged.StaticFile("/manual", "./exported-manual/Prototype User Manual.pdf")
 	logged.POST("/api/simplify", simplifyImage)
