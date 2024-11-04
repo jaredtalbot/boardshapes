@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b3y4b2js107n"
-path="res://.godot/imported/Untitled.png-30da513a925d9064453decddf41ecbd4.ctex"
+uid="uid://s2g7jgj7r40t"
+path="res://.godot/imported/boardwalkbetalogo.png-4114dbc7eb4bf284a80887c02623fe4a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Untitled.png"
-dest_files=["res://.godot/imported/Untitled.png-30da513a925d9064453decddf41ecbd4.ctex"]
+source_file="res://ui/boardwalkbetalogo.png"
+dest_files=["res://.godot/imported/boardwalkbetalogo.png-4114dbc7eb4bf284a80887c02623fe4a.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d1xvwkybycm6m"
-path="res://.godot/imported/GL85JyMXsAAUcB_.png-29e88162c3e7e8fddf5051189edd41a2.ctex"
+uid="uid://bwgl64rinsl7o"
+path="res://.godot/imported/boardwalk2.png-7b32763b07006e8cbb68417c262b10d9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GL85JyMXsAAUcB_.png"
-dest_files=["res://.godot/imported/GL85JyMXsAAUcB_.png-29e88162c3e7e8fddf5051189edd41a2.ctex"]
+source_file="res://ui/boardwalk2.png"
+dest_files=["res://.godot/imported/boardwalk2.png-7b32763b07006e8cbb68417c262b10d9.ctex"]
 
 [params]
 

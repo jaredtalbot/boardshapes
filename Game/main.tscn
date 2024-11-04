@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://s2dcpgi066gy"]
 
 [ext_resource type="Script" path="res://menu.gd" id="1_py7cw"]
-[ext_resource type="Texture2D" uid="uid://bwgl64rinsl7o" path="res://boardwalk2.png" id="2_0tc77"]
+[ext_resource type="Texture2D" uid="uid://bwgl64rinsl7o" path="res://ui/boardwalk2.png" id="2_0tc77"]
 [ext_resource type="Texture2D" uid="uid://dcparl8gbox7k" path="res://Whiteboard-Vector-PNG-Photos-3289639508.png" id="2_8b62a"]
-[ext_resource type="Texture2D" uid="uid://bav6sco7npnsf" path="res://startbutton.png" id="3_flx81"]
-[ext_resource type="Texture2D" uid="uid://b5rqva6kiynp" path="res://exitbutton.png" id="4_vqtdv"]
+[ext_resource type="Texture2D" uid="uid://bav6sco7npnsf" path="res://ui/startbutton.png" id="3_flx81"]
+[ext_resource type="Texture2D" uid="uid://b5rqva6kiynp" path="res://ui/exitbutton.png" id="4_vqtdv"]
 
 [node name="Menu" type="Control"]
 layout_mode = 3
