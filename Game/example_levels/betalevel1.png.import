@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bwgl64rinsl7o"
-path="res://.godot/imported/boardwalk2.png-1bc37b1244b9a4913caf4598961695e3.ctex"
+uid="uid://bfmjpq370fa0r"
+path="res://.godot/imported/betalevel1.png-b3413cedc07187dd0c620e079b007d5e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://boardwalk2.png"
-dest_files=["res://.godot/imported/boardwalk2.png-1bc37b1244b9a4913caf4598961695e3.ctex"]
+source_file="res://example_levels/betalevel1.png"
+dest_files=["res://.godot/imported/betalevel1.png-b3413cedc07187dd0c620e079b007d5e.ctex"]
 
 [params]
 

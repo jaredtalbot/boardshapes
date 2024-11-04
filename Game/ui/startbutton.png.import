@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bfmjpq370fa0r"
-path="res://.godot/imported/betalevel1.png-3c1f28916f556a0f8275b143b1f3883a.ctex"
+uid="uid://bav6sco7npnsf"
+path="res://.godot/imported/startbutton.png-7a2c7aafaaf6cb81dc957d5e37e65c70.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://betalevel1.png"
-dest_files=["res://.godot/imported/betalevel1.png-3c1f28916f556a0f8275b143b1f3883a.ctex"]
+source_file="res://ui/startbutton.png"
+dest_files=["res://.godot/imported/startbutton.png-7a2c7aafaaf6cb81dc957d5e37e65c70.ctex"]
 
 [params]
 

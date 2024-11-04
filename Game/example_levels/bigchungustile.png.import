@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://s2g7jgj7r40t"
-path="res://.godot/imported/boardwalkbetalogo.png-0865f7c250a5e7df78a6e5bc2baeaa4f.ctex"
+uid="uid://coubdfq2cwsa7"
+path="res://.godot/imported/bigchungustile.png-e06702b7f45de9952525f569038004b5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://boardwalkbetalogo.png"
-dest_files=["res://.godot/imported/boardwalkbetalogo.png-0865f7c250a5e7df78a6e5bc2baeaa4f.ctex"]
+source_file="res://example_levels/bigchungustile.png"
+dest_files=["res://.godot/imported/bigchungustile.png-e06702b7f45de9952525f569038004b5.ctex"]
 
 [params]
 
