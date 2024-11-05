@@ -63,6 +63,7 @@ func _on_no_button_pressed():
 	get_tree().paused = false
 
 func _on_back_button_pressed():
+	get_tree().paused = false
 	go_back()
 	
 func go_back():
