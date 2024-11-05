@@ -45,3 +45,4 @@ func _file_loaded_callback(args):
 	var filename = JavaScriptBridge.eval("uploadedFileType", true)
 	if content is PackedByteArray:
 		file_loaded.emit(content, filename)
+	JavaScriptBridge.eval("document.getElementById('selectFiles').value = \"\";", true)
