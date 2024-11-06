@@ -1,11 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://xklntftxk1rp"]
+[gd_scene load_steps=9 format=3 uid="uid://xklntftxk1rp"]
 
 [ext_resource type="Script" path="res://level.gd" id="1_rfdv8"]
 [ext_resource type="Script" path="res://level_generator.gd" id="1_rygds"]
 [ext_resource type="PackedScene" uid="uid://ca40sxi6lp5lx" path="res://touch_screen_controls.tscn" id="2_1knc0"]
 [ext_resource type="PackedScene" uid="uid://blw1ecr3vvp3q" path="res://loading_indicator.tscn" id="2_07l0p"]
 [ext_resource type="AudioStream" uid="uid://dffdk5u7kadrd" path="res://BoardWalk (1).ogg" id="5_4w55l"]
-[ext_resource type="Texture2D" uid="uid://nhg544d6kgh8" path="res://icons/victory.jpg" id="6_ofu5b"]
 [ext_resource type="PackedScene" uid="uid://3poplqifejqw" path="res://goal.tscn" id="7_h3hxs"]
 
 [sub_resource type="Theme" id="Theme_1nwa3"]
@@ -115,18 +114,35 @@ grow_horizontal = 2
 grow_vertical = 2
 disabled = true
 
-[node name="TextEdit" type="TextEdit" parent="StartEndSelection/StartSelect"]
+[node name="Panel" type="Panel" parent="StartEndSelection/StartSelect"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -161.0
-offset_top = 95.0
-offset_right = 161.0
-offset_bottom = 133.0
+offset_left = -199.5
+offset_top = 87.0
+offset_right = 200.5
+offset_bottom = 172.0
 grow_horizontal = 2
-text = "Click where you want the player to start."
-editable = false
+
+[node name="Label" type="Label" parent="StartEndSelection/StartSelect/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -201.0
+offset_top = -36.0
+offset_right = 66.0
+offset_bottom = 13.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.5, 1.5)
+text = "Click where you want the player to start"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
 
 [node name="EndSelect" type="TextureButton" parent="StartEndSelection"]
 process_mode = 2
@@ -145,25 +161,97 @@ grow_horizontal = 2
 grow_vertical = 2
 disabled = true
 
-[node name="TextEdit" type="TextEdit" parent="StartEndSelection/EndSelect"]
+[node name="Panel" type="Panel" parent="StartEndSelection/EndSelect"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -161.0
-offset_top = 95.0
-offset_right = 161.0
-offset_bottom = 133.0
+offset_left = -199.5
+offset_top = 87.0
+offset_right = 200.5
+offset_bottom = 172.0
 grow_horizontal = 2
-text = "Click where you want the goal to be."
-editable = false
+
+[node name="Label" type="Label" parent="StartEndSelection/EndSelect/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -201.0
+offset_top = -36.0
+offset_right = 66.0
+offset_bottom = 13.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.5, 1.5)
+text = "Click where you want the goal to be"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
 
 [node name="VictoryScreen" type="CanvasLayer" parent="."]
 
-[node name="Victory" type="Sprite2D" parent="VictoryScreen"]
+[node name="Victory" type="Panel" parent="VictoryScreen"]
 visible = false
-position = Vector2(990, 537)
-texture = ExtResource("6_ofu5b")
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -246.0
+offset_right = 250.0
+offset_bottom = 166.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ExitToMenu" type="Button" parent="VictoryScreen/Victory"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -75.5
+offset_top = 42.0
+offset_right = 75.5
+offset_bottom = 92.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Exit To Main Menu"
+
+[node name="PlayAnotherLevel" type="Button" parent="VictoryScreen/Victory"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -76.0
+offset_top = 121.0
+offset_right = 76.0
+offset_bottom = 171.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Play Another Level"
+
+[node name="Label" type="Label" parent="VictoryScreen/Victory"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.442
+anchor_right = 0.5
+anchor_bottom = 0.442
+offset_left = -217.0
+offset_top = -152.2
+offset_right = -93.0
+offset_bottom = -129.2
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(3.5, 3.5)
+text = "Level Complete!"
 
 [node name="Goal" parent="." instance=ExtResource("7_h3hxs")]
 
@@ -173,4 +261,6 @@ texture = ExtResource("6_ofu5b")
 [connection signal="pressed" from="QuitMenu/QuitWindow/ResumeButton" to="." method="_on_no_button_pressed"]
 [connection signal="pressed" from="StartEndSelection/StartSelect" to="." method="_set_player_start"]
 [connection signal="pressed" from="StartEndSelection/EndSelect" to="." method="_set_goal_position"]
+[connection signal="pressed" from="VictoryScreen/Victory/ExitToMenu" to="." method="_on_exit_to_main_menu_button_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/PlayAnotherLevel" to="." method="_on_back_button_pressed"]
 [connection signal="body_entered" from="Goal" to="." method="_goal_reached"]

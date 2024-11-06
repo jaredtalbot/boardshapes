@@ -72,6 +72,9 @@ func _on_back_button_pressed():
 func go_back():
 	get_tree().change_scene_to_file("res://start_menu.tscn")
 
+func _on_exit_to_main_menu_button_pressed():
+	get_tree().change_scene_to_file("res://menu.tscn")
+
 func _set_player_start():
 	var player = get_node("Player")
 	player.initial_position = get_viewport().get_mouse_position()
