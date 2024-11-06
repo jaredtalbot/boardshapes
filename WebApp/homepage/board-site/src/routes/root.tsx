@@ -1,5 +1,5 @@
-import boardwalkLogo from "./assetsReal/image2vector2.svg";
-import boardmeshLogo from "./assetsReal/image2vector.svg";
+import boardwalkLogo from "../img/boardwalk.svg";
+import boardmeshLogo from "../img/boardmesh.svg";
 import "./root.css";
 import { Outlet, Link } from "react-router-dom";
 
