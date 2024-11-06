@@ -1,16 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://bate2rn2gsmx8"]
+[gd_scene load_steps=3 format=3 uid="uid://3poplqifejqw"]
 
 [ext_resource type="Texture2D" uid="uid://dln2ur1j6xhc" path="res://icons/goal.png" id="1_5fxrc"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_s6rit"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4unw7"]
 size = Vector2(32, 32)
 
-[node name="Node2D" type="Node2D"]
+[node name="Goal" type="Area2D"]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_5fxrc")
 
-[node name="StaticBody2D" type="StaticBody2D" parent="." groups=["Goal"]]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-shape = SubResource("RectangleShape2D_s6rit")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_4unw7")

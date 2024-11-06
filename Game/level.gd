@@ -37,7 +37,8 @@ func _on_response_received(result: int, response_code: int, headers: PackedStrin
 	add_player()
 	loading_indicator.hide()
 	get_tree().paused = true
-	get_node("./StartEndSelection/StartSelect").disabled = false	
+	get_node("./StartEndSelection/StartSelect").disabled = false
+	get_node("./StartEndSelection/StartSelect").show()
 
 func add_player():
 	var ray_cast = RayCast2D.new()
@@ -81,12 +82,16 @@ func _set_player_start():
 	get_node("./StartEndSelection/EndSelect").show()
 
 func _set_goal_position():
-	var goal = preload("res://goal.tscn").instantiate()
+	var goal = get_node("Goal")
 	goal.position = get_viewport().get_mouse_position()
-	add_child(goal)
 	get_node("./StartEndSelection/EndSelect").disabled = true
 	get_node("./StartEndSelection/EndSelect").hide()
+	get_node("TouchScreenControls").show()
 	get_tree().paused = false
+	
+func _goal_reached(player: Node2D):
+	player.set_physics_process(false)
+	get_node("./VictoryScreen/Victory").show()
 	
 func _on_audio_stream_player_finished():
 	$AudioStreamPlayer.play()
