@@ -19,10 +19,18 @@ func _ready():
 	test_animation.play("idle animation")
 	initial_position = position
 
-func _on_coyote_timer_timeout():
-	can_jump = false
-
 var air_time := 0.0
+
+func _on_dash_timer_timeout():
+	is_dashing = false
+	$dash_timer.stop()
+
+func _on_dash_cooldown_timer_timeout():
+	$dash_cooldown_timer.stop()
+
+func _on_coyote_timer_timeout():
+	$coyote_timer.stop()
+	can_jump = false
 
 func _death():
 	velocity.x = 0
@@ -48,9 +56,13 @@ func _physics_process(delta):
 	else:
 		air_time = 0.0
 		can_jump = true
+		
+	if is_on_floor():
+		can_jump = true
 	
 	if is_on_floor() == false and can_jump == true and $coyote_timer.is_stopped():
 		$coyote_timer.start()
+	
 	
 	if is_on_floor() and velocity.x == 0:
 		test_animation.play("idle animation")
@@ -99,6 +111,7 @@ func _physics_process(delta):
 	move_and_slide()
 	
 	if is_on_wall() and !is_on_floor():
+		can_jump = true
 		velocity.y = wall_slide_speed
 		test_animation.play("sliding")
 		if velocity.x > 0:
@@ -107,10 +120,12 @@ func _physics_process(delta):
 			test_animation.flip_h = true
 	
 	if is_on_wall() and Input.is_action_just_pressed("jump"):
-		$wall_timer.start()
 		velocity.y = JUMP_VELOCITY
 		velocity.x = get_wall_normal().x * wall_jump_power
 		can_jump = false
+	
+	if is_on_wall() == false and can_jump == true and $coyote_timer.is_stopped():
+		$coyote_timer.start()
 
 	if (position.y > get_viewport_rect().end.y):
 		_death()
@@ -132,15 +147,3 @@ func _physics_process(delta):
 				velocity.x = -SPEED * 2
 		elif collision.get_collider().is_in_group("Blue"):
 			velocity.y = -750
-			
-
-			
-		
-
-func _on_dash_timer_timeout():
-	is_dashing = false
-	$dash_timer.stop()
-
-
-func _on_dash_cooldown_timer_timeout():
-	$dash_cooldown_timer.stop()
