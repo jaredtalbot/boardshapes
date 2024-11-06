@@ -37,8 +37,8 @@ func _on_response_received(result: int, response_code: int, headers: PackedStrin
 	add_player()
 	loading_indicator.hide()
 	get_tree().paused = true
-	get_node("./StartEndSelection/StartSelect").disabled = false
-	get_node("./StartEndSelection/StartSelect").show()
+	$StartEndSelection/StartSelect.disabled = false
+	$StartEndSelection/StartSelect.show()
 
 func add_player():
 	var ray_cast = RayCast2D.new()
