@@ -1,0 +1,36 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+.logoMain {
+  height: 20em;
+  padding: 1em;
+}
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #27272baa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #27272baa);
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+  font-family: "Comic Sans MS";
+}
+
+h1 {
+  color: #000000;
+  font-family: "Comic Sans MS";
+}

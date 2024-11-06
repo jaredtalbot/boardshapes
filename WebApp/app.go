@@ -311,8 +311,9 @@ func main() {
 		ctx.Header("Access-Control-Allow-Origin", "*")
 	})
 
-	logged.StaticFile("/", "./website/homepage.html")
-	logged.Static("/static", "./website")
+	logged.StaticFile("/", "./homepage/board-site/dist/index.html")
+	logged.StaticFile("/board.svg", "./homepage/board-site/dist/board.svg")
+	logged.Static("/assets", "./homepage/board-site/dist/assets")
 	logged.Static("/boardwalk", "./exported-game")
 	logged.StaticFile("/manual", "./exported-manual/Prototype User Manual.pdf")
 	logged.POST("/api/simplify", simplifyImage)

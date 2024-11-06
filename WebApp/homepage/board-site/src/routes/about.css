@@ -1,0 +1,23 @@
+#about {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+h1 {
+  color: #000000;
+  font-family: "Comic Sans MS";
+}
+
+.AboutTitle {
+  color: #000000;
+  font-family: "Comic Sans MS";
+  font-size: xx-large;
+}
+
+.AboutDescription {
+  color: #000000;
+  font-family: "Comic Sans MS";
+  font-size: large;
+}
