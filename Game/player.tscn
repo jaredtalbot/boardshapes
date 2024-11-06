@@ -575,7 +575,7 @@ wait_time = 0.1
 one_shot = true
 
 [node name="coyote_timer" type="Timer" parent="."]
-wait_time = 0.35
+wait_time = 0.3
 
 [node name="wall_timer" type="Timer" parent="."]
 wait_time = 0.1
