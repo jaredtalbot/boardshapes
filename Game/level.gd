@@ -76,25 +76,25 @@ func _on_exit_to_main_menu_button_pressed():
 	get_tree().change_scene_to_file("res://menu.tscn")
 
 func _set_player_start():
-	var player = get_node("Player")
+	var player = $Player
 	player.initial_position = get_viewport().get_mouse_position()
 	player.position = player.initial_position
-	get_node("./StartEndSelection/StartSelect").disabled = true
-	get_node("./StartEndSelection/StartSelect").hide()
-	get_node("./StartEndSelection/EndSelect").disabled = false
-	get_node("./StartEndSelection/EndSelect").show()
+	$StartEndSelection/StartSelect.disabled = true
+	$StartEndSelection/StartSelect.hide()
+	$StartEndSelection/EndSelect.disabled = false
+	$StartEndSelection/EndSelect.show()
 
 func _set_goal_position():
-	var goal = get_node("Goal")
+	var goal = $Goal
 	goal.position = get_viewport().get_mouse_position()
-	get_node("./StartEndSelection/EndSelect").disabled = true
-	get_node("./StartEndSelection/EndSelect").hide()
-	get_node("TouchScreenControls").show()
+	$StartEndSelection/EndSelect.disabled = true
+	$StartEndSelection/EndSelect.hide()
+	$TouchScreenControls.show()
 	get_tree().paused = false
 	
 func _goal_reached(player: Node2D):
 	player.set_physics_process(false)
-	get_node("./VictoryScreen/Victory").show()
+	$VictoryScreen/Victory.show()
 	
 func _on_audio_stream_player_finished():
 	$AudioStreamPlayer.play()
