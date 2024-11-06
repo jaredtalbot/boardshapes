@@ -575,7 +575,7 @@ wait_time = 0.1
 one_shot = true
 
 [node name="coyote_timer" type="Timer" parent="."]
-wait_time = 0.1
+wait_time = 0.3
 
 [node name="wall_timer" type="Timer" parent="."]
 wait_time = 0.1
@@ -583,4 +583,5 @@ wait_time = 0.1
 [node name="dash_cooldown_timer" type="Timer" parent="."]
 wait_time = 0.6
 
+[connection signal="timeout" from="coyote_timer" to="." method="_on_coyote_timer_timeout"]
 [connection signal="timeout" from="dash_cooldown_timer" to="." method="_on_dash_cooldown_timer_timeout"]
