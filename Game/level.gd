@@ -77,7 +77,16 @@ func _set_player_start():
 	player.position = player.initial_position
 	get_node("./StartEndSelection/StartSelect").disabled = true
 	get_node("./StartEndSelection/StartSelect").hide()
-	get_tree().paused = false
+	get_node("./StartEndSelection/EndSelect").disabled = false
+	get_node("./StartEndSelection/EndSelect").show()
 
+func _set_goal_position():
+	var goal = preload("res://goal.tscn").instantiate()
+	goal.position = get_viewport().get_mouse_position()
+	add_child(goal)
+	get_node("./StartEndSelection/EndSelect").disabled = true
+	get_node("./StartEndSelection/EndSelect").hide()
+	get_tree().paused = false
+	
 func _on_audio_stream_player_finished():
 	$AudioStreamPlayer.play()

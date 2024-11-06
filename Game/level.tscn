@@ -112,8 +112,26 @@ grow_horizontal = 2
 grow_vertical = 2
 disabled = true
 
+[node name="EndSelect" type="TextureButton" parent="StartEndSelection"]
+process_mode = 2
+visible = false
+z_index = 10
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1051.5
+offset_top = -615.0
+offset_right = 1051.5
+offset_bottom = 615.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+
 [connection signal="finished" from="AudioStreamPlayer" to="." method="_on_audio_stream_player_finished"]
 [connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed" from="QuitMenu/QuitWindow/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="QuitMenu/QuitWindow/ResumeButton" to="." method="_on_no_button_pressed"]
 [connection signal="pressed" from="StartEndSelection/StartSelect" to="." method="_set_player_start"]
+[connection signal="pressed" from="StartEndSelection/EndSelect" to="." method="_set_goal_position"]
