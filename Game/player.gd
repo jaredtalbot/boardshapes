@@ -118,6 +118,8 @@ func _physics_process(delta):
 	else:
 		velocity.x = move_toward(velocity.x, 0, acceleration * delta)
 
+	$AfterImageEmitter.enabled = is_dashing
+
 	move_and_slide()
 	
 	if is_on_wall() and !is_on_floor():
