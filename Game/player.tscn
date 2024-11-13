@@ -578,12 +578,11 @@ one_shot = true
 
 [node name="coyote_timer" type="Timer" parent="."]
 wait_time = 0.3
-
-[node name="wall_timer" type="Timer" parent="."]
-wait_time = 0.1
+one_shot = true
 
 [node name="dash_cooldown_timer" type="Timer" parent="."]
 wait_time = 0.6
+one_shot = true
 
 [node name="AfterImageEmitter" type="Node2D" parent="." node_paths=PackedStringArray("animated_sprite")]
 script = ExtResource("8_0rr0r")
@@ -593,4 +592,3 @@ emit_frequency = 0.05
 random_colors = PackedColorArray(1, 0, 0, 0.498039, 0, 1, 0, 0.498039, 0, 0, 1, 0.498039)
 
 [connection signal="timeout" from="coyote_timer" to="." method="_on_coyote_timer_timeout"]
-[connection signal="timeout" from="dash_cooldown_timer" to="." method="_on_dash_cooldown_timer_timeout"]
