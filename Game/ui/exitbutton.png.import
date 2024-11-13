@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://fj8ln0fb8t72"
-path="res://.godot/imported/ExitButton.png-71329ab1b25a713798714aeb0b500c15.ctex"
+path="res://.godot/imported/exitbutton.png-1516a8c574d251f883f1c130864b6573.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://BoardSprites/ExitButton.png"
-dest_files=["res://.godot/imported/ExitButton.png-71329ab1b25a713798714aeb0b500c15.ctex"]
+source_file="res://ui/exitbutton.png"
+dest_files=["res://.godot/imported/exitbutton.png-1516a8c574d251f883f1c130864b6573.ctex"]
 
 [params]
 
