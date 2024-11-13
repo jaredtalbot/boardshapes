@@ -315,7 +315,7 @@ func main() {
 	logged.StaticFile("/board.svg", "./homepage/board-site/dist/board.svg")
 	logged.Static("/assets", "./homepage/board-site/dist/assets")
 	logged.Static("/boardwalk", "./exported-game")
-	logged.StaticFile("/manual", "./exported-manual/Prototype User Manual.pdf")
+	logged.StaticFile("/manual", "./exported-manual/User Manual.pdf")
 	logged.POST("/api/simplify", simplifyImage)
 	logged.POST("/api/build-level", buildLevel)
 	router.GET("/api/ws", connectWebsocket)
