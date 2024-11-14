@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://brp14mno48ivv" path="res://Spritesheets/aku-jumpu-ezgif.com-gif-to-sprite-converter.png" id="3_x7k1x"]
 [ext_resource type="Texture2D" uid="uid://q2hlry6qp72k" path="res://Spritesheets/akuma-wkf-ezgif.com-gif-to-sprite-converter.png" id="5_tpt42"]
 [ext_resource type="Texture2D" uid="uid://cbspy1gay7xb" path="res://Spritesheets/aku-air4-ezgif.com-gif-to-sprite-converter.png" id="6_fxlwy"]
+[ext_resource type="Script" path="res://after_image_emitter.gd" id="8_0rr0r"]
 [ext_resource type="Texture2D" uid="uid://q2p4j5pwxfew" path="res://BoardSprites/running.png" id="6_ma1np"]
 [ext_resource type="Texture2D" uid="uid://oqy2vdhhgjum" path="res://BoardSprites/wallslide.png" id="7_4dalk"]
 
@@ -632,25 +633,30 @@ scale = Vector2(0.5, 0.5)
 shape = SubResource("RectangleShape2D_3fiya")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, -4.76837e-07)
-scale = Vector2(0.48718, 0.48718)
+texture_filter = 3
+scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_mupna")
 animation = &"idle animation"
 autoplay = "new_animation"
 
 [node name="dash_timer" type="Timer" parent="."]
 unique_name_in_owner = true
-wait_time = 0.1
+wait_time = 0.2
 one_shot = true
 
 [node name="coyote_timer" type="Timer" parent="."]
 wait_time = 0.3
-
-[node name="wall_timer" type="Timer" parent="."]
-wait_time = 0.1
+one_shot = true
 
 [node name="dash_cooldown_timer" type="Timer" parent="."]
 wait_time = 0.6
+one_shot = true
+
+[node name="AfterImageEmitter" type="Node2D" parent="." node_paths=PackedStringArray("animated_sprite")]
+script = ExtResource("8_0rr0r")
+enabled = false
+animated_sprite = NodePath("../AnimatedSprite2D")
+emit_frequency = 0.05
+random_colors = PackedColorArray(1, 0, 0, 0.498039, 0, 1, 0, 0.498039, 0, 0, 1, 0.498039)
 
 [connection signal="timeout" from="coyote_timer" to="." method="_on_coyote_timer_timeout"]
-[connection signal="timeout" from="dash_cooldown_timer" to="." method="_on_dash_cooldown_timer_timeout"]
