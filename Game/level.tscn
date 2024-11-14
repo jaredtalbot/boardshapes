@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://xklntftxk1rp"]
+[gd_scene load_steps=10 format=3 uid="uid://xklntftxk1rp"]
 
 [ext_resource type="Script" path="res://level.gd" id="1_rfdv8"]
 [ext_resource type="Script" path="res://level_generator.gd" id="1_rygds"]
 [ext_resource type="PackedScene" uid="uid://ca40sxi6lp5lx" path="res://touch_screen_controls.tscn" id="2_1knc0"]
 [ext_resource type="PackedScene" uid="uid://blw1ecr3vvp3q" path="res://loading_indicator.tscn" id="2_07l0p"]
 [ext_resource type="AudioStream" uid="uid://dffdk5u7kadrd" path="res://BoardWalk (1).ogg" id="5_4w55l"]
+[ext_resource type="Texture2D" uid="uid://c5o0brblu00xo" path="res://BoardSprites/QuitButton.png" id="6_crp35"]
 [ext_resource type="PackedScene" uid="uid://3poplqifejqw" path="res://goal.tscn" id="7_h3hxs"]
 
 [sub_resource type="Theme" id="Theme_1nwa3"]
@@ -26,18 +27,13 @@ visible = false
 stream = ExtResource("5_4w55l")
 parameters/looping = false
 
-[node name="QuitButton" type="Button" parent="."]
-z_as_relative = false
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -100.0
-offset_top = 16.0
-offset_right = -58.0
-offset_bottom = 47.0
-grow_horizontal = 0
-scale = Vector2(2, 2)
-text = "Quit"
+[node name="QuitButton" type="TextureButton" parent="."]
+offset_left = 1808.0
+offset_top = 2.0
+offset_right = 2355.0
+offset_bottom = 298.0
+scale = Vector2(0.2, 0.2)
+texture_normal = ExtResource("6_crp35")
 
 [node name="QuitMenu" type="CanvasLayer" parent="."]
 process_mode = 2
