@@ -1,9 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://bpgex31naxj1w"]
+[gd_scene load_steps=8 format=3 uid="uid://bpgex31naxj1w"]
 
 [ext_resource type="Script" path="res://start_menu.gd" id="1_bp1fp"]
 [ext_resource type="Script" path="res://web_pick_image_file.gd" id="2_v3sgg"]
 [ext_resource type="PackedScene" uid="uid://xklntftxk1rp" path="res://level.tscn" id="2_w46sc"]
 [ext_resource type="PackedScene" uid="uid://64bqxwu4em4s" path="res://image_confirmation.tscn" id="3_iojqf"]
+[ext_resource type="Texture2D" uid="uid://c8cs6o7sepp6n" path="res://BoardSprites/UploadButton.png" id="3_lvanf"]
+[ext_resource type="Texture2D" uid="uid://bsi82n0dq31aj" path="res://BoardSprites/BackButton.png" id="4_lf6m8"]
 [ext_resource type="PackedScene" uid="uid://cbbx0v3mpscgm" path="res://pick_image_file.tscn" id="5_lnlgg"]
 
 [node name="StartMenu" type="Control"]
@@ -33,15 +35,13 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 64
 
-[node name="UploadImageButton" type="Button" parent="VBoxContainer"]
+[node name="UploadImageButton" type="TextureButton" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 128
-text = "Upload Image..."
+texture_normal = ExtResource("3_lvanf")
 
-[node name="BackButton" type="Button" parent="VBoxContainer"]
+[node name="BackButton" type="TextureButton" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 128
-text = "Back"
+texture_normal = ExtResource("4_lf6m8")
 
 [node name="WebPickImageFile" type="Node" parent="."]
 script = ExtResource("2_v3sgg")
