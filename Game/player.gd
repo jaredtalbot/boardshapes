@@ -51,12 +51,11 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 		air_time += delta
-		if air_time > 0.25 and test_animation.animation != &"jumping":
+		if air_time > 0.05 and test_animation.animation != &"jumping":
 			test_animation.play(&"jumping")
-			test_animation.set_frame_and_progress(7, 0.0)
 		if test_animation.animation == &"jumping":
-			if test_animation.frame >= 7 and velocity.y < 0:
-				test_animation.set_frame_and_progress(7, 0.0)
+			if test_animation.frame >= 11 and velocity.y < 0:
+				test_animation.set_frame_and_progress(11, 0.0)
 	else:
 		air_time = 0.0
 		can_jump = true
@@ -94,12 +93,12 @@ func _physics_process(delta):
 			$dash_timer.start()
 			$dash_cooldown_timer.start()
 			dash_direction = get_direction()
-	
+			
 	if is_dashing:
 			if not test_move(transform, Vector2(0, 2)):
 				velocity.y = 0
 			velocity.x = dash_direction * dash_speed
-			test_animation.play("running") #todo: dash anim
+			test_animation.play("dash")
 	else:
 		if direction:
 			velocity.x = move_toward(velocity.x, direction * SPEED, acceleration * delta)
