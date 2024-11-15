@@ -80,10 +80,6 @@ func _physics_process(delta):
 			velocity.y = JUMP_VELOCITY
 			can_jump = false
 			test_animation.play(&"jumping")
-			if velocity.x > 0:
-				test_animation.flip_h = false
-			elif velocity.x < 0:
-				test_animation.flip_h = true
 		if last_position_was_wall:
 			velocity.y = JUMP_VELOCITY
 			velocity.x = get_wall_normal().x * wall_jump_power
@@ -107,10 +103,6 @@ func _physics_process(delta):
 	else:
 		if direction:
 			velocity.x = move_toward(velocity.x, direction * SPEED, acceleration * delta)
-			if velocity.x > 0:
-				test_animation.flip_h = false
-			elif velocity.x < 0:
-				test_animation.flip_h = true
 			if is_on_floor():
 				test_animation.play("running")
 		else:
@@ -126,10 +118,6 @@ func _physics_process(delta):
 		can_jump = true
 		velocity.y = wall_slide_speed
 		test_animation.play("sliding")
-		if velocity.x > 0:
-			test_animation.flip_h = false
-		elif velocity.x < 0:
-			test_animation.flip_h = true
 	
 	if is_dashing and is_on_floor() and is_on_wall():
 		bonked_wall = true
