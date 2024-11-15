@@ -1,4 +1,4 @@
-[gd_scene load_steps=90 format=3 uid="uid://crgwrl3y2s3g6"]
+[gd_scene load_steps=83 format=3 uid="uid://crgwrl3y2s3g6"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_4byla"]
 [ext_resource type="Texture2D" uid="uid://uy82qveyrefh" path="res://example_levels/chungustile.png" id="2_6ay42"]
