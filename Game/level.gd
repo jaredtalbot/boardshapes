@@ -6,6 +6,7 @@ var base_url = ProjectSettings.get_setting("application/boardwalk/web_server_url
 @onready var loading_indicator = $LoadingIndicator
 
 func create_level(img: Image):
+	
 	loading_indicator.show()
 	loading_indicator.set_text("Uploading Level...")
 	var buffer = img.save_png_to_buffer()
@@ -90,6 +91,7 @@ func _set_goal_position():
 	$StartEndSelection/EndSelect.disabled = true
 	$StartEndSelection/EndSelect.hide()
 	$TouchScreenControls.show()
+	$Goal.show()
 	get_tree().paused = false
 	
 func _goal_reached(player: Node2D):
@@ -98,3 +100,14 @@ func _goal_reached(player: Node2D):
 	
 func _on_audio_stream_player_finished():
 	$AudioStreamPlayer.play()
+
+func _on_restart_button_pressed():
+	$VictoryScreen/Victory.hide()
+	$Goal.hide()
+	
+	loading_indicator.hide()
+	get_tree().paused = true
+	$StartEndSelection/StartSelect.disabled = false
+	$StartEndSelection/StartSelect.show()
+	var player = $Player
+	player.set_physics_process(true)

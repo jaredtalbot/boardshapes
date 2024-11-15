@@ -233,6 +233,14 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Play Another Level"
 
+[node name="Restart" type="Button" parent="VictoryScreen/Victory"]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 167.0
+offset_right = 326.0
+offset_bottom = 218.0
+text = "Restart"
+
 [node name="Label" type="Label" parent="VictoryScreen/Victory"]
 layout_mode = 1
 anchors_preset = -1
@@ -259,4 +267,6 @@ text = "Level Complete!"
 [connection signal="pressed" from="StartEndSelection/EndSelect" to="." method="_set_goal_position"]
 [connection signal="pressed" from="VictoryScreen/Victory/ExitToMenu" to="." method="_on_exit_to_main_menu_button_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/PlayAnotherLevel" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/Restart" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/Restart" to="." method="_on_restart_button_pressed"]
 [connection signal="body_entered" from="Goal" to="." method="_goal_reached"]
