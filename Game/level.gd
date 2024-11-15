@@ -93,6 +93,7 @@ func _set_goal_position():
 	$StartEndSelection/EndSelect.disabled = true
 	$StartEndSelection/EndSelect.hide()
 	$TouchScreenControls.show()
+	$Goal.show()
 	get_tree().paused = false
 	
 func _goal_reached(player: Node2D):
@@ -104,6 +105,7 @@ func _on_audio_stream_player_finished():
 
 func _on_restart_button_pressed():
 	$VictoryScreen/Victory.hide()
+	$Goal.hide()
 
 	for child in get_children():
 		if child is CharacterBody2D:
