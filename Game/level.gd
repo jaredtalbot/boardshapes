@@ -1,13 +1,11 @@
 extends Node
 
 var base_url = ProjectSettings.get_setting("application/boardwalk/web_server_url")
-var original_image: Image 
 
 @onready var level_generator = $LevelGenerator
 @onready var loading_indicator = $LoadingIndicator
 
 func create_level(img: Image):
-	original_image = img
 	
 	loading_indicator.show()
 	loading_indicator.set_text("Uploading Level...")
@@ -106,10 +104,10 @@ func _on_audio_stream_player_finished():
 func _on_restart_button_pressed():
 	$VictoryScreen/Victory.hide()
 	$Goal.hide()
-
-	for child in get_children():
-		if child is CharacterBody2D:
-			child.queue_free()
-
-	if original_image:
-		create_level(original_image)
+	
+	loading_indicator.hide()
+	get_tree().paused = true
+	$StartEndSelection/StartSelect.disabled = false
+	$StartEndSelection/StartSelect.show()
+	var player = $Player
+	player.set_physics_process(true)
