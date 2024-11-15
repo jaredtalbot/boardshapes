@@ -4,8 +4,8 @@
 [ext_resource type="Script" path="res://web_pick_image_file.gd" id="2_v3sgg"]
 [ext_resource type="PackedScene" uid="uid://xklntftxk1rp" path="res://level.tscn" id="2_w46sc"]
 [ext_resource type="PackedScene" uid="uid://64bqxwu4em4s" path="res://image_confirmation.tscn" id="3_iojqf"]
-[ext_resource type="Texture2D" uid="uid://c8cs6o7sepp6n" path="res://BoardSprites/UploadButton.png" id="3_lvanf"]
-[ext_resource type="Texture2D" uid="uid://bsi82n0dq31aj" path="res://BoardSprites/BackButton.png" id="4_lf6m8"]
+[ext_resource type="Texture2D" uid="uid://c8cs6o7sepp6n" path="res://ui/UploadButton.png" id="3_lvanf"]
+[ext_resource type="Texture2D" uid="uid://bsi82n0dq31aj" path="res://ui/BackButton.png" id="4_lf6m8"]
 [ext_resource type="PackedScene" uid="uid://cbbx0v3mpscgm" path="res://pick_image_file.tscn" id="5_lnlgg"]
 
 [node name="StartMenu" type="Control"]
