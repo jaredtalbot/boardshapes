@@ -23,7 +23,7 @@ func _process(delta):
 			after_image.transform = animated_sprite.global_transform
 			after_image.flip_h = animated_sprite.flip_h
 			after_image.texture_filter = animated_sprite.texture_filter
-			after_image.modulate = random_colors[current_color % len(random_colors)]
+			after_image.color = random_colors[current_color % len(random_colors)]
 			current_color = (current_color + 1) % len(random_colors)
 			
 			get_tree().current_scene.add_child(after_image)

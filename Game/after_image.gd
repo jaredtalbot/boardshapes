@@ -1,10 +1,14 @@
 @icon("res://icons/afterimageicon.png")
 class_name AfterImage extends Sprite2D
 
+var color: Color
+
 func _ready():
 	z_index = -1
+	material = ShaderMaterial.new()
+	material.shader = preload("res://afterimage.gdshader")
+	material.set_shader_parameter("color", color)
 	var tween := create_tween()
-	var new_color = Color(modulate)
-	new_color.a = 0
-	tween.tween_property(self, "modulate", new_color, 0.5)
+	modulate = Color(1, 1, 1, 0.5)
+	tween.tween_property(self, "modulate", Color(1, 1, 1, 0), 0.75)
 	tween.tween_callback(queue_free)
