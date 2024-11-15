@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://ca40sxi6lp5lx" path="res://touch_screen_controls.tscn" id="2_1knc0"]
 [ext_resource type="PackedScene" uid="uid://blw1ecr3vvp3q" path="res://loading_indicator.tscn" id="2_07l0p"]
 [ext_resource type="AudioStream" uid="uid://dffdk5u7kadrd" path="res://BoardWalk (1).ogg" id="5_4w55l"]
-[ext_resource type="Texture2D" uid="uid://c5o0brblu00xo" path="res://BoardSprites/QuitButton.png" id="6_crp35"]
+[ext_resource type="Texture2D" uid="uid://c5o0brblu00xo" path="res://ui/QuitButton.png" id="6_crp35"]
 [ext_resource type="PackedScene" uid="uid://3poplqifejqw" path="res://goal.tscn" id="7_h3hxs"]
 
 [sub_resource type="Theme" id="Theme_1nwa3"]

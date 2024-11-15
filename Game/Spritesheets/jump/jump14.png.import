@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cbspy1gay7xb"
-path="res://.godot/imported/aku-air4-ezgif.com-gif-to-sprite-converter.png-f2cf37e11bd130466a932fb969b042b9.ctex"
+uid="uid://dpblvjs86t7pm"
+path="res://.godot/imported/jump14.png-2dc247c521dce7744d5dea9e3861327e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Spritesheets/aku-air4-ezgif.com-gif-to-sprite-converter.png"
-dest_files=["res://.godot/imported/aku-air4-ezgif.com-gif-to-sprite-converter.png-f2cf37e11bd130466a932fb969b042b9.ctex"]
+source_file="res://Spritesheets/jump/jump14.png"
+dest_files=["res://.godot/imported/jump14.png-2dc247c521dce7744d5dea9e3861327e.ctex"]
 
 [params]
 
