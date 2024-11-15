@@ -89,7 +89,8 @@ func _physics_process(delta):
 	# As good practice, you should replace UI actions with custom gameplay actions.
 	var direction = Input.get_axis("left", "right")
 		
-	if Input.is_action_just_pressed("Dash") and not is_dashing and $dash_cooldown_timer.is_stopped():
+	if Input.is_action_just_pressed("Dash") and not is_dashing \
+		and $dash_cooldown_timer.is_stopped() and not is_on_wall():
 			$dash_timer.start()
 			$dash_cooldown_timer.start()
 			dash_direction = get_direction()
@@ -116,6 +117,7 @@ func _physics_process(delta):
 		last_position_was_wall = true
 		can_jump = true
 		velocity.y = wall_slide_speed
+		$dash_timer.stop()
 		test_animation.play("sliding")
 	
 	if is_dashing and is_on_floor() and is_on_wall():

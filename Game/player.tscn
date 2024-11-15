@@ -372,7 +372,7 @@ autoplay = "new_animation"
 
 [node name="dash_timer" type="Timer" parent="."]
 unique_name_in_owner = true
-wait_time = 0.2
+wait_time = 0.15
 one_shot = true
 
 [node name="coyote_timer" type="Timer" parent="."]
