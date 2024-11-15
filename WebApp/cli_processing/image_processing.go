@@ -1,25 +1,48 @@
 package main
 
 import (
+	"codejester27/cmps401fa2024/web-app/processing"
 	"flag"
 	"fmt"
+	"mime/quotedprintable"
 	"path/filepath"
 
-	//"image"
-	//"image/png"
-	//"image/jpeg"
+	"image"
+	"image/jpeg"
+	"image/png"
 	"os"
 	"strings"
 )
 
 var rFlag = flag.Bool("r", false, "this should be resizing if called")
-var sFlag = flag.String("s", "", "Should allow a user to input a file path. Unsure on this")
+var sFlag = flag.String("s", "", "Should allow a user to input a file path for output. Unsure on this")
 var mFlag = flag.Bool("m", false, "Should meshify regions.")
 
 func main() {
 	flag.Parse()
-	var fileInput = flag.Args()
-	fileToOutput, inputDir := image_open()
+	fileInput := flag.Args()
+	fileToOutput, inputDir := file_opener(fileInput)
+
+
+
+	if *rFlag {
+		newResizedImage, err := processing.ResizeImage(fileToOutput)
+			if err != nil {
+				"fix your stuff bruh"
+			}
+
+
+		// umm image get image resize image.
+		// should allow me to resize image but should be after file Open.
+		//fileExtension := filepath.Ext(fileToOutput)
+		//if fileExtension == ".png" || ".jpeg" {
+			//fileDecoded, err = image.Decode(fileToOutput)
+			//err, fileResized := processing.ResizeImage(fileDecoded)
+		
+	
+
+	}
+
 	image_output(fileToOutput, inputDir)
 
 	fmt.Println("1:", *rFlag)
@@ -27,20 +50,32 @@ func main() {
 	fmt.Println("3:", *mFlag)
 	fmt.Println("4:", fileInput)
 
+	
 }
+	
 
-func image_open() (*os.File, string) {
-	var fileInput = flag.Args()
+func file_opener_decoder(fileInput []string) (*os.File, string) {
+	
 	joinedFileName := strings.Join(fileInput, "")
 	fileTaken, err := os.Open(joinedFileName)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(fileTaken)
+	//fmt.Println(fileTaken)
 	inputDir := filepath.Dir(joinedFileName)
 
-	return fileTaken, inputDir
+	fileExtension := filepath.Ext(fileTaken)
+	if fileExtension == ".png" || ".jpeg" {
+		img, extName, err :=image.Decode(fileTaken)
+		if err != nil {
+			panic(err)
+		}
+
+
+	return img, inputDir
 }
+
+
 
 func image_output(fileToOutput *os.File, inputDir string) {
 
@@ -54,35 +89,4 @@ func image_output(fileToOutput *os.File, inputDir string) {
 	fmt.Printf("Output file path: %s\n", outputFilePath)
 }
 
-//var simplified = flag.String("s", "./test_images/out.png", "For simplification to outputfile")
-//var meshes = flag.Bool("m", false, "For mesh conversion")
-//var resize = flag.Bool("r", false, "For Sizing")
-//var file_intake = flag.Arg(0)
 
-//if len(file_intake) == 0 {
-//	log.Println("No File Name provided")
-//	os.Exit(1)
-
-//} else if !strings.Contains(file_intake, ".jpeg") && !strings.Contains(file_intake, ".png") {
-//	file, fileErr := os.Open(file_intake)
-//
-//		if fileErr != nil {
-//			panic(fileErr)
-
-//		}
-//		defer file.Close()
-
-//		img, format, err := image.Decode(file)
-//		if err != nil {
-//			fmt.Print(err)
-
-//		} else {
-//			flag.Parse()
-//		}
-//	}
-//}
-
-//else if !strings.Contains(file_intake, ".jpeg") && !strings.Contains(file_intake, ".png") {
-//image.Decode(file_intake)
-
-//}//else
