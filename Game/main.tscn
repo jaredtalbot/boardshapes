@@ -3,8 +3,8 @@
 [ext_resource type="Script" path="res://menu.gd" id="1_py7cw"]
 [ext_resource type="Texture2D" uid="uid://bwgl64rinsl7o" path="res://ui/boardwalk2.png" id="2_0tc77"]
 [ext_resource type="Texture2D" uid="uid://dcparl8gbox7k" path="res://Whiteboard-Vector-PNG-Photos-3289639508.png" id="2_8b62a"]
-[ext_resource type="Texture2D" uid="uid://bp5lft3kbytc1" path="res://BoardSprites/StartButton.png" id="4_yh3xt"]
-[ext_resource type="Texture2D" uid="uid://fj8ln0fb8t72" path="res://BoardSprites/ExitButton.png" id="5_3uxxq"]
+[ext_resource type="Texture2D" uid="uid://bp5lft3kbytc1" path="res://ui/startbutton.png" id="4_yh3xt"]
+[ext_resource type="Texture2D" uid="uid://fj8ln0fb8t72" path="res://ui/exitbutton.png" id="5_3uxxq"]
 
 [node name="Menu" type="Control"]
 layout_mode = 3

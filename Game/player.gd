@@ -39,6 +39,11 @@ func _death():
 	position = initial_position
 
 func _physics_process(delta):
+	if velocity.x > 0:
+		test_animation.flip_h = false
+	elif velocity.x < 0:
+		test_animation.flip_h = true
+	
 	var is_dashing = not $dash_timer.is_stopped() or touched_green
 	bonked_wall = false
 	
