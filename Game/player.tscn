@@ -363,11 +363,10 @@ scale = Vector2(0.5, 0.5)
 shape = SubResource("RectangleShape2D_3fiya")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-texture_filter = 3
 position = Vector2(0, 4.76837e-07)
 scale = Vector2(0.127957, 0.127957)
 sprite_frames = SubResource("SpriteFrames_mupna")
-animation = &"sliding"
+animation = &"idle animation"
 autoplay = "new_animation"
 
 [node name="dash_timer" type="Timer" parent="."]
