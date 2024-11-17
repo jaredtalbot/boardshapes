@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://dglq7rb8pisgu"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_s6nqx"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_lqivf"]
+normal = Vector2(1, 0)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_iatb2"]
+normal = Vector2(0, 1)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_2nny7"]
+normal = Vector2(-1, 0)
+
+[node name="ScreenBarrier" type="StaticBody2D"]
+
+[node name="Floor" type="CollisionShape2D" parent="."]
+position = Vector2(0, 1080)
+shape = SubResource("WorldBoundaryShape2D_s6nqx")
+
+[node name="LeftWall" type="CollisionShape2D" parent="."]
+shape = SubResource("WorldBoundaryShape2D_lqivf")
+
+[node name="Ceiling" type="CollisionShape2D" parent="."]
+shape = SubResource("WorldBoundaryShape2D_iatb2")
+
+[node name="RightWall" type="CollisionShape2D" parent="."]
+position = Vector2(1920, 0)
+shape = SubResource("WorldBoundaryShape2D_2nny7")
