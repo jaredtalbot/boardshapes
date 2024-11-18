@@ -1,6 +1,7 @@
 import boardwalkLogo from "../img/boardwalk.svg";
 import boardmeshLogo from "../img/boardmesh.svg";
 import githubLogo from "../img/github.svg";
+import boardboxLogo from "../img/BoardBox.svg";
 import "./root.css";
 import { Outlet, Link } from "react-router-dom";
 
@@ -18,6 +19,9 @@ function Root() {
         </a>
         <a href="/manual/" target="_blank">
           <img src={boardmeshLogo} className="logo" alt="Boardmesh logo" />
+        </a>
+        <a href="/boardbox/" target="_blank">
+          <img src={boardboxLogo} className="logo2" alt="Boardbox logo" />
         </a>
         <a href="https://github.com/codeJester27/cmps401fa2024" target="_blank">
           <img src={githubLogo} className="logo" alt="Github logo" />
