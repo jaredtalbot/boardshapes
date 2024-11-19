@@ -21,7 +21,7 @@ function Root() {
           <img src={boardmeshLogo} className="logo" alt="Boardmesh logo" />
         </a>
         <a href="/boardbox/" target="_blank">
-          <img src={boardboxLogo} className="logo2" alt="Boardbox logo" />
+          <img src={boardboxLogo} className="logo" alt="Boardbox logo" />
         </a>
         <a href="https://github.com/codeJester27/cmps401fa2024" target="_blank">
           <img src={githubLogo} className="logo" alt="Github logo" />
