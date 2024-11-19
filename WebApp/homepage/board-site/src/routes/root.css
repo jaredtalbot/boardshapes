@@ -9,11 +9,21 @@
   padding: 1em;
 }
 .logo {
+  opacity: 1;
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
+
+.logo2 {
+  opacity: 1;
+  height: 6em;
+  padding: 1.5 em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #27272baa);
 }
@@ -32,5 +42,9 @@
 
 h1 {
   color: #000000;
+  font-family: "Comic Sans MS";
+}
+
+.link {
   font-family: "Comic Sans MS";
 }

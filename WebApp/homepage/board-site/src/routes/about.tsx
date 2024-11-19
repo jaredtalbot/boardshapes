@@ -25,7 +25,9 @@ function About() {
         Zach is a Fifth-Semester Junior majoring in Computer Science. He made
         the Boardwalk mobile port!
       </p>
-      <Link to={`/`}>Return Home!</Link>
+      <Link to={`/`} className="link">
+        Return Home!
+      </Link>
     </>
   );
 }

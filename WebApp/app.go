@@ -316,6 +316,7 @@ func main() {
 	logged.Static("/assets", "./homepage/board-site/dist/assets")
 	logged.Static("/boardwalk", "./exported-game")
 	logged.StaticFile("/manual", "./exported-manual/User Manual.pdf")
+	logged.Static("/boardbox", "./exported-boardbox")
 	logged.POST("/api/simplify", simplifyImage)
 	logged.POST("/api/build-level", buildLevel)
 	router.GET("/api/ws", connectWebsocket)
