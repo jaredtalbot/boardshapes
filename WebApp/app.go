@@ -71,7 +71,7 @@ func simplifyImage(c *gin.Context) {
 		return
 	}
 
-	newImg, regionCount, _ := processing.SimplifyImage(img)
+	newImg, regionCount, _ := processing.SimplifyImage(img, processing.RegionMapOptions{NoColorSeparation: false, AllowWhite: false})
 
 	buf := new(bytes.Buffer)
 	if err := png.Encode(buf, newImg); err != nil {
@@ -111,6 +111,8 @@ func buildLevel(c *gin.Context) {
 	}
 
 	preserveColor := c.Request.FormValue("preserveColor")
+	noColorSeparation := c.Request.FormValue("noColorSeparation")
+	allowWhite := c.Request.FormValue("allowWhite")
 
 	contentType := fileh.Header.Get("Content-Type")
 	var img image.Image
@@ -138,7 +140,10 @@ func buildLevel(c *gin.Context) {
 		return
 	}
 
-	newImg, _, regionMap := processing.SimplifyImage(img)
+	newImg, _, regionMap := processing.SimplifyImage(img, processing.RegionMapOptions{
+		NoColorSeparation: noColorSeparation == "true",
+		AllowWhite:        allowWhite == "true",
+	})
 
 	numRegions := len(regionMap.GetRegions())
 	data := make([]RegionData, 0, numRegions)

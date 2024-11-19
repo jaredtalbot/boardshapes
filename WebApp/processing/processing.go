@@ -19,6 +19,7 @@ var Green color.NRGBA = color.NRGBA{uint8(0), uint8(255), uint8(0), uint8(255)}
 var Blue color.NRGBA = color.NRGBA{uint8(0), uint8(0), uint8(255), uint8(255)}
 var White color.NRGBA = color.NRGBA{uint8(255), uint8(255), uint8(255), uint8(255)}
 var Black color.NRGBA = color.NRGBA{uint8(0), uint8(0), uint8(0), uint8(255)}
+var Blank color.NRGBA = color.NRGBA{uint8(0), uint8(0), uint8(0), uint8(0)}
 
 func absDiff[T int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint32 | uint64](a T, b T) T {
 	if a > b {
@@ -301,10 +302,14 @@ func ResizeImage(img image.Image) (image.Image, error) {
 	return img, nil
 }
 
-func SimplifyImage(img image.Image) (result image.Image, regionCount int, regionMap *RegionMap) {
+func SimplifyImage(img image.Image, options RegionMapOptions) (result image.Image, regionCount int, regionMap *RegionMap) {
 	bd := img.Bounds()
-	newImg := image.NewPaletted(bd, color.Palette{White, Black, Red, Green, Blue})
-	// newImg := image.NewNRGBA(bd)
+	var newImg *image.Paletted
+	if options.AllowWhite {
+		newImg = image.NewPaletted(bd, color.Palette{Blank, White, Black, Red, Green, Blue})
+	} else {
+		newImg = image.NewPaletted(bd, color.Palette{White, Black, Red, Green, Blue})
+	}
 
 	for y := bd.Min.Y; y < bd.Max.Y; y++ {
 		for x := bd.Min.X; x < bd.Max.X; x++ {
@@ -313,7 +318,11 @@ func SimplifyImage(img image.Image) (result image.Image, regionCount int, region
 			var newPixelColor color.NRGBA
 			avg := (r + g + b) / 3
 			if a < 10 {
-				newPixelColor = White
+				if options.AllowWhite {
+					newPixelColor = Blank
+				} else {
+					newPixelColor = White
+				}
 			} else if max(absDiff(avg, r), absDiff(avg, g), absDiff(avg, b)) < 10 {
 				// todo: better way to detect black maybe
 				if max(r, g, b) > 115 {
@@ -334,10 +343,17 @@ func SimplifyImage(img image.Image) (result image.Image, regionCount int, region
 		}
 	}
 
-	regionMap = BuildRegionMap(newImg, func(r *Region) bool {
+	var removedColor color.Color
+	if options.AllowWhite {
+		removedColor = Blank
+	} else {
+		removedColor = White
+	}
+
+	regionMap = BuildRegionMap(newImg, options, func(r *Region) bool {
 		if len(*r) < MINIMUM_NUMBER_OF_PIXELS_FOR_VALID_REGION {
 			for _, pixel := range *r {
-				newImg.Set(int(pixel.X), int(pixel.Y), White)
+				newImg.Set(int(pixel.X), int(pixel.Y), removedColor)
 			}
 			return false
 		} else {
