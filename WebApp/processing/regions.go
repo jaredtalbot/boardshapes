@@ -49,6 +49,7 @@ type RegionMap struct {
 	regions        []*Region
 	pixels         map[Pixel]*RegionIndex
 	regionPointers []*RegionIndex
+	//todo
 }
 
 func (rm *RegionMap) NewRegion(pixel Pixel) (region *RegionIndex) {

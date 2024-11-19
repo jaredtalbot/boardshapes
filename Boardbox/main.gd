@@ -41,7 +41,7 @@ func create_level(img: Image):
 	loading_indicator.show()
 	loading_indicator.set_text("Uploading Image...")
 	var buffer = img.save_png_to_buffer()
-	var request = FileUploader.upload_buffer(base_url + "/api/build-level", buffer, "image.png", HTTPClient.METHOD_POST, "image")
+	var request = FileUploader.upload_buffer(base_url + "/api/build-level", buffer, "image.png", HTTPClient.METHOD_POST, "image", {"preserveColor": "true"})
 	request.request_completed.connect(_on_response_received)
 
 func _on_response_received(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray):

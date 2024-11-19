@@ -110,6 +110,8 @@ func buildLevel(c *gin.Context) {
 		panic(err)
 	}
 
+	preserveColor := c.Request.FormValue("preserveColor")
+
 	contentType := fileh.Header.Get("Content-Type")
 	var img image.Image
 	switch contentType {
@@ -161,8 +163,14 @@ func buildLevel(c *gin.Context) {
 
 		regionImage := image.NewNRGBA(region.GetBounds())
 
-		for j := 0; j < len(region); j++ {
-			regionImage.Set(int(region[j].X), int(region[j].Y), regionColor)
+		if preserveColor == "true" {
+			for j := 0; j < len(region); j++ {
+				regionImage.Set(int(region[j].X), int(region[j].Y), img.At(int(region[j].X), int(region[j].Y)))
+			}
+		} else {
+			for j := 0; j < len(region); j++ {
+				regionImage.Set(int(region[j].X), int(region[j].Y), regionColor)
+			}
 		}
 
 		buf := new(bytes.Buffer)
