@@ -15,7 +15,6 @@ import (
 var Cyan color.NRGBA = color.NRGBA{uint8(0), uint8(255), uint8(255), uint8(255)}
 var Magenta color.NRGBA = color.NRGBA{uint8(255), uint8(0), uint8(255), uint8(255)}
 var Yellow color.NRGBA = color.NRGBA{uint8(255), uint8(255), uint8(0), uint8(255)}
-var Blank color.NRGBA = color.NRGBA{uint8(0), uint8(0), uint8(0), uint8(0)}
 
 func generateRegion(img image.Image) *Region {
 	region := make(Region, 0, img.Bounds().Dx()*img.Bounds().Dy())

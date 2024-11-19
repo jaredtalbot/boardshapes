@@ -6,16 +6,16 @@ import (
 	"slices"
 )
 
-func BuildRegionMap(img image.Image, predicate func(*Region) bool) *RegionMap {
-	regionMap := RegionMap{make([]*Region, 0, 20), make(map[Pixel]*RegionIndex, (img.Bounds().Dx()*img.Bounds().Dy())/4), make([]*RegionIndex, 0)}
+func BuildRegionMap(img image.Image, options RegionMapOptions, predicate func(*Region) bool) *RegionMap {
+	regionMap := RegionMap{make([]*Region, 0, 20), make(map[Pixel]*RegionIndex, (img.Bounds().Dx()*img.Bounds().Dy())/4), make([]*RegionIndex, 0), options}
 
 	bd := img.Bounds()
 
 	for y := bd.Min.Y; y < bd.Max.Y; y++ {
 		for x := bd.Min.X; x < bd.Max.X; x++ {
 			pixel := Pixel{uint16(x), uint16(y)}
-
-			if img.At(x, y) != White {
+			c := img.At(x, y)
+			if c != Blank && (regionMap.options.AllowWhite || c != White) {
 				regionMap.AddPixelToRegionMap(pixel, img)
 			}
 		}
@@ -49,6 +49,11 @@ type RegionMap struct {
 	regions        []*Region
 	pixels         map[Pixel]*RegionIndex
 	regionPointers []*RegionIndex
+	options        RegionMapOptions
+}
+
+type RegionMapOptions struct {
+	NoColorSeparation, AllowWhite bool
 }
 
 func (rm *RegionMap) NewRegion(pixel Pixel) (region *RegionIndex) {
@@ -72,8 +77,8 @@ func (rm *RegionMap) AddPixelToRegionMap(pixel Pixel, img image.Image) {
 	colorLeft := img.At(int(pixel.X)-1, int(pixel.Y))
 	regionAbove, hasRegionAbove := rm.pixels[Pixel{pixel.X, pixel.Y - 1}]
 	colorAbove := img.At(int(pixel.X), int(pixel.Y)-1)
-	if hasRegionLeft && ColorRegionEquivalence(colorP, colorLeft) {
-		if hasRegionAbove && ColorRegionEquivalence(colorP, colorAbove) && *regionLeft != *regionAbove { // time to merge regions
+	if hasRegionLeft && (rm.options.NoColorSeparation || ColorRegionEquivalence(colorP, colorLeft)) {
+		if hasRegionAbove && (rm.options.NoColorSeparation || ColorRegionEquivalence(colorP, colorAbove)) && *regionLeft != *regionAbove { // time to merge regions
 			pixelsInRegionAbove := rm.regions[*regionAbove]
 			// grow left region to fit the above region
 			mergedRegion := slices.Grow(*rm.regions[*regionLeft], len(*rm.regions[*regionLeft])+len(*pixelsInRegionAbove)+1)
@@ -91,7 +96,7 @@ func (rm *RegionMap) AddPixelToRegionMap(pixel Pixel, img image.Image) {
 			*regionAbove = *regionLeft
 		}
 		rm.AddPixelToRegion(pixel, regionLeft)
-	} else if hasRegionAbove && ColorRegionEquivalence(colorP, colorAbove) {
+	} else if hasRegionAbove && (rm.options.NoColorSeparation || ColorRegionEquivalence(colorP, colorAbove)) {
 		rm.AddPixelToRegion(pixel, regionAbove)
 	} else {
 		rm.NewRegion(pixel)

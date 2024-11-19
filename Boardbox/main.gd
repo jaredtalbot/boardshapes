@@ -8,6 +8,10 @@ var base_url = ProjectSettings.get_setting("application/boardbox/web_server_url"
 @onready var error_dialog = $ErrorDialog
 @onready var shape_generator = $ShapeGenerator
 @onready var shapes = $Shapes
+@onready var preserve_color_check = $Buttons/CheckContainer/CheckVBoxContainer/PreserveColorCheck
+@onready var no_color_separation_check = $Buttons/CheckContainer/CheckVBoxContainer/NoColorSeparationCheck
+@onready var allow_white_check = $Buttons/CheckContainer/CheckVBoxContainer/AllowWhiteCheck
+
 
 
 func _on_upload_image_button_pressed():
@@ -41,7 +45,12 @@ func create_level(img: Image):
 	loading_indicator.show()
 	loading_indicator.set_text("Uploading Image...")
 	var buffer = img.save_png_to_buffer()
-	var request = FileUploader.upload_buffer(base_url + "/api/build-level", buffer, "image.png", HTTPClient.METHOD_POST, "image")
+	var request = FileUploader.upload_buffer(base_url + "/api/build-level", buffer, "image.png", \
+		HTTPClient.METHOD_POST, "image", {
+			"preserveColor": preserve_color_check.button_pressed,
+			"noColorSeparation": no_color_separation_check.button_pressed,
+			"allowWhite": allow_white_check.button_pressed,
+		})
 	request.request_completed.connect(_on_response_received)
 
 func _on_response_received(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray):
