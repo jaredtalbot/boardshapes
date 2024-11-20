@@ -25,3 +25,11 @@ h1 {
 .link {
   font-family: "Comic Sans MS";
 }
+
+.link:hover {
+  filter: drop-shadow(0 0 1em #5353ffaa);
+}
+
+.link.react:hover {
+  filter: drop-shadow(0 0 1em #5353ffaa);
+}
