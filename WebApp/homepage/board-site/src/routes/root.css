@@ -1,25 +1,39 @@
 #root {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
 }
+
+.body1 {
+  margin: 0 auto;
+  padding-left: 4em;
+  padding-right: 4em;
+  padding-bottom: 3em;
+  text-align: center;
+  color: black;
+}
+
+.AboutTitle {
+  color: #000000;
+  font-size: xx-large;
+  padding-top: 1em;
+}
+
+.AboutDescription {
+  color: #000000;
+  font-size: large;
+  padding-top: 0.25em;
+}
+
 .logoMain {
   height: 20em;
   padding: 1em;
 }
+
 .logo {
   opacity: 1;
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: all 300ms;
-}
-
-.logo2 {
-  opacity: 1;
-  height: 6em;
-  padding: 1.5 em;
+  height: 2em;
+  padding: 1em;
   will-change: filter;
   transition: all 300ms;
 }
@@ -28,6 +42,7 @@
   filter: drop-shadow(0 0 2em #27272baa);
   transform: scale(1.2);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #27272baa);
 }
@@ -38,16 +53,6 @@
 
 .read-the-docs {
   color: #888;
-  font-family: "Comic Sans MS";
-}
-
-h1 {
-  color: #000000;
-  font-family: "Comic Sans MS";
-}
-
-.link {
-  font-family: "Comic Sans MS";
 }
 
 .link:hover {
