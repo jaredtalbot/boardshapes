@@ -61,6 +61,7 @@ func _physics_process(delta):
 		can_jump = true
 		
 	if is_on_floor():
+		$land_particles.emitting = true
 		can_jump = true
 		last_position_was_floor = true
 		last_position_was_wall = false
@@ -119,6 +120,16 @@ func _physics_process(delta):
 		velocity.y = wall_slide_speed
 		$dash_timer.stop()
 		test_animation.play("sliding")
+		$slide_particles_right.emitting = true
+		$slide_particles_left.emitting = true
+		if test_animation.flip_h == false:
+			$slide_particles_left.emitting = false
+		elif test_animation.flip_h == true:
+			$slide_particles_right.emitting = false
+	
+	if !is_on_wall():
+		$slide_particles_right.emitting = false
+		$slide_particles_left.emitting = false
 	
 	if is_dashing and is_on_floor() and is_on_wall():
 		bonked_wall = true
