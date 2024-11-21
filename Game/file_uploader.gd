@@ -5,14 +5,14 @@ var crypto = Crypto.new()
 const filler_chars = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 var nfiller_chars = filler_chars.length()
 
-func upload_file(url: String, filepath: String, method: HTTPClient.Method, fieldname: String = "file") -> HTTPRequest:
+func upload_file(url: String, filepath: String, method: HTTPClient.Method, fieldname: String = "file", other_fields: Dictionary = {}) -> HTTPRequest:
 	var file_data = FileAccess.get_file_as_bytes(filepath)
 	if file_data.size() <= 0:
 		print(FileAccess.get_open_error())
 		return null
-	return upload_buffer(url, file_data, filepath.get_file(), method, fieldname)
+	return upload_buffer(url, file_data, filepath.get_file(), method, fieldname, other_fields)
 
-func upload_buffer(url: String, buffer: PackedByteArray, filename: String, method: HTTPClient.Method, fieldname: String = "file") -> HTTPRequest:
+func upload_buffer(url: String, buffer: PackedByteArray, filename: String, method: HTTPClient.Method, fieldname: String = "file", other_fields: Dictionary = {}) -> HTTPRequest:
 	var boundary = generate_boundary(16)
 	
 	var extension = filename.get_extension()
@@ -33,6 +33,13 @@ func upload_buffer(url: String, buffer: PackedByteArray, filename: String, metho
 		% [fieldname, filename]).to_utf8_buffer())
 	body.append_array(("\r\nContent-Type: %s\r\n\r\n" % mime_type).to_utf8_buffer())
 	body.append_array(buffer)
+	
+	for k in other_fields:
+		body.append_array("\r\n--".to_utf8_buffer())
+		body.append_array(boundary)
+		body.append_array(("\r\nContent-Disposition: form-data; name=\"%s\"\r\n\r\n%s" \
+			% [k, str(other_fields[k])]).to_utf8_buffer())
+	
 	body.append_array("\r\n--".to_utf8_buffer())
 	body.append_array(boundary)
 	body.append_array("--\r\n".to_utf8_buffer())

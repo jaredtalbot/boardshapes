@@ -33,8 +33,6 @@ func generate_nodes(json_string: String) -> Node:
 				col.add_to_group("Green")
 			"Blue":
 				col.add_to_group("Blue")
-			"Black":
-				pass
 		level.add_child(region)
 	return level
 
