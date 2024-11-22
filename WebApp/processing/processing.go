@@ -19,12 +19,29 @@ var Green color.NRGBA = color.NRGBA{uint8(0), uint8(255), uint8(0), uint8(255)}
 var Blue color.NRGBA = color.NRGBA{uint8(0), uint8(0), uint8(255), uint8(255)}
 var White color.NRGBA = color.NRGBA{uint8(255), uint8(255), uint8(255), uint8(255)}
 var Black color.NRGBA = color.NRGBA{uint8(0), uint8(0), uint8(0), uint8(255)}
+var Blank color.NRGBA = color.NRGBA{uint8(0), uint8(0), uint8(0), uint8(0)}
 
 func absDiff[T int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint32 | uint64](a T, b T) T {
 	if a > b {
 		return a - b
 	}
 	return b - a
+}
+
+func GetNRGBA(c color.Color) color.NRGBA {
+	var r, g, b, a uint32
+
+	if nrgba, ok := c.(color.NRGBA); ok {
+		// use non-alpha-premultiplied colors
+		return nrgba
+	}
+	// use alpha-premultiplied colors
+	r, g, b, a = c.RGBA()
+	mult := 65535 / float64(a)
+	// undo alpha-premultiplication
+	r, g, b = uint32(float64(r)*mult), uint32(float64(g)*mult), uint32(float64(b)*mult)
+	// reduce from 0-65535 to 0-255
+	return color.NRGBA{uint8(r / 256), uint8(g / 256), uint8(b / 256), uint8(a / 256)}
 }
 
 // func manhattanDistance(a Vertex, b Vertex) int {
@@ -215,6 +232,30 @@ func (region *Region) CreateMesh() (mesh []Vertex, err error) {
 	}
 }
 
+func DotProduct(x1, x2, y1, y2 float64) float64 {
+	answer := (x1 * x2) + (y1 * y2)
+	return answer
+}
+
+func (v1 Vertex) DirectionTo(v2 Vertex) (x, y float64) {
+	answerX := float64(v2.X - v1.X)
+	answerY := float64(v2.Y - v1.Y)
+	mag := math.Sqrt((answerX * answerX) + (answerY * answerY))
+	return (answerX / mag), (answerY / mag)
+}
+
+func StraightOpt(sortedVertexMesh []Vertex) []Vertex {
+	for i := 2; i < len(sortedVertexMesh); i++ {
+		x1, y1 := sortedVertexMesh[i-2].DirectionTo(sortedVertexMesh[i-1])
+		x2, y2 := sortedVertexMesh[i-1].DirectionTo(sortedVertexMesh[i])
+		if x1 == x2 && y1 == y2 {
+			sortedVertexMesh = append(sortedVertexMesh[:i-1], sortedVertexMesh[i:]...)
+			i--
+		}
+	}
+	return sortedVertexMesh
+}
+
 func PrintMatrix(matrix [][]bool) {
 	for _, s := range matrix {
 		for _, v := range s {
@@ -261,20 +302,27 @@ func ResizeImage(img image.Image) (image.Image, error) {
 	return img, nil
 }
 
-func SimplifyImage(img image.Image) (result image.Image, regionCount int) {
+func SimplifyImage(img image.Image, options RegionMapOptions) (result image.Image, regionCount int, regionMap *RegionMap) {
 	bd := img.Bounds()
-	newImg := image.NewPaletted(bd, color.Palette{White, Black, Red, Green, Blue})
-	// newImg := image.NewNRGBA(bd)
+	var newImg *image.Paletted
+	if options.AllowWhite {
+		newImg = image.NewPaletted(bd, color.Palette{Blank, White, Black, Red, Green, Blue})
+	} else {
+		newImg = image.NewPaletted(bd, color.Palette{White, Black, Red, Green, Blue})
+	}
 
 	for y := bd.Min.Y; y < bd.Max.Y; y++ {
 		for x := bd.Min.X; x < bd.Max.X; x++ {
-			r, g, b, a := img.At(x, y).RGBA()
-			r, g, b = r/256, g/256, b/256
-
+			c := GetNRGBA(img.At(x, y))
+			r, g, b, a := int(c.R), int(c.G), int(c.B), int(c.A)
 			var newPixelColor color.NRGBA
 			avg := (r + g + b) / 3
 			if a < 10 {
-				newPixelColor = White
+				if options.AllowWhite {
+					newPixelColor = Blank
+				} else {
+					newPixelColor = White
+				}
 			} else if max(absDiff(avg, r), absDiff(avg, g), absDiff(avg, b)) < 10 {
 				// todo: better way to detect black maybe
 				if max(r, g, b) > 115 {
@@ -295,26 +343,26 @@ func SimplifyImage(img image.Image) (result image.Image, regionCount int) {
 		}
 	}
 
-	regionMap := BuildRegionMap(newImg)
-
-	// colors := []color.Color{Black, Red, Green, Blue}
-	for region := range regionMap.GetRegions() {
-		region := regionMap.GetRegion(RegionIndex(region))
-		// randColor := color.NRGBA{uint8(rand.Intn(256)), uint8(rand.Intn(256)), uint8(rand.Intn(256)), uint8(255)}
-		// randColor := colors[rand.Intn(len(colors))]
-		if len(region) < MINIMUM_NUMBER_OF_PIXELS_FOR_VALID_REGION {
-			for _, pixel := range region {
-				newImg.Set(int(pixel.X), int(pixel.Y), White)
-			}
-		} else {
-			regionCount++
-			// for _, pixel := range region {
-			// 	newImg.Set(int(pixel.X), int(pixel.Y), Black)
-			// }
-		}
+	var removedColor color.Color
+	if options.AllowWhite {
+		removedColor = Blank
+	} else {
+		removedColor = White
 	}
 
-	return newImg, regionCount
+	regionMap = BuildRegionMap(newImg, options, func(r *Region) bool {
+		if len(*r) < MINIMUM_NUMBER_OF_PIXELS_FOR_VALID_REGION {
+			for _, pixel := range *r {
+				newImg.Set(int(pixel.X), int(pixel.Y), removedColor)
+			}
+			return false
+		} else {
+			regionCount++
+			return true
+		}
+	})
+
+	return newImg, regionCount, regionMap
 }
 
 func forNonDiagonalAdjacents(x, y uint16, maxX, maxY int, function func(x, y uint16)) {

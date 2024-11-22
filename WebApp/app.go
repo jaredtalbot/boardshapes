@@ -13,7 +13,6 @@ import (
 
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"runtime"
 	"slices"
@@ -72,7 +71,7 @@ func simplifyImage(c *gin.Context) {
 		return
 	}
 
-	newImg, regionCount := processing.SimplifyImage(img)
+	newImg, regionCount, _ := processing.SimplifyImage(img, processing.RegionMapOptions{NoColorSeparation: false, AllowWhite: false})
 
 	buf := new(bytes.Buffer)
 	if err := png.Encode(buf, newImg); err != nil {
@@ -111,6 +110,10 @@ func buildLevel(c *gin.Context) {
 		panic(err)
 	}
 
+	preserveColor := c.Request.FormValue("preserveColor")
+	noColorSeparation := c.Request.FormValue("noColorSeparation")
+	allowWhite := c.Request.FormValue("allowWhite")
+
 	contentType := fileh.Header.Get("Content-Type")
 	var img image.Image
 	switch contentType {
@@ -137,9 +140,10 @@ func buildLevel(c *gin.Context) {
 		return
 	}
 
-	newImg, _ := processing.SimplifyImage(img)
-
-	regionMap := processing.BuildRegionMap(newImg)
+	newImg, _, regionMap := processing.SimplifyImage(img, processing.RegionMapOptions{
+		NoColorSeparation: noColorSeparation == "true",
+		AllowWhite:        allowWhite == "true",
+	})
 
 	numRegions := len(regionMap.GetRegions())
 	data := make([]RegionData, 0, numRegions)
@@ -149,11 +153,29 @@ func buildLevel(c *gin.Context) {
 
 		minX, minY := processing.FindRegionPosition(region)
 		regionColor := processing.GetColorOfRegion(region, newImg)
+		var regionColorString string
+
+		switch regionColor {
+		case processing.Red:
+			regionColorString = "Red"
+		case processing.Green:
+			regionColorString = "Green"
+		case processing.Blue:
+			regionColorString = "Blue"
+		case processing.Black:
+			regionColorString = "Black"
+		}
 
 		regionImage := image.NewNRGBA(region.GetBounds())
 
-		for j := 0; j < len(region); j++ {
-			regionImage.Set(int(region[j].X), int(region[j].Y), regionColor)
+		if preserveColor == "true" {
+			for j := 0; j < len(region); j++ {
+				regionImage.Set(int(region[j].X), int(region[j].Y), img.At(int(region[j].X), int(region[j].Y)))
+			}
+		} else {
+			for j := 0; j < len(region); j++ {
+				regionImage.Set(int(region[j].X), int(region[j].Y), regionColor)
+			}
 		}
 
 		buf := new(bytes.Buffer)
@@ -166,8 +188,8 @@ func buildLevel(c *gin.Context) {
 		if err != nil {
 			continue
 		}
-
-		r := RegionData{i, regionColor, minX, minY, base64Region, mesh}
+		optimizedMesh := processing.StraightOpt(mesh)
+		r := RegionData{i, regionColor, regionColorString, minX, minY, base64Region, optimizedMesh}
 		data = append(data, r)
 	}
 
@@ -191,12 +213,13 @@ func buildLevel(c *gin.Context) {
 }
 
 type RegionData struct {
-	RegionNumber int                 `json:"regionNumber"`
-	RegionColor  color.Color         `json:"regionColor"`
-	CornerX      int                 `json:"cornerX"`
-	CornerY      int                 `json:"cornerY"`
-	RegionImage  string              `json:"regionImage"`
-	Mesh         []processing.Vertex `json:"mesh"`
+	RegionNumber      int                 `json:"regionNumber"`
+	RegionColor       color.Color         `json:"regionColor"`
+	RegionColorString string              `json:"regionColorString"`
+	CornerX           int                 `json:"cornerX"`
+	CornerY           int                 `json:"cornerY"`
+	RegionImage       string              `json:"regionImage"`
+	Mesh              []processing.Vertex `json:"mesh"`
 }
 
 type AttachedFile struct {
@@ -298,22 +321,15 @@ func main() {
 
 	// cors
 	logged.Use(func(ctx *gin.Context) {
-		origin := ctx.Request.Header.Get("Origin")
-		originUrl, err := url.Parse(origin)
-		if err != nil {
-			return
-		}
-		hostname := originUrl.Hostname()
-
-		switch hostname {
-		case "cmps401fa2024.onrender.com", "www.boardmesh.app", "boardmesh.app", "localhost":
-			ctx.Header("Access-Control-Allow-Origin", origin)
-			ctx.Header("Vary", "Origin")
-		}
+		ctx.Header("Access-Control-Allow-Origin", "*")
 	})
 
+	logged.StaticFile("/", "./homepage/board-site/dist/index.html")
+	logged.StaticFile("/board.svg", "./homepage/board-site/dist/board.svg")
+	logged.Static("/assets", "./homepage/board-site/dist/assets")
 	logged.Static("/boardwalk", "./exported-game")
-	logged.GET("/", func(ctx *gin.Context) { ctx.Redirect(http.StatusTemporaryRedirect, "/boardwalk") })
+	logged.StaticFile("/manual", "./exported-manual/User Manual.pdf")
+	logged.Static("/boardbox", "./exported-boardbox")
 	logged.POST("/api/simplify", simplifyImage)
 	logged.POST("/api/build-level", buildLevel)
 	router.GET("/api/ws", connectWebsocket)

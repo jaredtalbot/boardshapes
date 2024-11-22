@@ -1,11 +1,21 @@
-[gd_scene load_steps=4 format=3 uid="uid://xklntftxk1rp"]
+[gd_scene load_steps=10 format=3 uid="uid://xklntftxk1rp"]
 
 [ext_resource type="Script" path="res://level.gd" id="1_rfdv8"]
 [ext_resource type="Script" path="res://level_generator.gd" id="1_rygds"]
+[ext_resource type="PackedScene" uid="uid://ca40sxi6lp5lx" path="res://touch_screen_controls.tscn" id="2_1knc0"]
 [ext_resource type="PackedScene" uid="uid://blw1ecr3vvp3q" path="res://loading_indicator.tscn" id="2_07l0p"]
+[ext_resource type="AudioStream" uid="uid://dffdk5u7kadrd" path="res://BoardWalk (1).ogg" id="5_4w55l"]
+[ext_resource type="Texture2D" uid="uid://c5o0brblu00xo" path="res://ui/QuitButton.png" id="6_crp35"]
+[ext_resource type="PackedScene" uid="uid://3poplqifejqw" path="res://goal.tscn" id="7_h3hxs"]
+
+[sub_resource type="Theme" id="Theme_1nwa3"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2uk85"]
 
 [node name="Level" type="Node"]
 script = ExtResource("1_rfdv8")
+
+[node name="TouchScreenControls" parent="." instance=ExtResource("2_1knc0")]
 
 [node name="LevelGenerator" type="Node" parent="."]
 script = ExtResource("1_rygds")
@@ -13,19 +23,250 @@ script = ExtResource("1_rygds")
 [node name="LoadingIndicator" parent="." instance=ExtResource("2_07l0p")]
 visible = false
 
-[node name="BackButton" type="Button" parent="."]
-anchors_preset = -1
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_4w55l")
+parameters/looping = false
+
+[node name="QuitButton" type="TextureButton" parent="."]
+offset_left = 1808.0
+offset_top = 2.0
+offset_right = 2355.0
+offset_bottom = 298.0
+scale = Vector2(0.2, 0.2)
+texture_normal = ExtResource("6_crp35")
+
+[node name="QuitMenu" type="CanvasLayer" parent="."]
+process_mode = 2
+
+[node name="QuitWindow" type="Window" parent="QuitMenu"]
+transparent_bg = true
+title = "Quit Level"
+initial_position = 1
+size = Vector2i(800, 600)
+visible = false
+content_scale_mode = 1
+content_scale_stretch = 1
+content_scale_factor = 3.0
+theme = SubResource("Theme_1nwa3")
+
+[node name="Label" type="Label" parent="QuitMenu/QuitWindow"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -115.0
+offset_top = -11.5
+offset_right = 115.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Do you want to quit the level?"
+label_settings = SubResource("LabelSettings_2uk85")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackButton" type="Button" parent="QuitMenu/QuitWindow"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = -50.0
+offset_right = 95.0
+offset_bottom = -19.0
+grow_vertical = 0
+text = "Yes"
+
+[node name="ResumeButton" type="Button" parent="QuitMenu/QuitWindow"]
+anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -23.0
-offset_top = -24.0
-offset_right = -15.0
-offset_bottom = -16.0
+offset_left = -81.0
+offset_top = -50.0
+offset_right = -36.0
+offset_bottom = -19.0
 grow_horizontal = 0
 grow_vertical = 0
-text = "Back"
-alignment = 2
+text = "No"
 
-[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
+[node name="StartEndSelection" type="CanvasLayer" parent="."]
+
+[node name="StartSelect" type="TextureButton" parent="StartEndSelection"]
+process_mode = 2
+visible = false
+z_index = 10
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1051.5
+offset_top = -615.0
+offset_right = 1051.5
+offset_bottom = 615.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+
+[node name="Panel" type="Panel" parent="StartEndSelection/StartSelect"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -199.5
+offset_top = 87.0
+offset_right = 200.5
+offset_bottom = 172.0
+grow_horizontal = 2
+
+[node name="Label" type="Label" parent="StartEndSelection/StartSelect/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -201.0
+offset_top = -36.0
+offset_right = 66.0
+offset_bottom = 13.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.5, 1.5)
+text = "Click where you want the player to start"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="EndSelect" type="TextureButton" parent="StartEndSelection"]
+process_mode = 2
+visible = false
+z_index = 10
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1051.5
+offset_top = -615.0
+offset_right = 1051.5
+offset_bottom = 615.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+
+[node name="Panel" type="Panel" parent="StartEndSelection/EndSelect"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -199.5
+offset_top = 87.0
+offset_right = 200.5
+offset_bottom = 172.0
+grow_horizontal = 2
+
+[node name="Label" type="Label" parent="StartEndSelection/EndSelect/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -201.0
+offset_top = -36.0
+offset_right = 66.0
+offset_bottom = 13.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.5, 1.5)
+text = "Click where you want the goal to be"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="VictoryScreen" type="CanvasLayer" parent="."]
+
+[node name="Victory" type="Panel" parent="VictoryScreen"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -246.0
+offset_right = 250.0
+offset_bottom = 166.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ExitToMenu" type="Button" parent="VictoryScreen/Victory"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -75.5
+offset_top = 42.0
+offset_right = 75.5
+offset_bottom = 92.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Exit To Main Menu"
+
+[node name="PlayAnotherLevel" type="Button" parent="VictoryScreen/Victory"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -76.0
+offset_top = 121.0
+offset_right = 76.0
+offset_bottom = 171.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Play Another Level"
+
+[node name="Restart" type="Button" parent="VictoryScreen/Victory"]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 167.0
+offset_right = 326.0
+offset_bottom = 218.0
+text = "Restart"
+
+[node name="Label" type="Label" parent="VictoryScreen/Victory"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.442
+anchor_right = 0.5
+anchor_bottom = 0.442
+offset_left = -217.0
+offset_top = -152.2
+offset_right = -93.0
+offset_bottom = -129.2
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(3.5, 3.5)
+text = "Level Complete!"
+
+[node name="Goal" parent="." instance=ExtResource("7_h3hxs")]
+
+[connection signal="finished" from="AudioStreamPlayer" to="." method="_on_audio_stream_player_finished"]
+[connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="QuitMenu/QuitWindow/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="QuitMenu/QuitWindow/ResumeButton" to="." method="_on_no_button_pressed"]
+[connection signal="pressed" from="StartEndSelection/StartSelect" to="." method="_set_player_start"]
+[connection signal="pressed" from="StartEndSelection/EndSelect" to="." method="_set_goal_position"]
+[connection signal="pressed" from="VictoryScreen/Victory/ExitToMenu" to="." method="_on_exit_to_main_menu_button_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/PlayAnotherLevel" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/Restart" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/Restart" to="." method="_on_restart_pressed"]
+[connection signal="body_entered" from="Goal" to="." method="_goal_reached"]

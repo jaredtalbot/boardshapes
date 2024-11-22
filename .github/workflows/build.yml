@@ -25,6 +25,7 @@ jobs:
               - 'DiscordBot/**'
             godot:
               - 'Game/**'
+              - 'Boardbox/**'
 
   go-build:
     needs: detect-changes

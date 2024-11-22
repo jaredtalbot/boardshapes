@@ -1,0 +1,42 @@
+[gd_scene load_steps=4 format=3 uid="uid://car8jujthwian"]
+
+[ext_resource type="Script" path="res://loading_indicator.gd" id="1_e5283"]
+[ext_resource type="Texture2D" uid="uid://n8ph0trcskmt" path="res://loader_colored.png" id="1_foqyk"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ty102"]
+font_size = 48
+font_color = Color(0, 0, 0, 1)
+
+[node name="LoadingIndicator" type="VBoxContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_e5283")
+
+[node name="LoadingIconHolder" type="Control" parent="."]
+custom_minimum_size = Vector2(484, 483)
+layout_mode = 2
+
+[node name="LoadingIcon" type="TextureRect" parent="LoadingIconHolder"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(242, 242)
+texture = ExtResource("1_foqyk")
+
+[node name="LoadingIndicatorText" type="Label" parent="."]
+layout_mode = 2
+text = "Loading..."
+label_settings = SubResource("LabelSettings_ty102")
+horizontal_alignment = 1

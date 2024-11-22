@@ -1,0 +1,75 @@
+[gd_scene load_steps=10 format=3 uid="uid://ca1qwkp6g7ov"]
+
+[ext_resource type="PackedScene" uid="uid://bcdgywtbgcfu8" path="res://pick_image_file.tscn" id="1_6xcuj"]
+[ext_resource type="Script" path="res://main.gd" id="1_m5awf"]
+[ext_resource type="Script" path="res://web_pick_image_file.gd" id="2_3irwv"]
+[ext_resource type="PackedScene" uid="uid://dglq7rb8pisgu" path="res://screen_barrier.tscn" id="2_mqwif"]
+[ext_resource type="Texture2D" uid="uid://blupn4sila4m3" path="res://UploadButton.png" id="4_vn1tp"]
+[ext_resource type="Script" path="res://shape_generator.gd" id="5_ojcst"]
+[ext_resource type="PackedScene" uid="uid://car8jujthwian" path="res://loading_indicator.tscn" id="6_tp6bj"]
+[ext_resource type="Script" path="res://error_dialog.gd" id="7_fo2g6"]
+[ext_resource type="PackedScene" uid="uid://d0138cle4d0xg" path="res://mouse_bumper.tscn" id="8_kxwum"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_m5awf")
+
+[node name="ScreenBarrier" parent="." instance=ExtResource("2_mqwif")]
+
+[node name="PickImageFileDialog" parent="." instance=ExtResource("1_6xcuj")]
+
+[node name="WebPickImageFile" type="Node" parent="."]
+script = ExtResource("2_3irwv")
+
+[node name="Buttons" type="CanvasLayer" parent="."]
+
+[node name="UploadButton" type="TextureButton" parent="Buttons"]
+custom_minimum_size = Vector2(273, 148)
+offset_left = 20.0
+offset_top = 10.0
+offset_right = 293.0
+offset_bottom = 158.0
+texture_normal = ExtResource("4_vn1tp")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="CheckContainer" type="PanelContainer" parent="Buttons"]
+offset_left = 31.0
+offset_top = 159.0
+offset_right = 281.0
+offset_bottom = 218.0
+
+[node name="CheckVBoxContainer" type="VBoxContainer" parent="Buttons/CheckContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+
+[node name="PreserveColorCheck" type="CheckBox" parent="Buttons/CheckContainer/CheckVBoxContainer"]
+layout_mode = 2
+button_pressed = true
+text = "Preserve Color"
+
+[node name="NoColorSeparationCheck" type="CheckBox" parent="Buttons/CheckContainer/CheckVBoxContainer"]
+layout_mode = 2
+text = "No Color Separation"
+
+[node name="AllowWhiteCheck" type="CheckBox" parent="Buttons/CheckContainer/CheckVBoxContainer"]
+layout_mode = 2
+text = "Allow White"
+
+[node name="ShapeGenerator" type="Node" parent="."]
+script = ExtResource("5_ojcst")
+
+[node name="Shapes" type="Node" parent="."]
+
+[node name="Other" type="CanvasLayer" parent="."]
+
+[node name="LoadingIndicator" parent="Other" instance=ExtResource("6_tp6bj")]
+visible = false
+
+[node name="ErrorDialog" type="AcceptDialog" parent="."]
+script = ExtResource("7_fo2g6")
+
+[node name="MouseBumper" parent="." instance=ExtResource("8_kxwum")]
+
+[connection signal="file_selected" from="PickImageFileDialog" to="." method="_on_pick_image_file_dialog_file_selected"]
+[connection signal="file_loaded" from="WebPickImageFile" to="." method="_on_web_pick_image_file_file_loaded"]
+[connection signal="pressed" from="Buttons/UploadButton" to="." method="_on_upload_image_button_pressed"]
