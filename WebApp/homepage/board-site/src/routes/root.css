@@ -1,7 +1,18 @@
 #root {
-  margin: 0 auto;
+  margin: 0 0;
   padding: 0;
   text-align: center;
+  width: 100%;
+}
+
+.topbar .headroom {
+  padding-bottom: 16px;
+}
+
+.topbar .link-container {
+  background-color: white;
+  font-size: 32px;
+  box-shadow: 0px 8px 8px #00000044;
 }
 
 .body1 {
@@ -11,6 +22,7 @@
   padding-bottom: 3em;
   text-align: center;
   color: black;
+  overflow-wrap: break-word;
 }
 
 .AboutTitle {
@@ -26,8 +38,8 @@
 }
 
 .logoMain {
+  width: 100%;
   height: 20em;
-  padding: 1em;
 }
 
 .logo {
