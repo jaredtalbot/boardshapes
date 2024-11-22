@@ -14,7 +14,7 @@ import (
 )
 
 var rFlag = flag.Bool("r", false, "this should be resizing if called")
-var sFlag = flag.String("s", "", "Should allow a user to input a file path for output. Unsure on this")
+var sFlag = flag.String("s", "", "Should allow a user to input a file path for output, and simplify")
 var mFlag = flag.Bool("m", false, "Should meshify regions.")
 
 func main() {
@@ -32,7 +32,7 @@ func main() {
 		if err != nil {
 			fmt.Println("fix your stuff bruh")
 		}
-		if *mFlag {
+		if *mFlag { // im sorry ok. 
 			fileRegioned, regionCount,_  := processing.SimplifyImage(img, processing.RegionMapOptions{})
 			fmt.Println(regionCount)
 			outputFile := fileEncoder(fileRegioned)
