@@ -11,7 +11,7 @@ unzip templates.zip templates/web_nothreads_debug.zip templates/web_nothreads_re
 echo Installing export templates...
 mkdir -p ~/.local/share/godot/export_templates/4.3.stable
 cp ./templates/web_nothreads_debug.zip ~/.local/share/godot/export_templates/4.3.stable/web_nothreads_debug.zip
-cp ./templates/web_nothreads_debug.zip ~/.local/share/godot/export_templates/4.3.stable/web_nothreads_release.zip
+cp ./templates/web_nothreads_release.zip ~/.local/share/godot/export_templates/4.3.stable/web_nothreads_release.zip
 chmod +xr godot.x86_64
 echo Exporting Boardwalk...
 mkdir exported-game
