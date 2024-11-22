@@ -47,12 +47,14 @@ func main() {
 	fmt.Println("2:", *sFlag)
 	fmt.Println("3:", *mFlag)
 	fmt.Println("4:", fileInput)
+	fmt.Println("5:", )
 
 }
 
 func fileOpenerDecoder(fileInput []string) (image.Image, error) {
 
 	joinedFileName := strings.Join(fileInput, "")
+
 	fileTaken, err := os.Open(joinedFileName)
 	if err != nil {
 		panic(err)
@@ -60,7 +62,10 @@ func fileOpenerDecoder(fileInput []string) (image.Image, error) {
 	defer fileTaken.Close()
 
 	fileExtension := filepath.Ext(joinedFileName)
-	if fileExtension == ".png" || fileExtension == ".jpeg" {
+	if fileExtension == ".jpg" {
+		fileExtension = ".jpeg"
+	}
+	if fileExtension == ".png" || fileExtension == ".jpeg"  {
 		img, _, err := image.Decode(fileTaken)
 		if err != nil {
 			panic(err)
