@@ -82,6 +82,7 @@ func _set_goal_position():
 	$TouchScreenControls.show()
 	$Goal.show()
 	get_tree().paused = false
+	$AudioStreamPlayer.play()
 	
 func _goal_reached(player: Node2D):
 	player.set_physics_process(false)
