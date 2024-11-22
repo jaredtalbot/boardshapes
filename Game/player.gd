@@ -120,12 +120,8 @@ func _physics_process(delta):
 		velocity.y = wall_slide_speed
 		$dash_timer.stop()
 		test_animation.play("sliding")
-		$slide_particles_right.emitting = true
-		$slide_particles_left.emitting = true
-		if test_animation.flip_h == false:
-			$slide_particles_left.emitting = false
-		elif test_animation.flip_h == true:
-			$slide_particles_right.emitting = false
+		$slide_particles_right.emitting = not test_animation.flip_h
+		$slide_particles_left.emitting = test_animation.flip_h
 	
 	if !is_on_wall():
 		$slide_particles_right.emitting = false
