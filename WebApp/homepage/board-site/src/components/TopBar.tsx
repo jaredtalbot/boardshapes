@@ -9,18 +9,19 @@ export default function TopBar() {
     <Headroom className="topbar">
       <nav>
         <div className="link-container">
-          <a href="/boardwalk/" target="_blank">
+          <a href="/boardwalk/" target="_blank" title="Boardwalk">
             <img src={boardwalkLogo} className="logo" alt="Boardwalk logo" />
           </a>
-          <a href="/manual/" target="_blank">
+          <a href="/manual/" target="_blank" title="User Manual">
             <img src={boardmeshLogo} className="logo" alt="Boardmesh logo" />
           </a>
-          <a href="/boardbox/" target="_blank">
+          <a href="/boardbox/" target="_blank" title="Boardbox">
             <img src={boardboxLogo} className="logo" alt="Boardbox logo" />
           </a>
           <a
             href="https://github.com/codeJester27/cmps401fa2024"
             target="_blank"
+            title="GitHub"
             rel="noopener"
           >
             <img src={githubLogo} className="logo" alt="Github logo" />
