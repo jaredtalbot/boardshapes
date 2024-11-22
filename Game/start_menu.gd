@@ -47,3 +47,7 @@ func _on_image_confirmation_confirmed():
 	level.create_level(img, image_confirmation.get_settings())
 	get_tree().set_deferred("current_scene", level)
 	queue_free()
+
+
+func _on_multiplayer_name_field_text_changed(new_text):
+	Preferences.set_player_name(new_text)
