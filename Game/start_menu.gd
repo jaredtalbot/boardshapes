@@ -44,6 +44,6 @@ func _on_image_confirmation_confirmed():
 		return
 	var level = level_scene.instantiate()
 	add_sibling(level)
-	level.create_level(img)
+	level.create_level(img, image_confirmation.get_settings())
 	get_tree().set_deferred("current_scene", level)
 	queue_free()

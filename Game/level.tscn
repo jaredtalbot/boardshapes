@@ -255,6 +255,6 @@ text = "Level Complete!"
 [connection signal="pressed" from="StartEndSelection/EndSelect" to="." method="_set_goal_position"]
 [connection signal="pressed" from="VictoryScreen/Victory/ExitToMenu" to="." method="_on_exit_to_main_menu_button_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/PlayAnotherLevel" to="." method="_on_back_button_pressed"]
-[connection signal="pressed" from="VictoryScreen/Victory/Restart" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/Restart" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/Restart" to="." method="_on_restart_button_pressed"]
 [connection signal="body_entered" from="Goal" to="." method="_goal_reached"]

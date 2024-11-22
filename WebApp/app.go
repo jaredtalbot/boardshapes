@@ -110,9 +110,9 @@ func buildLevel(c *gin.Context) {
 		panic(err)
 	}
 
-	preserveColor := c.Request.FormValue("preserveColor")
-	noColorSeparation := c.Request.FormValue("noColorSeparation")
-	allowWhite := c.Request.FormValue("allowWhite")
+	preserveColor := c.Request.FormValue("preserveColor") == "true"
+	noColorSeparation := c.Request.FormValue("noColorSeparation") == "true"
+	allowWhite := c.Request.FormValue("allowWhite") == "true"
 
 	contentType := fileh.Header.Get("Content-Type")
 	var img image.Image
@@ -141,8 +141,8 @@ func buildLevel(c *gin.Context) {
 	}
 
 	newImg, _, regionMap := processing.SimplifyImage(img, processing.RegionMapOptions{
-		NoColorSeparation: noColorSeparation == "true",
-		AllowWhite:        allowWhite == "true",
+		NoColorSeparation: noColorSeparation,
+		AllowWhite:        allowWhite,
 	})
 
 	numRegions := len(regionMap.GetRegions())
@@ -152,7 +152,7 @@ func buildLevel(c *gin.Context) {
 		region := regionMap.GetRegion(processing.RegionIndex(i))
 
 		minX, minY := processing.FindRegionPosition(region)
-		regionColor := processing.GetColorOfRegion(region, newImg)
+		regionColor := processing.GetColorOfRegion(region, newImg, noColorSeparation)
 		var regionColorString string
 
 		switch regionColor {
@@ -164,11 +164,13 @@ func buildLevel(c *gin.Context) {
 			regionColorString = "Blue"
 		case processing.Black:
 			regionColorString = "Black"
+		case processing.White:
+			regionColorString = "White"
 		}
 
 		regionImage := image.NewNRGBA(region.GetBounds())
 
-		if preserveColor == "true" {
+		if preserveColor {
 			for j := 0; j < len(region); j++ {
 				regionImage.Set(int(region[j].X), int(region[j].Y), img.At(int(region[j].X), int(region[j].Y)))
 			}

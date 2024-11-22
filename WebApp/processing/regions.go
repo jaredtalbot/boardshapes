@@ -180,7 +180,23 @@ func FindRegionPosition(region Region) (int, int) {
 	return int(corner.X), int(corner.Y)
 }
 
-func GetColorOfRegion(region Region, img image.Image) color.Color {
-	regionColor := img.At(int(region[0].X), int(region[0].Y))
-	return regionColor
+func GetColorOfRegion(region Region, img image.Image, checkAll bool) color.Color {
+	if checkAll {
+		colorCounts := make(map[color.Color]uint, 1)
+		for _, v := range region {
+			colorCounts[img.At(int(v.X), int(v.Y))]++
+		}
+		var mostCommonColor color.Color
+		var mostCommonColorCount uint = 0
+		for k, v := range colorCounts {
+			if v > mostCommonColorCount {
+				mostCommonColorCount = v
+				mostCommonColor = k
+			}
+		}
+		return mostCommonColor
+	} else {
+		regionColor := img.At(int(region[0].X), int(region[0].Y))
+		return regionColor
+	}
 }
