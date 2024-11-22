@@ -47,7 +47,7 @@ func main() {
 	fmt.Println("2:", *sFlag)
 	fmt.Println("3:", *mFlag)
 	fmt.Println("4:", fileInput)
-	fmt.Println("5:", )
+	
 
 }
 
