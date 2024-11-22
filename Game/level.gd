@@ -4,9 +4,10 @@ var base_url = ProjectSettings.get_setting("application/boardwalk/web_server_url
 
 @onready var level_generator = $LevelGenerator
 @onready var loading_indicator = $LoadingIndicator
+@onready var multiplayer_timer = $MultiplayerTimer
+@onready var multiplayer_controller = $MultiplayerController
 
 func create_level(img: Image, options: Dictionary):
-	
 	loading_indicator.show()
 	loading_indicator.set_text("Uploading Level...")
 	var buffer = img.save_png_to_buffer()
@@ -36,27 +37,15 @@ func _on_response_received(result: int, response_code: int, headers: PackedStrin
 		
 	add_child(generated_level)
 	add_player()
+	multiplayer_controller.try_connect(str(hash(level_data)))
 	loading_indicator.hide()
 	get_tree().paused = true
 	$StartEndSelection/StartSelect.disabled = false
 	$StartEndSelection/StartSelect.show()
 
 func add_player():
-	var ray_cast = RayCast2D.new()
-	ray_cast.position = Vector2(0, -50)
-	ray_cast.target_position = Vector2(0, 1080)
-	add_child(ray_cast)
-	for i in range(1920):
-		ray_cast.position.x = i
-		ray_cast.force_raycast_update()
-		if ray_cast.is_colliding():
-			var player = preload("res://player.tscn").instantiate()
-			player.position = Vector2(i + player.get_node("CollisionShape2D").shape.get_rect().size.x/2, -100)
-			add_child(player)
-			$AudioStreamPlayer.play()
-			ray_cast.queue_free()
-			return
-	ray_cast.queue_free()
+	var player = preload("res://player.tscn").instantiate()
+	add_child(player)
 	
 func _on_quit_button_pressed():
 	get_node("./QuitMenu/QuitWindow").show()
@@ -111,3 +100,9 @@ func _on_restart_button_pressed():
 	$StartEndSelection/StartSelect.show()
 	var player = $Player
 	player.set_physics_process(true)
+
+func _on_multiplayer_timer_timeout():
+	var player: CharacterBody2D = get_node_or_null("Player")
+	if player != null:
+		var sprite = player.get_node("AnimatedSprite2D") as AnimatedSprite2D
+		$MultiplayerController.send_player_info(Preferences.get_player_name(), sprite.animation, sprite.frame, player.position, sprite.flip_h)

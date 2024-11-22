@@ -35,6 +35,12 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 64
 
+[node name="MultiplayerNameField" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+placeholder_text = "Multiplayer Name..."
+max_length = 32
+
 [node name="UploadImageButton" type="TextureButton" parent="VBoxContainer"]
 layout_mode = 2
 texture_normal = ExtResource("3_lvanf")
@@ -50,6 +56,7 @@ script = ExtResource("2_v3sgg")
 
 [node name="PickImageFileDialog" parent="." instance=ExtResource("5_lnlgg")]
 
+[connection signal="text_changed" from="VBoxContainer/MultiplayerNameField" to="." method="_on_multiplayer_name_field_text_changed"]
 [connection signal="pressed" from="VBoxContainer/UploadImageButton" to="." method="_on_upload_image_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="file_loaded" from="WebPickImageFile" to="." method="_on_web_pick_image_file_file_loaded"]

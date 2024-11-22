@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://xklntftxk1rp"]
+[gd_scene load_steps=11 format=3 uid="uid://xklntftxk1rp"]
 
 [ext_resource type="Script" path="res://level.gd" id="1_rfdv8"]
 [ext_resource type="Script" path="res://level_generator.gd" id="1_rygds"]
@@ -7,6 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://dffdk5u7kadrd" path="res://BoardWalk (1).ogg" id="5_4w55l"]
 [ext_resource type="Texture2D" uid="uid://c5o0brblu00xo" path="res://ui/QuitButton.png" id="6_crp35"]
 [ext_resource type="PackedScene" uid="uid://3poplqifejqw" path="res://goal.tscn" id="7_h3hxs"]
+[ext_resource type="Script" path="res://multiplayer_controller.gd" id="8_w82i2"]
 
 [sub_resource type="Theme" id="Theme_1nwa3"]
 
@@ -247,6 +248,13 @@ text = "Level Complete!"
 
 [node name="Goal" parent="." instance=ExtResource("7_h3hxs")]
 
+[node name="MultiplayerController" type="Node" parent="."]
+script = ExtResource("8_w82i2")
+
+[node name="MultiplayerTimer" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
 [connection signal="finished" from="AudioStreamPlayer" to="." method="_on_audio_stream_player_finished"]
 [connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed" from="QuitMenu/QuitWindow/BackButton" to="." method="_on_back_button_pressed"]
@@ -255,6 +263,7 @@ text = "Level Complete!"
 [connection signal="pressed" from="StartEndSelection/EndSelect" to="." method="_set_goal_position"]
 [connection signal="pressed" from="VictoryScreen/Victory/ExitToMenu" to="." method="_on_exit_to_main_menu_button_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/PlayAnotherLevel" to="." method="_on_back_button_pressed"]
-[connection signal="pressed" from="VictoryScreen/Victory/Restart" to="." method="_on_restart_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/Restart" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/Restart" to="." method="_on_restart_pressed"]
 [connection signal="body_entered" from="Goal" to="." method="_goal_reached"]
+[connection signal="timeout" from="MultiplayerTimer" to="." method="_on_multiplayer_timer_timeout"]
