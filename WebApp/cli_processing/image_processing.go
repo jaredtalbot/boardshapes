@@ -2,7 +2,7 @@ package main
 
 import (
 	"codejester27/cmps401fa2024/web-app/processing"
-
+	
 	"flag"
 	"fmt"
 	"image"
@@ -14,8 +14,9 @@ import (
 )
 
 var rFlag = flag.Bool("r", false, "this should be resizing if called")
-var sFlag = flag.String("s", "", "Should allow a user to input a file path for output, and simplify")
-var mFlag = flag.Bool("m", false, "Should meshify regions.")
+var sFlag = flag.String("s", "", "gets a user file output name.")
+var mFlag = flag.Bool("m", false, "Mflag simplifies region.")
+var	jFlag = flag.Bool("j", false, "Jflag should meshify and output to a file")  
 
 func main() {
 
@@ -32,9 +33,17 @@ func main() {
 		if err != nil {
 			fmt.Println("fix your stuff bruh")
 		}
+		
 		if *mFlag { // im sorry ok. 
-			fileRegioned, regionCount,_  := processing.SimplifyImage(img, processing.RegionMapOptions{})
+			fileRegioned, regionCount, regionToOutput  := processing.SimplifyImage(img, processing.RegionMapOptions{})
 			fmt.Println(regionCount)
+
+			if *jFlag{
+				for _, specificRegion := range *regionToOutput.regions {
+				err, regionMeshCreated := specificRegion.CreateMesh()
+			}
+		}
+
 			outputFile := fileEncoder(fileRegioned)
 			image_output(outputFile, filepath.Dir(fileInput[0]))
 		} else {
@@ -46,6 +55,7 @@ func main() {
 	fmt.Println("1:", *rFlag)
 	fmt.Println("2:", *sFlag)
 	fmt.Println("3:", *mFlag)
+	fmt.Println("3.5:", *jFlag)
 	fmt.Println("4:", fileInput)
 	
 

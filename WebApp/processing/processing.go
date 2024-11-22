@@ -244,6 +244,8 @@ func (v1 Vertex) DirectionTo(v2 Vertex) (x, y float64) {
 	return (answerX / mag), (answerY / mag)
 }
 
+
+
 func StraightOpt(sortedVertexMesh []Vertex) []Vertex {
 	for i := 2; i < len(sortedVertexMesh); i++ {
 		x1, y1 := sortedVertexMesh[i-2].DirectionTo(sortedVertexMesh[i-1])
