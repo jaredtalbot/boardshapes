@@ -5,6 +5,7 @@ import "./index.css";
 import Root from "./routes/root";
 import ErrorPage from "./routes/error-page";
 import About from "./routes/about";
+import TopBar from "./components/TopBar";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,7 @@ const rootElement = document.getElementById("root");
 
 ReactDOM.createRoot(rootElement as HTMLElement).render(
   <React.StrictMode>
+    <TopBar />
     <RouterProvider router={router} />
   </React.StrictMode>
 );
