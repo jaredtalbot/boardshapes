@@ -33,7 +33,7 @@ func main() {
 			fmt.Println("fix your stuff bruh")
 		}
 		if *mFlag {
-			fileRegioned, regionCount := processing.SimplifyImage(img)
+			fileRegioned, regionCount,_  := processing.SimplifyImage(img, processing.RegionMapOptions{})
 			fmt.Println(regionCount)
 			outputFile := fileEncoder(fileRegioned)
 			image_output(outputFile, filepath.Dir(fileInput[0]))
