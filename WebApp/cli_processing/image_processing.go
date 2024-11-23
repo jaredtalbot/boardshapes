@@ -2,7 +2,7 @@ package main
 
 import (
 	"codejester27/cmps401fa2024/web-app/processing"
-	
+
 	"flag"
 	"fmt"
 	"image"
@@ -16,7 +16,7 @@ import (
 var rFlag = flag.Bool("r", false, "this should be resizing if called")
 var sFlag = flag.String("s", "", "gets a user file output name.")
 var mFlag = flag.Bool("m", false, "Mflag simplifies region.")
-var	jFlag = flag.Bool("j", false, "Jflag should meshify and output to a file")  
+var jFlag = flag.Bool("j", false, "Jflag should meshify and output to a cli for now ")
 
 func main() {
 
@@ -33,16 +33,27 @@ func main() {
 		if err != nil {
 			fmt.Println("fix your stuff bruh")
 		}
-		
-		if *mFlag { // im sorry ok. 
-			fileRegioned, regionCount, regionToOutput  := processing.SimplifyImage(img, processing.RegionMapOptions{})
+
+		if *jFlag {
+			_, regionCount, regionToOutput := processing.SimplifyImage(img, processing.RegionMapOptions{})
 			fmt.Println(regionCount)
 
-			if *jFlag{
-				for _, specificRegion := range *regionToOutput.regions {
-				err, regionMeshCreated := specificRegion.CreateMesh()
+			for i := 0; i < regionCount; i++ {
+				currRegion := regionToOutput.GetRegion(processing.RegionIndex(i))
+				regionMeshCreated, err := currRegion.CreateMesh()
+
+				if err != nil {
+					panic(err)
+				}
+
+				fmt.Println("X: ", regionMeshCreated[i].X, "Y: ", regionMeshCreated[i].Y)
+
 			}
 		}
+
+		if *mFlag { // im sorry ok.
+			fileRegioned, regionCount, _ := processing.SimplifyImage(img, processing.RegionMapOptions{})
+			fmt.Println(regionCount)
 
 			outputFile := fileEncoder(fileRegioned)
 			image_output(outputFile, filepath.Dir(fileInput[0]))
@@ -57,7 +68,6 @@ func main() {
 	fmt.Println("3:", *mFlag)
 	fmt.Println("3.5:", *jFlag)
 	fmt.Println("4:", fileInput)
-	
 
 }
 
@@ -75,7 +85,7 @@ func fileOpenerDecoder(fileInput []string) (image.Image, error) {
 	if fileExtension == ".jpg" {
 		fileExtension = ".jpeg"
 	}
-	if fileExtension == ".png" || fileExtension == ".jpeg"  {
+	if fileExtension == ".png" || fileExtension == ".jpeg" {
 		img, _, err := image.Decode(fileTaken)
 		if err != nil {
 			panic(err)
