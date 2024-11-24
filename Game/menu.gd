@@ -5,8 +5,7 @@ func _ready():
 		$MarginContainer/VBoxContainer/Exit.hide()
 	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
 		$OptionsWindow/DarkMode.set_pressed_no_signal(true)
-	if ProjectSettings.get_setting("rendering/environment/defaults/color_blind_mode") == true:
-		$OptionsWindow/ColorblindMode.set_pressed_no_signal(true)
+	$OptionsWindow/ColorblindMode.set_pressed_no_signal(ProjectSettings.get_setting("rendering/environment/defaults/color_blind_mode"))
 	
 func _on_start_pressed():
 	get_tree().change_scene_to_file("res://start_menu.tscn")
