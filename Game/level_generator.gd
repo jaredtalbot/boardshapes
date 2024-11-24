@@ -29,7 +29,6 @@ func generate_nodes(json_string: String) -> Node:
 		match color:
 			"Red":
 				col.add_to_group("Red")
-				print(ProjectSettings.get_setting("rendering/environment/defaults/color_blind_mode"))
 				if ProjectSettings.get_setting("rendering/environment/defaults/color_blind_mode") == true:
 					sprite.material = ShaderMaterial.new()
 					sprite.material.shader = load("res://colorblind_filter.gdshader")

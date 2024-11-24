@@ -31,12 +31,20 @@ func _on_coyote_timer_timeout():
 func _death():
 	velocity.x = 0
 	velocity.y = 0
+	#make the explosion not blue in dark mode
+	#probably a better way to do this
+	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
+		self.get_child(1).set_material(null)
 	test_animation.play("death")
 	set_physics_process(false)
 	var death_timer = get_tree().create_timer(1.0416)
 	await death_timer.timeout
 	set_physics_process(true)
 	position = initial_position
+	#reapply shader, probably better way to do this
+	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
+		self.get_child(1).material = ShaderMaterial.new()
+		self.get_child(1).material.shader = load("res://color_invert.gdshader")
 
 func _physics_process(delta):
 	if velocity.x > 0:
