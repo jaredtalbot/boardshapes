@@ -33,6 +33,10 @@ func generate_nodes(json_string: String) -> Node:
 				col.add_to_group("Green")
 			"Blue":
 				col.add_to_group("Blue")
+			"Black":
+				if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
+					sprite.material = ShaderMaterial.new()
+					sprite.material.shader = load("res://color_invert.gdshader")
 		level.add_child(region)
 	return level
 
