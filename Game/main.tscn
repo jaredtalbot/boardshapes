@@ -120,3 +120,4 @@ text = "Colorblind Mode"
 [connection signal="pressed" from="Options" to="." method="_on_options_pressed"]
 [connection signal="close_requested" from="OptionsWindow" to="." method="_on_options_close_pressed"]
 [connection signal="toggled" from="OptionsWindow/DarkMode" to="." method="_on_dark_mode_toggled"]
+[connection signal="toggled" from="OptionsWindow/ColorblindMode" to="." method="_on_colorblind_mode_toggled"]
