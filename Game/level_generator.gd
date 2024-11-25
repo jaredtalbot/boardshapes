@@ -8,6 +8,7 @@ func generate_nodes(json_string: String) -> Node:
 	if !json.all(checkItem):
 		return null
 	var level = Node.new()
+	level.name = "GeneratedLevel"
 	for item in json:
 		var region = Node2D.new()
 		var byte_pool = Marshalls.base64_to_raw(item["regionImage"])
@@ -49,6 +50,7 @@ func generate_nodes(json_string: String) -> Node:
 					sprite.material.set("shader_parameter/tile_size", 2)
 					sprite.material.set("shader_parameter/pattern", load("res://blue_cb.png"))
 			"Black":
+				col.add_to_group("Black")
 				if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
 					sprite.material = ShaderMaterial.new()
 					sprite.material.shader = load("res://color_invert.gdshader")
