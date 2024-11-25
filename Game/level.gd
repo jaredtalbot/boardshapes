@@ -62,11 +62,16 @@ func _on_quit_button_pressed():
 	get_node("./QuitMenu/QuitWindow").show()
 	get_tree().paused = true
 
+func _on_back_button_pressed():
+	get_tree().paused = false
+	go_back()
+
 func go_back():
 	get_tree().change_scene_to_file("res://start_menu.tscn")
 
 func _on_exit_to_main_menu_button_pressed():
 	get_tree().change_scene_to_file("res://main.tscn")
+	
 
 func _set_player_start():
 	var player = $Player
@@ -119,10 +124,33 @@ func _on_volumeslider_value_changed(value: float):
 	$AudioStreamPlayer.set_volume_db(value - 100)
 
 func _on_color_check_toggled(toggled: bool):
+	var sprite = Sprite2D.new()
 	if toggled:
+		var level = preload("res://level.tscn").instantiate()
 		ProjectSettings.set_setting("rendering/environment/defaults/color_blind_mode", true)
+		var color = level.get_node("LevelGenerator").color
+		match color:
+			"Red":
+				sprite.material = ShaderMaterial.new()
+				sprite.material.shader = load("res://colorblind_filter.gdshader")					
+				sprite.material.set("shader_parameter/tile_size", 2)
+				sprite.material.set("shader_parameter/pattern", load("res://red_cb.png"))
+			"Green":
+				if ProjectSettings.get_setting("rendering/environment/defaults/color_blind_mode") == true:
+					sprite.material = ShaderMaterial.new()
+					sprite.material.shader = load("res://colorblind_filter.gdshader")
+					sprite.material.set("shader_parameter/tile_size", 2)
+					sprite.material.set("shader_parameter/pattern", load("res://green_cb.png"))
+			"Blue":
+				if ProjectSettings.get_setting("rendering/environment/defaults/color_blind_mode") == true:
+					sprite.material = ShaderMaterial.new()
+					sprite.material.shader = load("res://colorblind_filter.gaadshader")
+					sprite.material.set("shader_parameter/tile_size", 2)
+					sprite.material.set("shader_parameter/pattern", load("res://blue_cb.png"))
 	else:
 		ProjectSettings.set_setting("rendering/environment/defaults/color_blind_mode", false)
+		sprite.material = ShaderMaterial.new()
+		sprite.material.shader = load("res://color_invert.gdshader")
 
 
 func _on_dark_check_toggled(toggled: bool):
@@ -130,3 +158,8 @@ func _on_dark_check_toggled(toggled: bool):
 		RenderingServer.set_default_clear_color(Color(0, 0, 0, 1))
 	else:
 		RenderingServer.set_default_clear_color(Color(1, 1, 1, 1))
+
+
+func _on_resume_button_pressed():
+	get_tree().paused = false
+	$QuitMenu/QuitWindow.hide()

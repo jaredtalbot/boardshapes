@@ -45,7 +45,7 @@ func generate_nodes(json_string: String) -> Node:
 				col.add_to_group("Blue")
 				if ProjectSettings.get_setting("rendering/environment/defaults/color_blind_mode") == true:
 					sprite.material = ShaderMaterial.new()
-					sprite.material.shader = load("res://colorblind_filter.gdshader")
+					sprite.material.shader = load("res://colorblind_filter.gaadshader")
 					sprite.material.set("shader_parameter/tile_size", 2)
 					sprite.material.set("shader_parameter/pattern", load("res://blue_cb.png"))
 			"Black":
