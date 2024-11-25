@@ -7,6 +7,9 @@ var base_url = ProjectSettings.get_setting("application/boardwalk/web_server_url
 @onready var multiplayer_timer = $MultiplayerTimer
 @onready var multiplayer_controller = $MultiplayerController
 
+func _ready():
+	$"QuitMenu/QuitWindow/volume-slider".set_value_no_signal(100)
+
 func create_level(img: Image, options: Dictionary):
 	loading_indicator.show()
 	loading_indicator.set_text("Uploading Level...")
@@ -59,14 +62,6 @@ func _on_quit_button_pressed():
 	get_node("./QuitMenu/QuitWindow").show()
 	get_tree().paused = true
 
-func _on_no_button_pressed():
-	get_node("./QuitMenu/QuitWindow").hide()
-	get_tree().paused = false
-
-func _on_back_button_pressed():
-	get_tree().paused = false
-	go_back()
-	
 func go_back():
 	get_tree().change_scene_to_file("res://start_menu.tscn")
 
@@ -115,3 +110,23 @@ func _on_multiplayer_timer_timeout():
 	if player != null:
 		var sprite = player.get_node("AnimatedSprite2D") as AnimatedSprite2D
 		$MultiplayerController.send_player_info(Preferences.get_player_name(), sprite.animation, sprite.frame, player.position, sprite.flip_h)
+
+func _on_quit_window_close_requested():
+	get_tree().paused = false
+	$QuitMenu/QuitWindow.hide()
+
+func _on_volumeslider_value_changed(value: float):
+	$AudioStreamPlayer.set_volume_db(value - 100)
+
+func _on_color_check_toggled(toggled: bool):
+	if toggled:
+		ProjectSettings.set_setting("rendering/environment/defaults/color_blind_mode", true)
+	else:
+		ProjectSettings.set_setting("rendering/environment/defaults/color_blind_mode", false)
+
+
+func _on_dark_check_toggled(toggled: bool):
+	if toggled:
+		RenderingServer.set_default_clear_color(Color(0, 0, 0, 1))
+	else:
+		RenderingServer.set_default_clear_color(Color(1, 1, 1, 1))
