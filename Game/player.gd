@@ -34,7 +34,7 @@ func _death():
 	#make the explosion not blue in dark mode
 	#probably a better way to do this
 	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
-		self.get_child(1).set_material(null)
+		test_animation.set_material(null)
 	test_animation.play("death")
 	set_physics_process(false)
 	var death_timer = get_tree().create_timer(1.0416)
@@ -43,8 +43,8 @@ func _death():
 	position = initial_position
 	#reapply shader, probably better way to do this
 	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
-		self.get_child(1).material = ShaderMaterial.new()
-		self.get_child(1).material.shader = load("res://color_invert.gdshader")
+		test_animation.material = ShaderMaterial.new()
+		test_animation.material.shader = load("res://color_invert.gdshader")
 
 func _physics_process(delta):
 	if velocity.x > 0:
