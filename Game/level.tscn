@@ -52,6 +52,7 @@ process_mode = 2
 transparent_bg = true
 initial_position = 1
 size = Vector2i(800, 600)
+visible = false
 content_scale_mode = 1
 content_scale_stretch = 1
 content_scale_factor = 3.0
