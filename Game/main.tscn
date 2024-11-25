@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://s2dcpgi066gy"]
+[gd_scene load_steps=8 format=3 uid="uid://s2dcpgi066gy"]
 
 [ext_resource type="Script" path="res://menu.gd" id="1_py7cw"]
 [ext_resource type="Texture2D" uid="uid://bwgl64rinsl7o" path="res://ui/boardwalk2.png" id="2_0tc77"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bp5lft3kbytc1" path="res://ui/startbutton.png" id="4_yh3xt"]
 [ext_resource type="Texture2D" uid="uid://fj8ln0fb8t72" path="res://ui/exitbutton.png" id="5_3uxxq"]
 [ext_resource type="Texture2D" uid="uid://dam1nm0iqmql5" path="res://ui/options.png" id="6_gwxc6"]
+[ext_resource type="PackedScene" uid="uid://blrjxml7nbhjp" path="res://options_window.tscn" id="7_qmff4"]
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -77,48 +78,10 @@ offset_bottom = 74.84
 grow_horizontal = 0
 texture_normal = ExtResource("6_gwxc6")
 
-[node name="OptionsWindow" type="Window" parent="."]
-transparent_bg = true
-title = "Options"
-initial_position = 1
-size = Vector2i(400, 195)
-visible = false
-transparent = true
-content_scale_mode = 1
-content_scale_factor = 2.33
-theme_override_font_sizes/title_font_size = 32
-
-[node name="DarkMode" type="CheckBox" parent="OptionsWindow"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -56.5
-offset_top = -23.5
-offset_right = 56.5
-offset_bottom = 7.5
-grow_horizontal = 2
-grow_vertical = 2
-text = "Dark Mode"
-
-[node name="ColorblindMode" type="CheckBox" parent="OptionsWindow"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -78.0
-offset_top = 6.5
-offset_right = 78.0
-offset_bottom = 37.5
-grow_horizontal = 2
-grow_vertical = 2
-text = "Colorblind Mode"
+[node name="OptionsWindow" parent="." instance=ExtResource("7_qmff4")]
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Exit" to="." method="_on_exit_pressed"]
 [connection signal="pressed" from="Options" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="Options" to="Options" method="_on_pressed"]
 [connection signal="close_requested" from="OptionsWindow" to="." method="_on_options_close_pressed"]
-[connection signal="toggled" from="OptionsWindow/DarkMode" to="." method="_on_dark_mode_toggled"]
-[connection signal="toggled" from="OptionsWindow/ColorblindMode" to="." method="_on_colorblind_mode_toggled"]

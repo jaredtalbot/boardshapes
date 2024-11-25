@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3 uid="uid://blrjxml7nbhjp"]
+
+[ext_resource type="Script" path="res://options.gd" id="1_f4alx"]
+
+[node name="OptionsWindow" type="Window"]
+auto_translate_mode = 1
+transparent_bg = true
+title = "Options"
+initial_position = 1
+size = Vector2i(400, 195)
+visible = false
+transparent = true
+content_scale_mode = 1
+content_scale_factor = 2.33
+theme_override_font_sizes/title_font_size = 32
+script = ExtResource("1_f4alx")
+
+[node name="DarkMode" type="CheckBox" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -56.5
+offset_top = -23.5
+offset_right = 56.5
+offset_bottom = 7.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Dark Mode"
+
+[node name="ColorblindMode" type="CheckBox" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -78.0
+offset_top = 6.5
+offset_right = 78.0
+offset_bottom = 37.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Colorblind Mode"
+
+[connection signal="toggled" from="DarkMode" to="." method="_on_dark_mode_toggled"]
+[connection signal="toggled" from="ColorblindMode" to="." method="_on_colorblind_mode_toggled"]
