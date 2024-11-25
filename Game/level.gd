@@ -51,8 +51,8 @@ func _on_response_received(result: int, response_code: int, headers: PackedStrin
 func add_player():
 	var player = preload("res://player.tscn").instantiate()
 	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
-		player.get_child(1).material = ShaderMaterial.new()
-		player.get_child(1).material.shader = load("res://color_invert.gdshader")
+		player.get_node("AnimatedSprite2D").material = ShaderMaterial.new()
+		player.get_node("AnimatedSprite2D").material.shader = load("res://color_invert.gdshader")
 	add_child(player)
 	
 func _on_quit_button_pressed():
