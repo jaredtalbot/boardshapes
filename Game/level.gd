@@ -10,6 +10,8 @@ var base_url = ProjectSettings.get_setting("application/boardwalk/web_server_url
 func create_level(img: Image, options: Dictionary):
 	loading_indicator.show()
 	loading_indicator.set_text("Uploading Level...")
+	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
+		loading_indicator.set_text_color(Color(1, 1, 1, 1))
 	var buffer = img.save_png_to_buffer()
 	var request = FileUploader.upload_buffer(base_url + "/api/build-level", buffer, "image.png", HTTPClient.METHOD_POST, "image", options)
 	request.request_completed.connect(_on_response_received)
@@ -36,6 +38,9 @@ func _on_response_received(result: int, response_code: int, headers: PackedStrin
 		return
 		
 	add_child(generated_level)
+	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
+		$QuitButton.material = ShaderMaterial.new()
+		$QuitButton.material.shader = load("res://color_invert.gdshader")
 	add_player()
 	multiplayer_controller.try_connect(str(hash(level_data)))
 	loading_indicator.hide()
@@ -45,6 +50,9 @@ func _on_response_received(result: int, response_code: int, headers: PackedStrin
 
 func add_player():
 	var player = preload("res://player.tscn").instantiate()
+	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
+		player.get_node("AnimatedSprite2D").material = ShaderMaterial.new()
+		player.get_node("AnimatedSprite2D").material.shader = load("res://color_invert.gdshader")
 	add_child(player)
 	
 func _on_quit_button_pressed():

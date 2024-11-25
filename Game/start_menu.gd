@@ -6,6 +6,12 @@ extends Control
 @onready var web_pick_image_file = $WebPickImageFile
 @onready var image_confirmation = $ImageConfirmation
 
+func _ready():
+	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
+		$VBoxContainer/UploadImageButton.material = ShaderMaterial.new()
+		$VBoxContainer/UploadImageButton.material.shader = load("res://color_invert.gdshader")
+		$VBoxContainer/BackButton.material = ShaderMaterial.new()
+		$VBoxContainer/BackButton.material.shader = load("res://color_invert.gdshader")
 #todo: add non-web file picker
 
 func _on_upload_image_button_pressed():

@@ -1,10 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://s2dcpgi066gy"]
+[gd_scene load_steps=8 format=3 uid="uid://s2dcpgi066gy"]
 
 [ext_resource type="Script" path="res://menu.gd" id="1_py7cw"]
 [ext_resource type="Texture2D" uid="uid://bwgl64rinsl7o" path="res://ui/boardwalk2.png" id="2_0tc77"]
 [ext_resource type="Texture2D" uid="uid://dcparl8gbox7k" path="res://Whiteboard-Vector-PNG-Photos-3289639508.png" id="2_8b62a"]
 [ext_resource type="Texture2D" uid="uid://bp5lft3kbytc1" path="res://ui/startbutton.png" id="4_yh3xt"]
 [ext_resource type="Texture2D" uid="uid://fj8ln0fb8t72" path="res://ui/exitbutton.png" id="5_3uxxq"]
+[ext_resource type="Texture2D" uid="uid://dam1nm0iqmql5" path="res://ui/options.png" id="6_gwxc6"]
+[ext_resource type="PackedScene" uid="uid://blrjxml7nbhjp" path="res://options_window.tscn" id="7_qmff4"]
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -62,5 +64,24 @@ texture_normal = ExtResource("5_3uxxq")
 ignore_texture_size = true
 stretch_mode = 5
 
+[node name="Options" type="TextureButton" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.908
+anchor_top = 0.102
+anchor_right = 0.908
+anchor_bottom = 0.102
+offset_left = -73.3601
+offset_top = 10.84
+offset_right = -9.36011
+offset_bottom = 74.84
+grow_horizontal = 0
+texture_normal = ExtResource("6_gwxc6")
+
+[node name="OptionsWindow" parent="." instance=ExtResource("7_qmff4")]
+
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Exit" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="Options" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="Options" to="Options" method="_on_pressed"]
+[connection signal="close_requested" from="OptionsWindow" to="." method="_on_options_close_pressed"]
