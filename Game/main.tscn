@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://s2dcpgi066gy"]
+[gd_scene load_steps=9 format=3 uid="uid://s2dcpgi066gy"]
 
 [ext_resource type="Script" path="res://menu.gd" id="1_py7cw"]
 [ext_resource type="Texture2D" uid="uid://bwgl64rinsl7o" path="res://ui/boardwalk2.png" id="2_0tc77"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://biui41qabk6dn" path="res://ui/OptionButton.png" id="5_0qv1l"]
 [ext_resource type="Texture2D" uid="uid://fj8ln0fb8t72" path="res://ui/exitbutton.png" id="5_3uxxq"]
 [ext_resource type="PackedScene" uid="uid://blrjxml7nbhjp" path="res://options_window.tscn" id="7_qmff4"]
+[ext_resource type="PackedScene" uid="uid://cpndyiijj6wj8" path="res://debug_widget.tscn" id="8_rpp88"]
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -72,6 +73,11 @@ ignore_texture_size = true
 stretch_mode = 5
 
 [node name="OptionsWindow" parent="." instance=ExtResource("7_qmff4")]
+
+[node name="DebugWidget" parent="." instance=ExtResource("8_rpp88")]
+layout_mode = 1
+offset_right = -16.0
+offset_bottom = -16.0
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Options" to="." method="_on_options_pressed"]

@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://cpndyiijj6wj8"]
+
+[ext_resource type="Script" path="res://debug_widget.gd" id="1_b7lx7"]
+
+[sub_resource type="Theme" id="Theme_18ixd"]
+CheckBox/constants/icon_max_width = 16
+
+[node name="DebugWidget" type="PanelContainer"]
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -32.0
+offset_bottom = -32.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("1_b7lx7")
+
+[node name="WebServerList" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme = SubResource("Theme_18ixd")
