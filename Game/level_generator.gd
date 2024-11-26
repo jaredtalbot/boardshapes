@@ -8,12 +8,14 @@ func generate_nodes(json_string: String) -> Node:
 	if !json.all(checkItem):
 		return null
 	var level = Node.new()
+	level.name = "GeneratedLevel"
 	for item in json:
 		var region = Node2D.new()
 		var byte_pool = Marshalls.base64_to_raw(item["regionImage"])
 		var img = Image.new()
 		img.load_png_from_buffer(byte_pool)
 		var sprite = Sprite2D.new()
+		sprite.name = "Sprite"
 		sprite.centered = false
 		sprite.texture = ImageTexture.create_from_image(img)
 		region.add_child(sprite)
@@ -22,6 +24,7 @@ func generate_nodes(json_string: String) -> Node:
 		var vectormesh = mesh.map(func(v: Dictionary): return Vector2(v["x"], v["y"]))
 		collision.polygon = vectormesh
 		var col = StaticBody2D.new()
+		col.name = "Collider"
 		col.add_child(collision)
 		region.add_child(col)
 		region.position = Vector2(item["cornerX"], item["cornerY"])
@@ -49,6 +52,7 @@ func generate_nodes(json_string: String) -> Node:
 					sprite.material.set("shader_parameter/tile_size", 2)
 					sprite.material.set("shader_parameter/pattern", load("res://blue_cb.png"))
 			"Black":
+				col.add_to_group("Black")
 				if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
 					sprite.material = ShaderMaterial.new()
 					sprite.material.shader = load("res://color_invert.gdshader")
