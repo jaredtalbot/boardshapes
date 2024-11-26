@@ -128,31 +128,31 @@ func _on_color_check_toggled(toggled: bool):
 		ProjectSettings.set_setting("rendering/environment/defaults/color_blind_mode", true)
 		var level = get_node("GeneratedLevel")
 		for child in level.get_children():
-			if child.get_child(1).is_in_group("Red"):
-				child.get_child(0).material = ShaderMaterial.new()
-				child.get_child(0).material.shader = load("res://colorblind_filter.gdshader")
-				child.get_child(0).material.set("shader_parameter/tile_size", 2)
-				child.get_child(0).material.set("shader_parameter/pattern", load("res://red_cb.png"))
-			if child.get_child(1).is_in_group("Green"):
-				child.get_child(0).material = ShaderMaterial.new()
-				child.get_child(0).material.shader = load("res://colorblind_filter.gdshader")
-				child.get_child(0).material.set("shader_parameter/tile_size", 2)
-				child.get_child(0).material.set("shader_parameter/pattern", load("res://green_cb.png"))
-			if child.get_child(1).is_in_group("Blue"):
-				child.get_child(0).material = ShaderMaterial.new()
-				child.get_child(0).material.shader = load("res://colorblind_filter.gdshader")
-				child.get_child(0).material.set("shader_parameter/tile_size", 2)
-				child.get_child(0).material.set("shader_parameter/pattern", load("res://blue_cb.png"))
+			if child.get_node("Collider").is_in_group("Red"):
+				child.get_node("Sprite").material = ShaderMaterial.new()
+				child.get_node("Sprite").material.shader = load("res://colorblind_filter.gdshader")
+				child.get_node("Sprite").material.set("shader_parameter/tile_size", 2)
+				child.get_node("Sprite").material.set("shader_parameter/pattern", load("res://red_cb.png"))
+			if child.get_node("Collider").is_in_group("Green"):
+				child.get_node("Sprite").material = ShaderMaterial.new()
+				child.get_node("Sprite").material.shader = load("res://colorblind_filter.gdshader")
+				child.get_node("Sprite").material.set("shader_parameter/tile_size", 2)
+				child.get_node("Sprite").material.set("shader_parameter/pattern", load("res://green_cb.png"))
+			if child.get_node("Collider").is_in_group("Blue"):
+				child.get_node("Sprite").material = ShaderMaterial.new()
+				child.get_node("Sprite").material.shader = load("res://colorblind_filter.gdshader")
+				child.get_node("Sprite").material.set("shader_parameter/tile_size", 2)
+				child.get_node("Sprite").material.set("shader_parameter/pattern", load("res://blue_cb.png"))
 	else:
 		ProjectSettings.set_setting("rendering/environment/defaults/color_blind_mode", false)
 		var level = get_node("GeneratedLevel")
 		for child in level.get_children():
-			if child.get_child(1).is_in_group("Red"):
-				child.get_child(0).set_material(null)
-			if child.get_child(1).is_in_group("Green"):
-				child.get_child(0).set_material(null)
-			if child.get_child(1).is_in_group("Blue"):
-				child.get_child(0).set_material(null)
+			if child.get_node("Collider").is_in_group("Red"):
+				child.get_node("Sprite").set_material(null)
+			if child.get_node("Collider").is_in_group("Green"):
+				child.get_node("Sprite").set_material(null)
+			if child.get_node("Collider").is_in_group("Blue"):
+				child.get_node("Sprite").set_material(null)
 
 
 func _on_dark_check_toggled(toggled: bool):
@@ -164,17 +164,17 @@ func _on_dark_check_toggled(toggled: bool):
 		$QuitButton.material.shader = load("res://color_invert.gdshader")
 		var level = get_node("GeneratedLevel")
 		for child in level.get_children():
-			if child.get_child(1).is_in_group("Black"):
-				child.get_child(0).material = ShaderMaterial.new()
-				child.get_child(0).material.shader = load("res://color_invert.gdshader")
+			if child.get_node("Collider").is_in_group("Black"):
+				child.get_node("Sprite").material = ShaderMaterial.new()
+				child.get_node("Sprite").material.shader = load("res://color_invert.gdshader")
 	else:
 		RenderingServer.set_default_clear_color(Color(1, 1, 1, 1))
 		$Player.get_node("AnimatedSprite2D").set_material(null)
 		$QuitButton.set_material(null)
 		var level = get_node("GeneratedLevel")
 		for child in level.get_children():
-			if child.get_child(1).is_in_group("Black"):
-				child.get_child(0).set_material(null)
+			if child.get_node("Collider").is_in_group("Black"):
+				child.get_node("Sprite").set_material(null)
 
 
 func _on_resume_button_pressed():

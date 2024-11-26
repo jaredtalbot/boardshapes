@@ -15,6 +15,7 @@ func generate_nodes(json_string: String) -> Node:
 		var img = Image.new()
 		img.load_png_from_buffer(byte_pool)
 		var sprite = Sprite2D.new()
+		sprite.name = "Sprite"
 		sprite.centered = false
 		sprite.texture = ImageTexture.create_from_image(img)
 		region.add_child(sprite)
@@ -23,6 +24,7 @@ func generate_nodes(json_string: String) -> Node:
 		var vectormesh = mesh.map(func(v: Dictionary): return Vector2(v["x"], v["y"]))
 		collision.polygon = vectormesh
 		var col = StaticBody2D.new()
+		col.name = "Collider"
 		col.add_child(collision)
 		region.add_child(col)
 		region.position = Vector2(item["cornerX"], item["cornerY"])
