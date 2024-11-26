@@ -124,9 +124,9 @@ func _on_volumeslider_value_changed(value: float):
 	$AudioStreamPlayer.set_volume_db(value - 100)
 
 func _on_color_check_toggled(toggled: bool):
+	var level = get_node("GeneratedLevel")
+	ProjectSettings.set_setting("rendering/environment/defaults/color_blind_mode", toggled)
 	if toggled:
-		ProjectSettings.set_setting("rendering/environment/defaults/color_blind_mode", true)
-		var level = get_node("GeneratedLevel")
 		for child in level.get_children():
 			if child.get_node("Collider").is_in_group("Red"):
 				child.get_node("Sprite").material = ShaderMaterial.new()
@@ -144,8 +144,6 @@ func _on_color_check_toggled(toggled: bool):
 				child.get_node("Sprite").material.set("shader_parameter/tile_size", 2)
 				child.get_node("Sprite").material.set("shader_parameter/pattern", load("res://blue_cb.png"))
 	else:
-		ProjectSettings.set_setting("rendering/environment/defaults/color_blind_mode", false)
-		var level = get_node("GeneratedLevel")
 		for child in level.get_children():
 			if child.get_node("Collider").is_in_group("Red"):
 				child.get_node("Sprite").set_material(null)
