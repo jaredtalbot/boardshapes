@@ -34,22 +34,22 @@ func generate_nodes(json_string: String) -> Node:
 				col.add_to_group("Red")
 				if ProjectSettings.get_setting("rendering/environment/defaults/color_blind_mode") == true:
 					sprite.material = ShaderMaterial.new()
-					sprite.material.shader = load("res://colorblind_filter.gdshader")
-					sprite.material.set("shader_parameter/tile_size", 2)
+					sprite.material.shader = load("res://colorblind_red.gdshader")
+					sprite.material.set("shader_parameter/tile_size", 1)
 					sprite.material.set("shader_parameter/pattern", load("res://red_cb.png"))
 			"Green":
 				col.add_to_group("Green")
 				if ProjectSettings.get_setting("rendering/environment/defaults/color_blind_mode") == true:
 					sprite.material = ShaderMaterial.new()
-					sprite.material.shader = load("res://colorblind_filter.gdshader")
-					sprite.material.set("shader_parameter/tile_size", 2)
+					sprite.material.shader = load("res://colorblind_green.gdshader")
+					sprite.material.set("shader_parameter/tile_size", 1)
 					sprite.material.set("shader_parameter/pattern", load("res://green_cb.png"))
 			"Blue":
 				col.add_to_group("Blue")
 				if ProjectSettings.get_setting("rendering/environment/defaults/color_blind_mode") == true:
 					sprite.material = ShaderMaterial.new()
-					sprite.material.shader = load("res://colorblind_filter.gdshader")
-					sprite.material.set("shader_parameter/tile_size", 2)
+					sprite.material.shader = load("res://colorblind_blue.gdshader")
+					sprite.material.set("shader_parameter/tile_size", 1)
 					sprite.material.set("shader_parameter/pattern", load("res://blue_cb.png"))
 			"Black":
 				col.add_to_group("Black")

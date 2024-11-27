@@ -23,6 +23,9 @@ func _ready():
 	test_animation.play("idle animation")
 	initial_position = position
 
+func _process(delta):
+	RenderingServer.global_shader_parameter_set("player_position", position)
+
 var air_time := 0.0
 
 func _on_coyote_timer_timeout():
