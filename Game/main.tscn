@@ -76,6 +76,7 @@ stretch_mode = 5
 
 [node name="DebugWidget" parent="." instance=ExtResource("8_rpp88")]
 layout_mode = 1
+anchors_preset = 3
 offset_right = -16.0
 offset_bottom = -16.0
 

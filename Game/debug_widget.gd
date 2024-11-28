@@ -24,9 +24,9 @@ func _ready():
 
 func _on_option_url_checked(valid: bool, option: WebServerOption):
 	var current_option = button_group.get_pressed_button()
-	if valid and web_server_urls.has(option.url) and current_option == null \
+	if valid and web_server_urls.has(option.url) and (current_option == null \
 		or not web_server_urls.has(current_option.url) \
-		or web_server_urls.find(option.url) < web_server_urls.find(current_option.url):
+		or web_server_urls.find(option.url) < web_server_urls.find(current_option.url)):
 			option.button_pressed = true
 
 class WebServerOption extends CheckBox:
