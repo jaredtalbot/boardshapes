@@ -13,8 +13,3 @@ void fragment() {
 	vec4 pattern_tex = texture(pattern, tiled_uv + vec2(0.0, TIME * 3.0));
 	COLOR.a = pattern_tex.a * base_texture.a;
 }
-
-//void light() {
-	// Called for every pixel for every light affecting the CanvasItem.
-	// Uncomment to replace the default light processing function with this one.
-//}
