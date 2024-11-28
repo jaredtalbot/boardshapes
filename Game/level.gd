@@ -9,6 +9,9 @@ var base_url = ProjectSettings.get_setting("application/boardwalk/web_server_url
 
 func _ready():
 	$"QuitMenu/QuitWindow/volume-slider".set_value_no_signal(100)
+	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
+		$QuitMenu/QuitWindow/DarkCheck.set_pressed_no_signal(true)
+	$QuitMenu/QuitWindow/ColorCheck.set_pressed_no_signal(ProjectSettings.get_setting("rendering/environment/defaults/color_blind_mode"))
 
 func create_level(img: Image, options: Dictionary):
 	loading_indicator.show()
