@@ -11,7 +11,10 @@ var can_jump = false
 
 @export var wall_jump_power = 500
 
-@onready var test_animation = $AnimatedSprite2D
+@onready var animated_sprite = $AnimatedSprite2D
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var hat_pivot: Node2D = $HatPivot
+
 var initial_position : Vector2
 var last_position_was_floor: bool
 var last_position_was_wall: bool
@@ -20,11 +23,13 @@ var bonked_wall: bool = false
 var dash_direction: int
 	
 func _ready():
-	test_animation.play("idle animation")
+	animation_player.play("idle animation")
+	animation_player.seek(0.0, true)
 	initial_position = position
 
 func _process(delta):
 	RenderingServer.global_shader_parameter_set("player_position", position)
+	hat_pivot.scale.x = get_direction()
 
 var air_time := 0.0
 
@@ -37,8 +42,8 @@ func _death():
 	#make the explosion not blue in dark mode
 	#probably a better way to do this
 	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
-		test_animation.set_material(null)
-	test_animation.play("death")
+		animated_sprite.set_material(null)
+	animation_player.play("death")
 	set_physics_process(false)
 	var death_timer = get_tree().create_timer(1.0416)
 	await death_timer.timeout
@@ -46,14 +51,14 @@ func _death():
 	position = initial_position
 	#reapply shader, probably better way to do this
 	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
-		test_animation.material = ShaderMaterial.new()
-		test_animation.material.shader = load("res://color_invert.gdshader")
+		animated_sprite.material = ShaderMaterial.new()
+		animated_sprite.material.shader = load("res://color_invert.gdshader")
 
 func _physics_process(delta):
 	if velocity.x > 0:
-		test_animation.flip_h = false
+		animated_sprite.flip_h = false
 	elif velocity.x < 0:
-		test_animation.flip_h = true
+		animated_sprite.flip_h = true
 	
 	var is_dashing = not $dash_timer.is_stopped() or touched_green
 	bonked_wall = false
@@ -62,11 +67,9 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 		air_time += delta
-		if air_time > 0.05 and test_animation.animation != &"jumping":
-			test_animation.play(&"jumping")
-		if test_animation.animation == &"jumping":
-			if test_animation.frame >= 11 and velocity.y < 0:
-				test_animation.set_frame_and_progress(11, 0.0)
+		if air_time > 0.05 and animation_player.current_animation != "jumping":
+			animation_player.play("jumping")
+	
 	else:
 		air_time = 0.0
 		can_jump = true
@@ -82,7 +85,7 @@ func _physics_process(delta):
 	
 	
 	if is_on_floor() and velocity.x == 0:
-		test_animation.play("idle animation")
+		animation_player.play("idle animation")
 			
 	
 	# Handle jump.
@@ -90,7 +93,7 @@ func _physics_process(delta):
 		if last_position_was_floor:
 			velocity.y = JUMP_VELOCITY
 			can_jump = false
-			test_animation.play(&"jumping")
+			animation_player.play("jumping")
 		if last_position_was_wall:
 			velocity.y = JUMP_VELOCITY
 			velocity.x = get_wall_normal().x * wall_jump_power
@@ -111,12 +114,12 @@ func _physics_process(delta):
 			if not test_move(transform, Vector2(0, 2)):
 				velocity.y = 0
 			velocity.x = dash_direction * dash_speed
-			test_animation.play("dash")
+			animation_player.play("dash")
 	else:
 		if direction:
 			velocity.x = move_toward(velocity.x, direction * SPEED, acceleration * delta)
 			if is_on_floor():
-				test_animation.play("running")
+				animation_player.play("running")
 		else:
 			velocity.x = move_toward(velocity.x, 0, acceleration * delta)
 	
@@ -130,9 +133,9 @@ func _physics_process(delta):
 		can_jump = true
 		velocity.y = wall_slide_speed
 		$dash_timer.stop()
-		test_animation.play("sliding")
-		$slide_particles_right.emitting = not test_animation.flip_h
-		$slide_particles_left.emitting = test_animation.flip_h
+		animation_player.play("sliding")
+		$slide_particles_right.emitting = not animated_sprite.flip_h
+		$slide_particles_left.emitting = animated_sprite.flip_h
 	
 	if !is_on_wall():
 		$slide_particles_right.emitting = false
@@ -169,4 +172,4 @@ func _physics_process(delta):
 			velocity.y = -750
 
 func get_direction() -> int:
-	return -1 if test_animation.flip_h else 1
+	return -1 if animated_sprite.flip_h else 1
