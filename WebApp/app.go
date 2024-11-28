@@ -464,6 +464,11 @@ func main() {
 	router.GET("/api/ws", connectListenerWebsocket)
 	logged.GET("/api/join", connectMultiplayer)
 
+	router.NoRoute(gin.Logger(), func(ctx *gin.Context) {
+		ctx.File("./homepage/board-site/dist/index.html")
+		ctx.Status(200)
+	})
+
 	go cleanupEmptyLobbies()
 
 	port := Port

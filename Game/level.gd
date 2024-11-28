@@ -130,18 +130,18 @@ func _on_color_check_toggled(toggled: bool):
 		for child in level.get_children():
 			if child.get_node("Collider").is_in_group("Red"):
 				child.get_node("Sprite").material = ShaderMaterial.new()
-				child.get_node("Sprite").material.shader = load("res://colorblind_filter.gdshader")
-				child.get_node("Sprite").material.set("shader_parameter/tile_size", 2)
+				child.get_node("Sprite").material.shader = load("res://colorblind_red.gdshader")
+				child.get_node("Sprite").material.set("shader_parameter/tile_size", 1)
 				child.get_node("Sprite").material.set("shader_parameter/pattern", load("res://red_cb.png"))
 			if child.get_node("Collider").is_in_group("Green"):
 				child.get_node("Sprite").material = ShaderMaterial.new()
-				child.get_node("Sprite").material.shader = load("res://colorblind_filter.gdshader")
-				child.get_node("Sprite").material.set("shader_parameter/tile_size", 2)
+				child.get_node("Sprite").material.shader = load("res://colorblind_green.gdshader")
+				child.get_node("Sprite").material.set("shader_parameter/tile_size", 1)
 				child.get_node("Sprite").material.set("shader_parameter/pattern", load("res://green_cb.png"))
 			if child.get_node("Collider").is_in_group("Blue"):
 				child.get_node("Sprite").material = ShaderMaterial.new()
-				child.get_node("Sprite").material.shader = load("res://colorblind_filter.gdshader")
-				child.get_node("Sprite").material.set("shader_parameter/tile_size", 2)
+				child.get_node("Sprite").material.shader = load("res://colorblind_blue.gdshader")
+				child.get_node("Sprite").material.set("shader_parameter/tile_size", 1)
 				child.get_node("Sprite").material.set("shader_parameter/pattern", load("res://blue_cb.png"))
 	else:
 		for child in level.get_children():

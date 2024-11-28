@@ -81,3 +81,7 @@
 .link.react:hover {
   filter: drop-shadow(0 0 1em #5353ffaa);
 }
+
+#error-page {
+  min-height: 600px;
+}
