@@ -16,6 +16,7 @@ func _ready():
 		upload_image_button.material.shader = load("res://color_invert.gdshader")
 		back_button.material = ShaderMaterial.new()
 		back_button.material.shader = load("res://color_invert.gdshader")
+	upload_image_button.call_deferred("grab_focus")
 
 func _on_upload_image_button_pressed():
 	if OS.has_feature("web"):

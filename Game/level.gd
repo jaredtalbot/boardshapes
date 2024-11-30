@@ -139,6 +139,7 @@ func _set_goal_position():
 func _goal_reached(player: Node2D):
 	player.set_physics_process(false)
 	$VictoryScreen.show()
+	%Restart.call_deferred("grab_focus")
 	
 func _on_audio_stream_player_finished():
 	$AudioStreamPlayer.play()

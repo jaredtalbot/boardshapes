@@ -275,23 +275,36 @@ label_settings = SubResource("LabelSettings_n0tpc")
 horizontal_alignment = 1
 
 [node name="Restart" type="Button" parent="VictoryScreen/Victory/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+focus_neighbor_bottom = NodePath("../SaveLevel")
+focus_next = NodePath("../SaveLevel")
 text = "Restart"
 
 [node name="SaveLevel" type="Button" parent="VictoryScreen/Victory/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+focus_neighbor_top = NodePath("../Restart")
+focus_neighbor_bottom = NodePath("../PlayAnotherLevel")
+focus_next = NodePath("../PlayAnotherLevel")
+focus_previous = NodePath("../Restart")
 text = "Save Level"
 
 [node name="PlayAnotherLevel" type="Button" parent="VictoryScreen/Victory/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+focus_neighbor_top = NodePath("../SaveLevel")
+focus_neighbor_bottom = NodePath("../ExitToMenu")
+focus_next = NodePath("../ExitToMenu")
+focus_previous = NodePath("../SaveLevel")
 text = "Play Another Level"
 
 [node name="ExitToMenu" type="Button" parent="VictoryScreen/Victory/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+focus_neighbor_top = NodePath("../PlayAnotherLevel")
+focus_previous = NodePath("../PlayAnotherLevel")
 text = "Exit To Main Menu"
 
 [node name="Goal" parent="." instance=ExtResource("7_h3hxs")]

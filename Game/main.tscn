@@ -54,6 +54,8 @@ stretch_mode = 3
 [node name="Start" type="TextureButton" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
+focus_neighbor_bottom = NodePath("../Options")
+focus_next = NodePath("../Options")
 texture_normal = ExtResource("4_yh3xt")
 ignore_texture_size = true
 stretch_mode = 5
@@ -61,6 +63,10 @@ stretch_mode = 5
 [node name="Options" type="TextureButton" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
+focus_neighbor_top = NodePath("../Start")
+focus_neighbor_bottom = NodePath("../Exit")
+focus_next = NodePath("../Exit")
+focus_previous = NodePath("../Start")
 texture_normal = ExtResource("5_0qv1l")
 ignore_texture_size = true
 stretch_mode = 5
@@ -68,6 +74,8 @@ stretch_mode = 5
 [node name="Exit" type="TextureButton" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
+focus_neighbor_top = NodePath("../Options")
+focus_previous = NodePath("../Options")
 texture_normal = ExtResource("5_3uxxq")
 ignore_texture_size = true
 stretch_mode = 5

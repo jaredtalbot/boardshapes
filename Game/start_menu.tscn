@@ -41,6 +41,8 @@ theme_override_constants/separation = 64
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_bottom = NodePath("../HBoxContainer/UploadImageButton")
+focus_next = NodePath("../HBoxContainer/UploadImageButton")
 theme_override_font_sizes/font_size = 48
 placeholder_text = "Multiplayer Name..."
 max_length = 32
@@ -51,15 +53,27 @@ theme_override_constants/separation = 64
 
 [node name="UploadImageButton" type="TextureButton" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../../MultiplayerNameField")
+focus_neighbor_right = NodePath("../LoadLevelButton")
+focus_neighbor_bottom = NodePath("../../BackButton")
+focus_next = NodePath("../LoadLevelButton")
+focus_previous = NodePath("../../MultiplayerNameField")
 texture_normal = ExtResource("3_lvanf")
 
 [node name="LoadLevelButton" type="TextureButton" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
+focus_neighbor_left = NodePath("../UploadImageButton")
+focus_neighbor_top = NodePath("../../MultiplayerNameField")
+focus_neighbor_bottom = NodePath("../../BackButton")
+focus_next = NodePath("../../BackButton")
+focus_previous = NodePath("../UploadImageButton")
 texture_normal = ExtResource("4_islxa")
 
 [node name="BackButton" type="TextureButton" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_top = NodePath("../HBoxContainer/UploadImageButton")
+focus_previous = NodePath("../HBoxContainer/LoadLevelButton")
 texture_normal = ExtResource("4_lf6m8")
 
 [node name="WebPickImageFile" type="Node" parent="."]
@@ -67,7 +81,7 @@ script = ExtResource("2_v3sgg")
 
 [node name="WebPickBoardwalkFile" type="Node" parent="."]
 script = ExtResource("2_v3sgg")
-accept = ["*.boardwalk"]
+accept = [".boardwalk"]
 
 [node name="ImageConfirmation" parent="." instance=ExtResource("3_iojqf")]
 
