@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://xklntftxk1rp"]
+[gd_scene load_steps=15 format=3 uid="uid://xklntftxk1rp"]
 
 [ext_resource type="Script" path="res://level.gd" id="1_rfdv8"]
 [ext_resource type="Script" path="res://level_generator.gd" id="1_rygds"]
@@ -21,6 +21,9 @@ font_size = 10
 
 [sub_resource type="LabelSettings" id="LabelSettings_7qxxf"]
 font_size = 12
+
+[sub_resource type="LabelSettings" id="LabelSettings_n0tpc"]
+font_size = 48
 
 [node name="Level" type="Node"]
 script = ExtResource("1_rfdv8")
@@ -239,9 +242,9 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="VictoryScreen" type="CanvasLayer" parent="."]
-
-[node name="Victory" type="Panel" parent="VictoryScreen"]
 visible = false
+
+[node name="Victory" type="PanelContainer" parent="VictoryScreen"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -254,59 +257,42 @@ offset_bottom = 166.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ExitToMenu" type="Button" parent="VictoryScreen/Victory"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -75.5
-offset_top = 42.0
-offset_right = 75.5
-offset_bottom = 92.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Exit To Main Menu"
+[node name="MarginContainer" type="MarginContainer" parent="VictoryScreen/Victory"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
 
-[node name="PlayAnotherLevel" type="Button" parent="VictoryScreen/Victory"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -76.0
-offset_top = 121.0
-offset_right = 76.0
-offset_bottom = 171.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Play Another Level"
+[node name="VBoxContainer" type="VBoxContainer" parent="VictoryScreen/Victory/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
 
-[node name="Restart" type="Button" parent="VictoryScreen/Victory"]
-layout_mode = 0
-offset_left = 172.0
-offset_top = 167.0
-offset_right = 326.0
-offset_bottom = 218.0
+[node name="Label" type="Label" parent="VictoryScreen/Victory/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Level Complete!"
+label_settings = SubResource("LabelSettings_n0tpc")
+horizontal_alignment = 1
+
+[node name="Restart" type="Button" parent="VictoryScreen/Victory/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
 text = "Restart"
 
-[node name="Label" type="Label" parent="VictoryScreen/Victory"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.442
-anchor_right = 0.5
-anchor_bottom = 0.442
-offset_left = -217.0
-offset_top = -152.2
-offset_right = -93.0
-offset_bottom = -129.2
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(3.5, 3.5)
-text = "Level Complete!"
+[node name="SaveLevel" type="Button" parent="VictoryScreen/Victory/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "Save Level"
+
+[node name="PlayAnotherLevel" type="Button" parent="VictoryScreen/Victory/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "Play Another Level"
+
+[node name="ExitToMenu" type="Button" parent="VictoryScreen/Victory/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "Exit To Main Menu"
 
 [node name="Goal" parent="." instance=ExtResource("7_h3hxs")]
 
@@ -327,9 +313,10 @@ autostart = true
 [connection signal="toggled" from="QuitMenu/QuitWindow/DarkCheck" to="." method="_on_dark_check_toggled"]
 [connection signal="pressed" from="StartEndSelection/StartSelect" to="." method="_set_player_start"]
 [connection signal="pressed" from="StartEndSelection/EndSelect" to="." method="_set_goal_position"]
-[connection signal="pressed" from="VictoryScreen/Victory/ExitToMenu" to="." method="_on_exit_to_main_menu_button_pressed"]
-[connection signal="pressed" from="VictoryScreen/Victory/PlayAnotherLevel" to="." method="_on_back_button_pressed"]
-[connection signal="pressed" from="VictoryScreen/Victory/Restart" to="." method="_on_restart_pressed"]
-[connection signal="pressed" from="VictoryScreen/Victory/Restart" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/SaveLevel" to="." method="save_level"]
+[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/PlayAnotherLevel" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/ExitToMenu" to="." method="_on_exit_to_main_menu_button_pressed"]
 [connection signal="body_entered" from="Goal" to="." method="_goal_reached"]
 [connection signal="timeout" from="MultiplayerTimer" to="." method="_on_multiplayer_timer_timeout"]

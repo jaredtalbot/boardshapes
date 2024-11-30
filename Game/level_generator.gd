@@ -1,14 +1,16 @@
 @icon("res://icons/hammericon.png")
 class_name LevelGenerator extends Node
 
-func generate_nodes(json_string: String) -> Node:
-	var json = JSON.parse_string(json_string)
+func generate_nodes(json: Variant) -> Node:
+	if json is String:
+		json = JSON.parse_string(json)
 	if json is not Array:
 		return null
 	if !json.all(checkItem):
 		return null
-	var level = Node.new()
+	var level = GeneratedLevel.new()
 	level.name = "GeneratedLevel"
+	level.regions = json
 	for item in json:
 		var region = Node2D.new()
 		var byte_pool = Marshalls.base64_to_raw(item["regionImage"])
@@ -62,3 +64,6 @@ func generate_nodes(json_string: String) -> Node:
 func checkItem(item: Variant) -> bool:
 	return item is Dictionary and item.get("regionImage") is String and item.get("mesh") is Array \
 		and item["mesh"].all(func(m): return m is Dictionary and m.has_all(["x", "y"])) and item.has_all(["cornerX", "cornerY"])
+
+class GeneratedLevel extends Node:
+	var regions: Array
