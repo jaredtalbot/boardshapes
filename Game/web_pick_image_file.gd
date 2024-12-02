@@ -1,48 +1,64 @@
-class_name WebPickImageFile extends Node
+class_name WebPickFileDialog extends Node
 # credit to https://alexduggan1.github.io/Guides/Godot4LetUserUploadFileOnWeb/ for part of the code
+
+@export var accept: PackedStringArray = [".jpeg",".jpg",".png","image/jpeg","image/png"]
+
+static var next_id = 0
+
+static func get_next_id():
+	var id = next_id
+	next_id += 1
+	return id
 
 var _onload = JavaScriptBridge.create_callback(_file_loaded_callback)
 
 signal file_loaded(content: PackedByteArray, filename: String)
 
+var id: int
+
 func _ready():
 	if not OS.has_feature("web"):
 		queue_free()
 		return
-	JavaScriptBridge.eval("""
-var uploadedFile = null;
-var uploadedFileType = "";
-var callbacks = { onfileload: null }
+	id = get_next_id()
+	JavaScriptBridge.eval(("""
+var uploadedFile{id} = null;
+var uploadedFileType{id} = "";
+var callbacks{id} = { onfileload: null }
 
-if(document.getElementById('selectFiles') == null) {
+if(document.getElementById('selectFiles{id}') == null) {
 	g = document.createElement('input');
-	g.setAttribute("id", "selectFiles");
+	g.setAttribute("id", "selectFiles{id}");
 	g.setAttribute("type", "file");
-	g.setAttribute("accept", ".jpeg,.jpg,.png,image/jpeg,image/png");
+	g.setAttribute("accept", "%s");
 	document.body.append(g);
 }
 
-document.getElementById('selectFiles').onchange = async function() {
-	var files = document.getElementById('selectFiles').files;
+document.getElementById('selectFiles{id}').onchange = async function() {
+	let files = document.getElementById('selectFiles{id}').files;
 	if (files.length <= 0) {
 		return false;
 	}
 	
-	uploadedFile = await files.item(0).arrayBuffer();
-	uploadedFileType = files.item(0).name;
+	uploadedFile{id} = await files.item(0).arrayBuffer();
+	uploadedFileType{id} = files.item(0).name;
 	
-	callbacks.onfileload();
+	callbacks{id}.onfileload();
 };
-	""", true)
-	var callbacksObj = JavaScriptBridge.get_interface("callbacks")
+	""" % ",".join(accept)).replace("{id}", str(id)), true)
+	var callbacksObj = JavaScriptBridge.get_interface("callbacks" + str(id))
 	callbacksObj.onfileload = _onload
 
 func show():
-	JavaScriptBridge.eval("document.getElementById('selectFiles').click();", true)
+	JavaScriptBridge.eval("document.getElementById('selectFiles%s').click();" % str(id), true)
 	
 func _file_loaded_callback(args):
-	var content = JavaScriptBridge.eval("uploadedFile", true)
-	var filename = JavaScriptBridge.eval("uploadedFileType", true)
+	var content = JavaScriptBridge.eval("uploadedFile" + str(id), true)
+	var filename = JavaScriptBridge.eval("uploadedFileType" + str(id), true)
 	if content is PackedByteArray:
 		file_loaded.emit(content, filename)
-	JavaScriptBridge.eval("document.getElementById('selectFiles').value = \"\";", true)
+	JavaScriptBridge.eval("document.getElementById('selectFiles%s').value = \"\";" % str(id), true)
+
+func _exit_tree():
+	JavaScriptBridge.eval("document.getElementById('selectFiles%s').remove();" % str(id), true)
+	request_ready() # why not
