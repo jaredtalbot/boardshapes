@@ -3,6 +3,7 @@ extends Control
 @export var level_scene: PackedScene
 
 @onready var upload_image_button = $VBoxContainer/HBoxContainer/UploadImageButton
+@onready var load_level_button = $VBoxContainer/HBoxContainer/LoadLevelButton
 @onready var back_button = $VBoxContainer/BackButton
 @onready var pick_image_file_dialog = $PickImageFileDialog
 @onready var web_pick_image_file = $WebPickImageFile
@@ -14,6 +15,8 @@ func _ready():
 	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
 		upload_image_button.material = ShaderMaterial.new()
 		upload_image_button.material.shader = load("res://color_invert.gdshader")
+		load_level_button.material = ShaderMaterial.new()
+		load_level_button.material.shader = load("res://color_invert.gdshader")
 		back_button.material = ShaderMaterial.new()
 		back_button.material.shader = load("res://color_invert.gdshader")
 	upload_image_button.call_deferred("grab_focus")
