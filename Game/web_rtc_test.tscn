@@ -1,0 +1,302 @@
+[gd_scene load_steps=4 format=3 uid="uid://c5k0xo7rs4ulr"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gbcgr"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="GDScript" id="GDScript_0gpqr"]
+resource_name = "WebRtcTest"
+script/source = "extends PanelContainer
+
+var web_server_url: String = ProjectSettings.get_setting(\"application/boardwalk/web_server_url\")
+var web_socket_url:
+	get():
+		return web_socket_url
+	set(value):
+		var url = value
+		if url.begins_with(\"http://\"):
+			url = url.replace(\"http://\", \"ws://\")
+		elif url.begins_with(\"https://\"):
+			url = url.replace(\"https://\", \"wss://\")
+		web_socket_url = url
+
+var host_socket = WebSocketPeer.new()
+var client_socket = WebSocketPeer.new()
+
+var client_socket_opened = false
+
+var host_rtc = WebRTCPeerConnection.new()
+var client_rtc = WebRTCPeerConnection.new()
+
+var host_data_channel: WebRTCDataChannel
+var client_data_channel: WebRTCDataChannel
+
+var client_was_connected = false
+
+var rtc_settings = {
+	\"iceServers\": [
+		{
+			\"urls\": [\"stun:stun.l.google.com:19302\"]
+		}
+	]
+}
+
+var joiner_id: String
+
+signal host_created_lobby(lobby_id: String)
+signal client_joined_lobby
+
+func _ready():
+	web_socket_url = web_server_url
+	var window := get_window()
+	window.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_IGNORE
+	window.content_scale_mode = Window.CONTENT_SCALE_MODE_DISABLED
+	window.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN
+	
+	host_rtc.initialize(rtc_settings)
+	client_rtc.initialize(rtc_settings)
+	
+	host_data_channel = host_rtc.create_data_channel(\"messages\", { \"id\": 1, \"negotiated\": true })
+	client_data_channel = client_rtc.create_data_channel(\"messages\", { \"id\": 1, \"negotiated\": true })
+	
+	host_rtc.session_description_created.connect(_on_host_rtc_session_description_created)
+	host_rtc.ice_candidate_created.connect(_on_host_rtc_ice_candidate_created)
+	client_rtc.session_description_created.connect(_on_client_rtc_session_description_created)
+	client_rtc.ice_candidate_created.connect(_on_client_rtc_ice_candidate_created)
+	
+	client_joined_lobby.connect(_on_client_joined_lobby)
+	
+	host_socket.connect_to_url(web_socket_url + \"/api/host\")
+
+
+func _on_client_joined_lobby():
+	client_rtc.create_offer()
+
+func _on_client_rtc_session_description_created(type: String, sdp: String):
+	client_rtc.set_local_description(type, sdp)
+	print(\"type: %s\" % type)
+	print(\"sdp: %s\" % sdp)
+	client_socket.send_text(JSON.stringify({
+		\"type\": \"sdp\",
+		\"content\": {
+			\"type\": type,
+			\"sdp\": sdp,
+		},
+	}))
+
+func _on_client_rtc_ice_candidate_created(media: String, index: int, name: String):
+	client_socket.send_text(JSON.stringify({
+		\"type\": \"ice\",
+		\"content\": {
+			\"media\": media,
+			\"index\": index,
+			\"name\": name
+		},
+	}))
+	print(\"media: %s\" % media)
+	print(\"index: %d\" % index)
+	print(\"name: %s\" % name)
+
+func _on_host_rtc_session_description_created(type: String, sdp: String):
+	host_rtc.set_local_description(type, sdp)
+	print(\"type: %s\" % type)
+	print(\"sdp: %s\" % sdp)
+	host_socket.send_text(JSON.stringify({
+		\"type\": \"sdp\",
+		\"content\": {
+			\"type\": type,
+			\"sdp\": sdp,
+		},
+		\"joinerId\": joiner_id,
+	}))
+
+func _on_host_rtc_ice_candidate_created(media: String, index: int, name: String):
+	client_socket.send_text(JSON.stringify({
+		\"type\": \"ice\",
+		\"content\": {
+			\"media\": media,
+			\"index\": index,
+			\"name\": name
+		},
+		\"joinerId\": joiner_id,
+	}))
+	print(\"media: %s\" % media)
+	print(\"index: %d\" % index)
+	print(\"name: %s\" % name)
+
+func _process(delta):
+	host_socket.poll()
+	client_socket.poll()
+	client_rtc.poll()
+	host_rtc.poll()
+	
+	%HostContainer/DebugInfo.text = \"Connection Status: %s\\nSignaling Status: %s\\nGathering Status: %s\" \\
+		% [host_rtc.get_connection_state(), host_rtc.get_signaling_state(), host_rtc.get_gathering_state()]
+	%ClientContainer/DebugInfo.text = \"Connection Status: %s\\nSignaling Status: %s\\nGathering Status: %s\" \\
+		% [client_rtc.get_connection_state(), client_rtc.get_signaling_state(), client_rtc.get_gathering_state()]
+	
+	if host_socket.get_ready_state() == WebSocketPeer.STATE_OPEN:
+		while host_socket.get_available_packet_count() > 0:
+			var json = JSON.parse_string(host_socket.get_packet().get_string_from_utf8())
+			if json is Dictionary:
+				match json.get(\"type\"):
+					\"your_id\":
+						%HostContainer/Status.text = \"Status: Connected\"
+						%HostContainer/LobbyCode.text = \"Lobby Code: %s\" % json[\"id\"]
+						host_created_lobby.emit(json[\"id\"])
+					\"sdp\":
+						var sdp = json[\"content\"]
+						host_rtc.set_remote_description(sdp[\"type\"], sdp[\"sdp\"])
+						joiner_id = json[\"joinerId\"]
+					\"ice\":
+						var ice = json[\"content\"]
+						host_rtc.add_ice_candidate(ice[\"media\"], ice[\"index\"], ice[\"name\"])
+						joiner_id = json[\"joinerId\"]
+	
+	if client_socket.get_ready_state() == WebSocketPeer.STATE_OPEN:
+		if not client_socket_opened:
+			%ClientContainer/Status.text = \"Status: Performing WebRTC handshake...\"
+			client_joined_lobby.emit()
+		client_socket_opened = true
+		
+		while client_socket.get_available_packet_count() > 0:
+			var json = JSON.parse_string(client_socket.get_packet().get_string_from_utf8())
+			if json is Dictionary:
+				match json.get(\"type\"):
+					\"sdp\":
+						var sdp = json[\"content\"]
+						client_rtc.set_remote_description(sdp[\"type\"], sdp[\"sdp\"])
+					\"ice\":
+						var ice = json[\"content\"]
+						client_rtc.add_ice_candidate(ice[\"media\"], ice[\"index\"], ice[\"name\"])
+	
+	if client_rtc.get_connection_state() == WebRTCPeerConnection.STATE_CONNECTED:
+		if not client_was_connected:
+			%ClientContainer/Status.text = \"Status: Connected to host!\"
+			client_socket.close()
+			send_stuff()
+		client_was_connected = true
+	
+	if host_rtc.get_connection_state() == WebRTCPeerConnection.STATE_CONNECTED:
+		while host_data_channel.get_available_packet_count() > 0:
+			var log = %HostContainer/LogContainer/MessageLog
+			log.text = log.text + host_data_channel.get_packet().get_string_from_utf8() + \"\\n\"
+
+func send_stuff():
+	client_data_channel.put_packet(\"Hello there!!!\".to_utf8_buffer())
+	await get_tree().create_timer(1.0).timeout
+	client_data_channel.put_packet(\"We are connected!!!\".to_utf8_buffer())
+	await get_tree().create_timer(1.0).timeout
+	client_data_channel.put_packet(\"Okay bye\".to_utf8_buffer())
+	await get_tree().create_timer(1.0).timeout
+	client_data_channel.close()
+	client_rtc.close()
+
+
+func _on_join_lobby_button_pressed():
+	client_socket.connect_to_url(web_socket_url + \"/api/join?lobby=%s\" % %LobbyCodeField.text)
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y25u7"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.255659, 0.255659, 0.255659, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_blend = true
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="WebRtcTest" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gbcgr")
+script = SubResource("GDScript_0gpqr")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="HSplitContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="HostContainer" type="VBoxContainer" parent="HSplitContainer/MarginContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+
+[node name="Host" type="Label" parent="HSplitContainer/MarginContainer/HostContainer"]
+layout_mode = 2
+text = "Host"
+
+[node name="Status" type="Label" parent="HSplitContainer/MarginContainer/HostContainer"]
+layout_mode = 2
+text = "Status: Disconnected"
+
+[node name="LobbyCode" type="Label" parent="HSplitContainer/MarginContainer/HostContainer"]
+layout_mode = 2
+
+[node name="ClientCount" type="Label" parent="HSplitContainer/MarginContainer/HostContainer"]
+layout_mode = 2
+text = "Client Count: 0"
+
+[node name="LogContainer" type="PanelContainer" parent="HSplitContainer/MarginContainer/HostContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_y25u7")
+
+[node name="MessageLog" type="Label" parent="HSplitContainer/MarginContainer/HostContainer/LogContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="DebugInfo" type="Label" parent="HSplitContainer/MarginContainer/HostContainer"]
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="HSplitContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="ClientContainer" type="VBoxContainer" parent="HSplitContainer/MarginContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Client" type="Label" parent="HSplitContainer/MarginContainer2/ClientContainer"]
+layout_mode = 2
+text = "Client"
+
+[node name="Status" type="Label" parent="HSplitContainer/MarginContainer2/ClientContainer"]
+layout_mode = 2
+text = "Status: Disconnected"
+
+[node name="ConnectionActions" type="HBoxContainer" parent="HSplitContainer/MarginContainer2/ClientContainer"]
+layout_mode = 2
+
+[node name="LobbyCodeField" type="LineEdit" parent="HSplitContainer/MarginContainer2/ClientContainer/ConnectionActions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+placeholder_text = "Lobby Code"
+
+[node name="JoinLobbyButton" type="Button" parent="HSplitContainer/MarginContainer2/ClientContainer/ConnectionActions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Join"
+
+[node name="DebugInfo" type="Label" parent="HSplitContainer/MarginContainer2/ClientContainer"]
+layout_mode = 2
+
+[connection signal="pressed" from="HSplitContainer/MarginContainer2/ClientContainer/ConnectionActions/JoinLobbyButton" to="." method="_on_join_lobby_button_pressed"]
