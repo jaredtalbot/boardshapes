@@ -343,30 +343,27 @@ func hostMultiplayer(c *gin.Context) {
 	go func() {
 		for {
 			t, p, err := conn.ReadMessage()
-			if err != nil || t != websocket.TextMessage {
-				close(ch)
-				conn.Close()
-				break
-			}
-			var msg SignalingMessage
-			err = json.Unmarshal(p, &msg)
 			if err != nil {
-				close(ch)
-				conn.Close()
 				break
 			}
 
+			if t != websocket.TextMessage {
+				continue
+			}
+
+			var msg SignalingMessage
+			err = json.Unmarshal(p, &msg)
+			if err != nil {
+				continue
+			}
+
 			if msg.JoinerId == "" {
-				close(ch)
-				conn.Close()
-				break
+				continue
 			}
 
 			joiner, ok := joiners[msg.JoinerId]
 			if !ok {
-				close(ch)
-				conn.Close()
-				break
+				continue
 			}
 
 			joiner <- msg
@@ -389,7 +386,7 @@ func hostMultiplayer(c *gin.Context) {
 }
 
 func joinMultiplayer(c *gin.Context) {
-	id := c.Query("id")
+	id := c.Query("lobby")
 	if id == "" {
 		c.Status(400)
 		return
@@ -421,17 +418,17 @@ func joinMultiplayer(c *gin.Context) {
 	go func() {
 		for {
 			t, p, err := conn.ReadMessage()
-			if err != nil || t != websocket.TextMessage {
-				close(ch)
+			if err != nil {
 				conn.Close()
 				break
+			}
+			if t != websocket.TextMessage {
+				continue
 			}
 			var msg SignalingMessage
 			err = json.Unmarshal(p, &msg)
 			if err != nil {
-				close(ch)
-				conn.Close()
-				break
+				continue
 			}
 
 			msg.JoinerId = joinerIdString
@@ -450,7 +447,7 @@ func joinMultiplayer(c *gin.Context) {
 
 type SignalingMessage struct {
 	MsgType  string `json:"type"`
-	Content  string `json:"content"`
+	Content  any    `json:"content"`
 	JoinerId string `json:"joinerId,omitempty"`
 }
 
