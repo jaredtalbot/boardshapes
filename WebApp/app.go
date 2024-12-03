@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"codejester27/cmps401fa2024/web-app/processing"
+	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
 
@@ -313,35 +314,85 @@ func connectListenerWebsocket(c *gin.Context) {
 	}
 }
 
-var lobbies = make(map[string]*MultiplayerLobby, 0)
+var lobbies = make(map[string]chan SignalingMessage, 0)
 
-type MultiplayerLobby struct {
-	players []MultiplayerPlayer
-	sync.RWMutex
+var joiners = make(map[string]chan SignalingMessage, 0)
+
+func hostMultiplayer(c *gin.Context) {
+	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	var id string
+
+	for {
+		id = generateLobbyId()
+		if _, ok := lobbies[id]; !ok {
+			break
+		}
+	}
+
+	ch := make(chan SignalingMessage)
+	lobbies[id] = ch
+	defer func() {
+		delete(lobbies, id)
+		close(ch)
+	}()
+
+	go func() {
+		for {
+			t, p, err := conn.ReadMessage()
+			if err != nil {
+				break
+			}
+
+			if t != websocket.TextMessage {
+				continue
+			}
+
+			var msg SignalingMessage
+			err = json.Unmarshal(p, &msg)
+			if err != nil {
+				continue
+			}
+
+			if msg.JoinerId == "" {
+				continue
+			}
+
+			joiner, ok := joiners[msg.JoinerId]
+			if !ok {
+				continue
+			}
+
+			joiner <- msg
+		}
+	}()
+
+	err = conn.WriteJSON(gin.H{"type": "your_id", "id": id})
+	if err != nil {
+		conn.Close()
+		return
+	}
+
+	for m := range ch {
+		err := conn.WriteJSON(m)
+		if err != nil {
+			conn.Close()
+			break
+		}
+	}
 }
 
-type MultiplayerPlayer struct {
-	Id             uuid.UUID
-	MessageChannel chan PlayerStatusMessage
-}
-
-type PlayerStatusMessage struct {
-	Animation  string         `json:"animation"`
-	Frame      int            `json:"frame"`
-	Position   PlayerPosition `json:"position"`
-	Name       string         `json:"name"`
-	FacingLeft bool           `json:"facingLeft"`
-	Id         string         `json:"id,omitempty"`
-}
-
-type PlayerPosition struct {
-	X float32 `json:"x"`
-	Y float32 `json:"y"`
-}
-
-func connectMultiplayer(c *gin.Context) {
-	lobbyId := c.Query("lobby")
-	if lobbyId == "" {
+func joinMultiplayer(c *gin.Context) {
+	id := c.Query("lobby")
+	if id == "" {
+		c.Status(400)
+		return
+	}
+	host, ok := lobbies[id]
+	if !ok {
 		c.Status(400)
 		return
 	}
@@ -351,91 +402,68 @@ func connectMultiplayer(c *gin.Context) {
 		panic(err)
 	}
 
-	id, err := uuid.NewV7()
+	joinerId, err := uuid.NewV7()
 	if err != nil {
 		panic(err)
 	}
-	player := MultiplayerPlayer{id, make(chan PlayerStatusMessage, 5)}
-	lobby, ok := lobbies[lobbyId]
-	if !ok {
-		lobbies[lobbyId] = &MultiplayerLobby{players: make([]MultiplayerPlayer, 0, 1)}
-		lobby = lobbies[lobbyId]
-	}
-	lobby.Lock()
-	lobby.players = append(lobby.players, player)
-	lobby.Unlock()
 
-	removePlayer := func() {
-		lobby.Lock()
-		lobby.players = slices.DeleteFunc(lobby.players, func(p MultiplayerPlayer) bool { return player.Id == p.Id })
-		lobby.Unlock()
-		close(player.MessageChannel)
-		conn.Close()
-	}
+	joinerIdString := joinerId.String()
+	ch := make(chan SignalingMessage)
+	joiners[joinerIdString] = ch
+	defer func() {
+		delete(joiners, joinerIdString)
+		close(ch)
+	}()
 
 	go func() {
 		for {
-			_, data, err := conn.ReadMessage()
-
+			t, p, err := conn.ReadMessage()
 			if err != nil {
-				log.Println(err)
-				removePlayer()
-				return
+				conn.Close()
+				break
 			}
-
-			var msg PlayerStatusMessage
-			err = json.Unmarshal(data, &msg)
-
+			if t != websocket.TextMessage {
+				continue
+			}
+			var msg SignalingMessage
+			err = json.Unmarshal(p, &msg)
 			if err != nil {
-				log.Println(err)
-				removePlayer()
-				return
+				continue
 			}
 
-			msg.Id = id.String()
-
-			lobby.RLock()
-			for _, ply := range lobby.players {
-				if player.Id == ply.Id {
-					continue
-				}
-				select {
-				case ply.MessageChannel <- msg:
-				default:
-				}
-			}
-			lobby.RUnlock()
+			msg.JoinerId = joinerIdString
+			host <- msg
 		}
 	}()
 
-	for m := range player.MessageChannel {
+	for m := range ch {
 		err := conn.WriteJSON(m)
 		if err != nil {
-			log.Println(err)
-			removePlayer()
+			conn.Close()
 			break
 		}
 	}
 }
 
-func cleanupEmptyLobbies() {
-	for {
-		lobbiesCleanedUp := 0
-		for k, l := range lobbies {
-			l.RLock()
-			if len(l.players) == 0 {
-				delete(lobbies, k)
-				lobbiesCleanedUp++
-			}
-			l.RUnlock()
-		}
+type SignalingMessage struct {
+	MsgType  string `json:"type"`
+	Content  any    `json:"content"`
+	JoinerId string `json:"joinerId,omitempty"`
+}
 
-		if lobbiesCleanedUp > 0 {
-			log.Printf("%d multiplayer lobbies cleaned up!\n", lobbiesCleanedUp)
+func generateLobbyId() string {
+	buf := make([]byte, 8)
+	rand.Read(buf)
+	for i := range buf {
+		b := &buf[i]
+		*b >>= 3
+		if *b < 10 {
+			*b += 0x0030
+		} else {
+			*b += 0x0037
 		}
-
-		time.Sleep(60 * time.Second)
 	}
+	return string(buf)
 }
 
 func main() {
@@ -462,14 +490,13 @@ func main() {
 	logged.POST("/api/simplify", simplifyImage)
 	logged.POST("/api/build-level", buildLevel)
 	router.GET("/api/ws", connectListenerWebsocket)
-	logged.GET("/api/join", connectMultiplayer)
+	logged.GET("/api/host", hostMultiplayer)
+	logged.GET("/api/join", joinMultiplayer)
 
 	router.NoRoute(gin.Logger(), func(ctx *gin.Context) {
 		ctx.File("./homepage/board-site/dist/index.html")
 		ctx.Status(200)
 	})
-
-	go cleanupEmptyLobbies()
 
 	port := Port
 	if port == "" {
