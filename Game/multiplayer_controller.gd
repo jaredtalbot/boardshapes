@@ -1,12 +1,12 @@
 class_name MultiplayerController extends Node
 
-var web_server_url: String = ProjectSettings.get_setting("application/boardwalk/web_server_url")
+var multiplayer_server_url: String = ProjectSettings.get_setting("application/boardwalk/multiplayer_server_url")
 
 var socket = WebSocketPeer.new()
 
 func try_connect(lobby_id: String):
 	assert(is_inside_tree())
-	var join_url = web_server_url + "/api/join"
+	var join_url = multiplayer_server_url + "/join"
 	if join_url.begins_with("http://"):
 		join_url = join_url.replace("http://", "ws://")
 	elif join_url.begins_with("https://"):
