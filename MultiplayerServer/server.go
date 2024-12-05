@@ -84,6 +84,13 @@ type PlayerPosition struct {
 	Y float32 `json:"y"`
 }
 
+func giveReadableMessage(c *gin.Context) {
+	c.Header("Content-Type", "text/html")
+	c.String(200, "<p>This is the multiplayer server for Boardwalk.</p>"+
+		"<p>In order to enjoy Boardwalk's multiplayer features, please go to "+
+		"<a href=\"https://www.boardmesh.app/boardwalk\">https://www.boardmesh.app/boardwalk</a>.</p>")
+}
+
 func checkAvailable(c *gin.Context) {
 	c.Status(204)
 }
@@ -230,6 +237,7 @@ func main() {
 	logged := router.Group("")
 	logged.Use(gin.Logger())
 
+	logged.GET("/", giveReadableMessage)
 	logged.GET("/check", checkAvailable)
 	logged.GET("/lobbies", getLobbies)
 	router.GET("/host")
@@ -245,5 +253,5 @@ func main() {
 	if port == "" {
 		port = "443"
 	}
-	router.Run(":" + port)
+	router.RunTLS(":"+port, "multiplayer.boardmesh.app-crt.pem", "multiplayer.boardmesh.app-key.pem")
 }
