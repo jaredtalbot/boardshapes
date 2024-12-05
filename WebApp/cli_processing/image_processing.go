@@ -13,10 +13,10 @@ import (
 	"strings"
 )
 
-var rFlag = flag.Bool("r", false, "this should be resizing if called")
-var sFlag = flag.String("s", "", "gets a user file output name.")
-var mFlag = flag.Bool("m", false, "Mflag simplifies region.")
-var jFlag = flag.Bool("j", false, "Jflag should meshify and output to a cli for now ")
+var rFlag = flag.Bool("r", false, "rflag this should be resizing if called")
+var sFlag = flag.String("s", "", "sflag gets a user file output name.")
+var mFlag = flag.Bool("m", false, "mflag simplifies region.")
+var jFlag = flag.Bool("j", false, "jflag should meshify and output to a cli for now ")
 
 func main() {
 
@@ -112,7 +112,7 @@ func fileEncoder(img image.Image) *os.File {
 	if ext == ".png" {
 		err = png.Encode(outputFile, img)
 	} else if ext == ".jpeg" || ext == ".jpg" {
-		err = jpeg.Encode(outputFile, img, &jpeg.Options{Quality: 90})
+		err = jpeg.Encode(outputFile, img, &jpeg.Options{Quality: 100})
 
 	}
 	if err != nil {
