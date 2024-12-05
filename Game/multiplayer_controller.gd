@@ -1,12 +1,22 @@
 class_name MultiplayerController extends Node
 
-var web_server_url: String = ProjectSettings.get_setting("application/boardwalk/web_server_url")
+var multiplayer_server_url: String = ProjectSettings.get_setting("application/boardwalk/multiplayer_server_url")
+
+@export var status_indicator: MPIndicator
 
 var socket = WebSocketPeer.new()
 
+var last_lobby_id: String
+
+func _ready():
+	status_indicator.refresh_button.pressed.connect(retry)
+
+func retry():
+	try_connect(last_lobby_id)
+
 func try_connect(lobby_id: String):
-	assert(is_inside_tree())
-	var join_url = web_server_url + "/api/join"
+	last_lobby_id = lobby_id
+	var join_url = multiplayer_server_url + "/join"
 	if join_url.begins_with("http://"):
 		join_url = join_url.replace("http://", "ws://")
 	elif join_url.begins_with("https://"):
@@ -18,8 +28,14 @@ func _process(delta):
 	socket.poll()
 	var state = socket.get_ready_state()
 	
-	if state == WebSocketPeer.STATE_OPEN:
-		update_players()
+	match state:
+		WebSocketPeer.STATE_CONNECTING:
+			status_indicator.set_status(MPIndicator.MPConnectionStatus.CONNECTING)
+		WebSocketPeer.STATE_OPEN:
+			status_indicator.set_status(MPIndicator.MPConnectionStatus.CONNECTED)
+			update_players()
+		WebSocketPeer.STATE_CLOSED:
+			status_indicator.set_status(MPIndicator.MPConnectionStatus.DISCONNECTED)
 
 func update_players():
 	for i in range(socket.get_available_packet_count()):

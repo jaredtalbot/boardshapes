@@ -17,6 +17,8 @@ boot_splash/image="res://ui/boardwalkbetalogo.png"
 config/icon="res://icons/boardwalkicon.png"
 boardwalk/web_server_url="https://www.boardmesh.app"
 boardwalk/available_web_server_urls=PackedStringArray("http://localhost:8080", "https://www.boardmesh.app")
+boardwalk/hat_enabled=false
+boardwalk/multiplayer_server_url="https://multiplayer.boardmesh.app"
 
 [autoload]
 
@@ -68,6 +70,10 @@ Dash={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194325,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+
+[network]
+
+tls/certificate_bundle_override="res://trusted_certs/ca-certificates.crt"
 
 [rendering]
 

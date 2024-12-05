@@ -85,3 +85,13 @@ func load_level_from_data(level_data):
 	level.load_level(level_data)
 	get_tree().set_deferred("current_scene", level)
 	queue_free()
+	return level
+
+
+func _on_campagin_button_pressed():
+	var data := FileAccess.get_file_as_string("res://CampaignLevels/luke.boardwalk")
+	var current_level = load_level_from_data(data)
+	current_level.current_campaign_level = CampagignLevels.levels[0]
+
+	
+	
