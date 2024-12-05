@@ -38,16 +38,16 @@ func main() {
 			_, regionCount, regionToOutput := processing.SimplifyImage(img, processing.RegionMapOptions{})
 			fmt.Println(regionCount)
 
-			for i := 0; i < regionCount; i++ {
+			for i := 0; i < regionCount -1  ; i++ {
 				currRegion := regionToOutput.GetRegion(processing.RegionIndex(i))
 				regionMeshCreated, err := currRegion.CreateMesh()
 
 				if err != nil {
 					panic(err)
 				}
-
-				fmt.Println("X: ", regionMeshCreated[i].X, "Y: ", regionMeshCreated[i].Y)
-
+				for j := 0; j < len(regionMeshCreated); j++ {
+				fmt.Println("X: ", regionMeshCreated[j].X, "Y: ", regionMeshCreated[j].Y)
+				}
 			}
 		}
 
