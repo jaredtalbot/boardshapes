@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"runtime"
 	"slices"
@@ -26,18 +25,7 @@ var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
-		origin := r.Header.Get("Origin")
-		originUrl, err := url.Parse(origin)
-		if err != nil {
-			return false
-		}
-		hostname := originUrl.Hostname()
-
-		switch hostname {
-		case "cmps401fa2024.onrender.com", "www.boardmesh.app", "boardmesh.app", "multiplayer.boardmesh.app", "localhost":
-			return true
-		}
-		return false
+		return true
 	},
 }
 
