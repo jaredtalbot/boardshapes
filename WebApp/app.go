@@ -344,7 +344,7 @@ func main() {
 
 	port := Port
 	if port == "" {
-		port = "443"
+		port = "8080"
 	}
-	router.RunTLS(":"+port, "multiplayer.boardmesh.app-crt.pem", "multiplayer.boardmesh.app-key.pem")
+	router.Run(":" + port)
 }
