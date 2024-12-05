@@ -12,6 +12,9 @@
     },
     {
       "path": "Game"
+    },
+    {
+      "path": "MultiplayerServer"
     }
   ],
   "settings": {}
