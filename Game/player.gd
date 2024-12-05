@@ -26,6 +26,8 @@ func _ready():
 	animation_player.play("idle animation")
 	animation_player.seek(0.0, true)
 	initial_position = position
+	hat_pivot.visible = ProjectSettings.get_setting("application/boardwalk/hat_enabled")
+	
 
 func _process(delta):
 	RenderingServer.global_shader_parameter_set("player_position", position)
