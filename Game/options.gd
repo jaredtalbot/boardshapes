@@ -11,3 +11,6 @@ func _on_colorblind_mode_toggled(toggled):
 		ProjectSettings.set_setting("rendering/environment/defaults/color_blind_mode", true)
 	else:
 		ProjectSettings.set_setting("rendering/environment/defaults/color_blind_mode", false)
+
+func _on_hat_enabled_toggled(toggled):
+	ProjectSettings.set_setting("application/boardwalk/hat_enabled", toggled)
