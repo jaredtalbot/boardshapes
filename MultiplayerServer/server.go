@@ -22,8 +22,6 @@ var (
 	Port = os.Getenv(PORT_ENV)
 )
 
-var lobbies = make(map[string]*MultiplayerLobby, 0)
-
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
@@ -43,47 +41,6 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-type MultiplayerLobby struct {
-	Id      uuid.UUID
-	Name    string
-	Players []MultiplayerPlayer
-	sync.RWMutex
-}
-
-func (ml *MultiplayerLobby) ToSummaryDto() MultiplayerLobbySummaryDto {
-	return MultiplayerLobbySummaryDto{Id: ml.Id.String(), Name: ml.Name}
-}
-
-type MultiplayerLobbySummaryDto struct {
-	Id, Name string
-}
-
-type MultiplayerPlayer struct {
-	Id             uuid.UUID
-	Name           string
-	IsHost         bool
-	MessageChannel chan PlayerMessage
-}
-
-func (mpp MultiplayerPlayer) ToDto() MultiplayerPlayerDto {
-	return MultiplayerPlayerDto{Id: mpp.Id.String(), Name: mpp.Name}
-}
-
-type MultiplayerPlayerDto struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-}
-
-type PlayerMessage struct {
-	MsgType string `json:"type"`
-	Content any    `json:"content,omitempty"`
-}
-
-type PlayerPosition struct {
-	X float32 `json:"x"`
-	Y float32 `json:"y"`
-}
-
 func giveReadableMessage(c *gin.Context) {
 	c.Header("Content-Type", "text/html")
 	c.String(200, "<p>This is the multiplayer server for Boardwalk.</p>"+
@@ -95,63 +52,67 @@ func checkAvailable(c *gin.Context) {
 	c.Status(204)
 }
 
-func getLobbies(c *gin.Context) {
-	lobbyDtos := make([]MultiplayerLobbySummaryDto, 0, len(lobbies))
-	for _, v := range lobbies {
-		lobbyDtos = append(lobbyDtos, v.ToSummaryDto())
-	}
-	c.JSON(200, lobbyDtos)
+var lobbies = make(map[string]*MultiplayerLobby, 0)
+
+type MultiplayerLobby struct {
+	players []MultiplayerPlayer
+	sync.RWMutex
+}
+
+type MultiplayerPlayer struct {
+	Id             uuid.UUID
+	MessageChannel chan PlayerStatusMessage
+}
+
+type PlayerStatusMessage struct {
+	Animation  string         `json:"animation"`
+	Frame      int            `json:"frame"`
+	Position   PlayerPosition `json:"position"`
+	Name       string         `json:"name"`
+	FacingLeft bool           `json:"facingLeft"`
+	Id         string         `json:"id,omitempty"`
+}
+
+type PlayerPosition struct {
+	X float32 `json:"x"`
+	Y float32 `json:"y"`
 }
 
 func connectMultiplayer(c *gin.Context) {
 	lobbyId := c.Query("lobby")
+	if lobbyId == "" {
+		c.Status(400)
+		return
+	}
+
+	log.Printf("Player at %s joined lobby %s", c.ClientIP(), lobbyId)
 
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		panic(err)
 	}
 
-	createdLobby := false
-	var lobby *MultiplayerLobby
-	if lobbyId == "" {
-		lobbyId = uuid.New().String()
-		lobbies[lobbyId] = &MultiplayerLobby{
-			Name:    "New Lobby",
-			Players: make([]MultiplayerPlayer, 0, 1),
-		}
-		lobby = lobbies[lobbyId]
-		createdLobby = true
-	} else {
-		var ok bool
-		lobby, ok = lobbies[lobbyId]
-		if !ok {
-			conn.Close()
-			c.Status(400)
-			return
-		}
-	}
-
 	id, err := uuid.NewV7()
 	if err != nil {
 		panic(err)
 	}
-	player := MultiplayerPlayer{
-		Id:             id,
-		Name:           "Player",
-		IsHost:         createdLobby,
-		MessageChannel: make(chan PlayerMessage, 5),
+	player := MultiplayerPlayer{id, make(chan PlayerStatusMessage, 5)}
+	lobby, ok := lobbies[lobbyId]
+	if !ok {
+		lobbies[lobbyId] = &MultiplayerLobby{players: make([]MultiplayerPlayer, 0, 1)}
+		lobby = lobbies[lobbyId]
 	}
-
 	lobby.Lock()
-	lobby.Players = append(lobby.Players, player)
+	lobby.players = append(lobby.players, player)
 	lobby.Unlock()
 
 	removePlayer := func() {
 		lobby.Lock()
-		lobby.Players = slices.DeleteFunc(lobby.Players, func(p MultiplayerPlayer) bool { return player.Id == p.Id })
+		lobby.players = slices.DeleteFunc(lobby.players, func(p MultiplayerPlayer) bool { return player.Id == p.Id })
 		lobby.Unlock()
 		close(player.MessageChannel)
 		conn.Close()
+		log.Printf("Player at %s disconnected from lobby %s", c.ClientIP(), lobbyId)
 	}
 
 	go func() {
@@ -164,7 +125,7 @@ func connectMultiplayer(c *gin.Context) {
 				return
 			}
 
-			var msg PlayerMessage
+			var msg PlayerStatusMessage
 			err = json.Unmarshal(data, &msg)
 
 			if err != nil {
@@ -173,18 +134,10 @@ func connectMultiplayer(c *gin.Context) {
 				return
 			}
 
-			switch msg.MsgType {
-			case "renameLobby":
-				if newName, ok := msg.Content.(string); ok {
-					lobby.Lock()
-					lobby.Name = newName
-					lobby.Unlock()
-				}
-
-			}
+			msg.Id = id.String()
 
 			lobby.RLock()
-			for _, ply := range lobby.Players {
+			for _, ply := range lobby.players {
 				if player.Id == ply.Id {
 					continue
 				}
@@ -212,7 +165,7 @@ func cleanupEmptyLobbies() {
 		lobbiesCleanedUp := 0
 		for k, l := range lobbies {
 			l.RLock()
-			if len(l.Players) == 0 {
+			if len(l.players) == 0 {
 				delete(lobbies, k)
 				lobbiesCleanedUp++
 			}
@@ -239,8 +192,6 @@ func main() {
 
 	logged.GET("/", giveReadableMessage)
 	logged.GET("/check", checkAvailable)
-	logged.GET("/lobbies", getLobbies)
-	router.GET("/host")
 	router.GET("/join", connectMultiplayer)
 
 	router.Use(func(ctx *gin.Context) {
