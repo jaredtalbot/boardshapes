@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3 uid="uid://v6iu60brt15h"]
+
+[ext_resource type="SpriteFrames" uid="uid://1j6nbm2fptgq" path="res://player_animated_sprite.tres" id="1_isp3k"]
+[ext_resource type="Script" path="res://ghost_player.gd" id="2_xggka"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_w2eoj"]
+font_size = 72
+
+[node name="GhostPlayer" type="AnimatedSprite2D"]
+scale = Vector2(0.128, 0.128)
+sprite_frames = ExtResource("1_isp3k")
+animation = &"idle animation"
+script = ExtResource("2_xggka")
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -209.375
+offset_top = -568.438
+offset_right = 7.62501
+offset_bottom = -469.438
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayerTag" type="Label" parent="Panel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Player"
+label_settings = SubResource("LabelSettings_w2eoj")
+horizontal_alignment = 1
+vertical_alignment = 2

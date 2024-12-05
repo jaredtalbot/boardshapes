@@ -1,16 +1,29 @@
-[gd_scene load_steps=10 format=3 uid="uid://xklntftxk1rp"]
+[gd_scene load_steps=15 format=3 uid="uid://xklntftxk1rp"]
 
 [ext_resource type="Script" path="res://level.gd" id="1_rfdv8"]
 [ext_resource type="Script" path="res://level_generator.gd" id="1_rygds"]
 [ext_resource type="PackedScene" uid="uid://ca40sxi6lp5lx" path="res://touch_screen_controls.tscn" id="2_1knc0"]
 [ext_resource type="PackedScene" uid="uid://blw1ecr3vvp3q" path="res://loading_indicator.tscn" id="2_07l0p"]
 [ext_resource type="AudioStream" uid="uid://dffdk5u7kadrd" path="res://BoardWalk (1).ogg" id="5_4w55l"]
-[ext_resource type="Texture2D" uid="uid://c5o0brblu00xo" path="res://ui/QuitButton.png" id="6_crp35"]
+[ext_resource type="Texture2D" uid="uid://biui41qabk6dn" path="res://ui/OptionButton.png" id="6_507j4"]
 [ext_resource type="PackedScene" uid="uid://3poplqifejqw" path="res://goal.tscn" id="7_h3hxs"]
+[ext_resource type="Script" path="res://multiplayer_controller.gd" id="8_w82i2"]
 
 [sub_resource type="Theme" id="Theme_1nwa3"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2uk85"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_alxqa"]
+font_size = 12
+
+[sub_resource type="LabelSettings" id="LabelSettings_xg2hk"]
+font_size = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_7qxxf"]
+font_size = 12
+
+[sub_resource type="LabelSettings" id="LabelSettings_n0tpc"]
+font_size = 48
 
 [node name="Level" type="Node"]
 script = ExtResource("1_rfdv8")
@@ -33,14 +46,13 @@ offset_top = 2.0
 offset_right = 2355.0
 offset_bottom = 298.0
 scale = Vector2(0.2, 0.2)
-texture_normal = ExtResource("6_crp35")
+texture_normal = ExtResource("6_507j4")
 
 [node name="QuitMenu" type="CanvasLayer" parent="."]
 process_mode = 2
 
 [node name="QuitWindow" type="Window" parent="QuitMenu"]
 transparent_bg = true
-title = "Quit Level"
 initial_position = 1
 size = Vector2i(800, 600)
 visible = false
@@ -50,46 +62,100 @@ content_scale_factor = 3.0
 theme = SubResource("Theme_1nwa3")
 
 [node name="Label" type="Label" parent="QuitMenu/QuitWindow"]
-anchors_preset = 8
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
 offset_left = -115.0
-offset_top = -11.5
 offset_right = 115.0
-offset_bottom = 11.5
+offset_bottom = 23.0
 grow_horizontal = 2
-grow_vertical = 2
-text = "Do you want to quit the level?"
+text = "Options"
 label_settings = SubResource("LabelSettings_2uk85")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BackButton" type="Button" parent="QuitMenu/QuitWindow"]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 50.0
-offset_top = -50.0
-offset_right = 95.0
-offset_bottom = -19.0
-grow_vertical = 0
-text = "Yes"
+[node name="Label2" type="Label" parent="QuitMenu/QuitWindow"]
+offset_left = 25.0
+offset_top = 35.0
+offset_right = 73.0
+offset_bottom = 58.0
+text = "Volume:"
+label_settings = SubResource("LabelSettings_alxqa")
 
-[node name="ResumeButton" type="Button" parent="QuitMenu/QuitWindow"]
-anchors_preset = 3
-anchor_left = 1.0
+[node name="Label3" type="Label" parent="QuitMenu/QuitWindow"]
+offset_left = 25.0
+offset_top = 65.0
+offset_right = 133.0
+offset_bottom = 88.0
+text = "Color Blindness Mode:"
+label_settings = SubResource("LabelSettings_xg2hk")
+
+[node name="Label4" type="Label" parent="QuitMenu/QuitWindow"]
+offset_left = 25.0
+offset_top = 90.0
+offset_right = 93.0
+offset_bottom = 113.0
+text = "Dark Mode:"
+label_settings = SubResource("LabelSettings_7qxxf")
+
+[node name="BackButton" type="Button" parent="QuitMenu/QuitWindow"]
+anchors_preset = 7
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -81.0
-offset_top = -50.0
-offset_right = -36.0
-offset_bottom = -19.0
-grow_horizontal = 0
+offset_left = -21.0
+offset_top = -41.0
+offset_right = 21.0
+offset_bottom = -10.0
+grow_horizontal = 2
 grow_vertical = 0
-text = "No"
+text = "Quit"
+
+[node name="Resume Button" type="Button" parent="QuitMenu/QuitWindow"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -35.0
+offset_top = -79.0
+offset_right = 35.0
+offset_bottom = -48.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Resume"
+
+[node name="volume-slider" type="HSlider" parent="QuitMenu/QuitWindow"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -186.0
+offset_top = 36.0
+offset_right = -36.0
+offset_bottom = 52.0
+grow_horizontal = 0
+tick_count = 5
+
+[node name="ColorCheck" type="CheckButton" parent="QuitMenu/QuitWindow"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -116.0
+offset_top = 60.5
+offset_right = -72.0
+offset_bottom = 84.5
+grow_horizontal = 0
+
+[node name="DarkCheck" type="CheckButton" parent="QuitMenu/QuitWindow"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -116.0
+offset_top = 87.0
+offset_right = -72.0
+offset_bottom = 111.0
+grow_horizontal = 0
 
 [node name="StartEndSelection" type="CanvasLayer" parent="."]
 
@@ -97,15 +163,9 @@ text = "No"
 process_mode = 2
 visible = false
 z_index = 10
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -1051.5
-offset_top = -615.0
-offset_right = 1051.5
-offset_bottom = 615.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 disabled = true
@@ -144,15 +204,9 @@ autowrap_mode = 2
 process_mode = 2
 visible = false
 z_index = 10
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -1051.5
-offset_top = -615.0
-offset_right = 1051.5
-offset_bottom = 615.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 disabled = true
@@ -188,9 +242,9 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="VictoryScreen" type="CanvasLayer" parent="."]
-
-[node name="Victory" type="Panel" parent="VictoryScreen"]
 visible = false
+
+[node name="Victory" type="PanelContainer" parent="VictoryScreen"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -203,70 +257,79 @@ offset_bottom = 166.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ExitToMenu" type="Button" parent="VictoryScreen/Victory"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -75.5
-offset_top = 42.0
-offset_right = 75.5
-offset_bottom = 92.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Exit To Main Menu"
+[node name="MarginContainer" type="MarginContainer" parent="VictoryScreen/Victory"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
 
-[node name="PlayAnotherLevel" type="Button" parent="VictoryScreen/Victory"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -76.0
-offset_top = 121.0
-offset_right = 76.0
-offset_bottom = 171.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Play Another Level"
+[node name="VBoxContainer" type="VBoxContainer" parent="VictoryScreen/Victory/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
 
-[node name="Restart" type="Button" parent="VictoryScreen/Victory"]
-layout_mode = 0
-offset_left = 172.0
-offset_top = 167.0
-offset_right = 326.0
-offset_bottom = 218.0
+[node name="Label" type="Label" parent="VictoryScreen/Victory/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Level Complete!"
+label_settings = SubResource("LabelSettings_n0tpc")
+horizontal_alignment = 1
+
+[node name="Restart" type="Button" parent="VictoryScreen/Victory/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+focus_neighbor_bottom = NodePath("../SaveLevel")
+focus_next = NodePath("../SaveLevel")
 text = "Restart"
 
-[node name="Label" type="Label" parent="VictoryScreen/Victory"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.442
-anchor_right = 0.5
-anchor_bottom = 0.442
-offset_left = -217.0
-offset_top = -152.2
-offset_right = -93.0
-offset_bottom = -129.2
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(3.5, 3.5)
-text = "Level Complete!"
+[node name="SaveLevel" type="Button" parent="VictoryScreen/Victory/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+focus_neighbor_top = NodePath("../Restart")
+focus_neighbor_bottom = NodePath("../PlayAnotherLevel")
+focus_next = NodePath("../PlayAnotherLevel")
+focus_previous = NodePath("../Restart")
+text = "Save Level"
+
+[node name="PlayAnotherLevel" type="Button" parent="VictoryScreen/Victory/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+focus_neighbor_top = NodePath("../SaveLevel")
+focus_neighbor_bottom = NodePath("../ExitToMenu")
+focus_next = NodePath("../ExitToMenu")
+focus_previous = NodePath("../SaveLevel")
+text = "Play Another Level"
+
+[node name="ExitToMenu" type="Button" parent="VictoryScreen/Victory/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+focus_neighbor_top = NodePath("../PlayAnotherLevel")
+focus_previous = NodePath("../PlayAnotherLevel")
+text = "Exit To Main Menu"
 
 [node name="Goal" parent="." instance=ExtResource("7_h3hxs")]
 
+[node name="MultiplayerController" type="Node" parent="."]
+script = ExtResource("8_w82i2")
+
+[node name="MultiplayerTimer" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
 [connection signal="finished" from="AudioStreamPlayer" to="." method="_on_audio_stream_player_finished"]
 [connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="close_requested" from="QuitMenu/QuitWindow" to="." method="_on_quit_window_close_requested"]
 [connection signal="pressed" from="QuitMenu/QuitWindow/BackButton" to="." method="_on_back_button_pressed"]
-[connection signal="pressed" from="QuitMenu/QuitWindow/ResumeButton" to="." method="_on_no_button_pressed"]
+[connection signal="pressed" from="QuitMenu/QuitWindow/Resume Button" to="." method="_on_resume_button_pressed"]
+[connection signal="value_changed" from="QuitMenu/QuitWindow/volume-slider" to="." method="_on_volumeslider_value_changed"]
+[connection signal="toggled" from="QuitMenu/QuitWindow/ColorCheck" to="." method="_on_color_check_toggled"]
+[connection signal="toggled" from="QuitMenu/QuitWindow/DarkCheck" to="." method="_on_dark_check_toggled"]
 [connection signal="pressed" from="StartEndSelection/StartSelect" to="." method="_set_player_start"]
 [connection signal="pressed" from="StartEndSelection/EndSelect" to="." method="_set_goal_position"]
-[connection signal="pressed" from="VictoryScreen/Victory/ExitToMenu" to="." method="_on_exit_to_main_menu_button_pressed"]
-[connection signal="pressed" from="VictoryScreen/Victory/PlayAnotherLevel" to="." method="_on_back_button_pressed"]
-[connection signal="pressed" from="VictoryScreen/Victory/Restart" to="." method="_on_restart_button_pressed"]
-[connection signal="pressed" from="VictoryScreen/Victory/Restart" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/SaveLevel" to="." method="save_level"]
+[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/PlayAnotherLevel" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/ExitToMenu" to="." method="_on_exit_to_main_menu_button_pressed"]
 [connection signal="body_entered" from="Goal" to="." method="_goal_reached"]
+[connection signal="timeout" from="MultiplayerTimer" to="." method="_on_multiplayer_timer_timeout"]

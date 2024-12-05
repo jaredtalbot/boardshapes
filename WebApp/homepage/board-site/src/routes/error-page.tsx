@@ -1,4 +1,4 @@
-import { useRouteError } from "react-router-dom";
+import { Link, useRouteError } from "react-router-dom";
 
 interface RouteError {
   statusText?: string;
@@ -16,6 +16,9 @@ export default function ErrorPage() {
       <p>
         <i>{error.statusText || error.message}</i>
       </p>
+      <Link to="/" className="link">
+        Go to Home
+      </Link>
     </div>
   );
 }

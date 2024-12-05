@@ -9,6 +9,9 @@
     {
       "name": "DevOps",
       "path": ".github"
+    },
+    {
+      "path": "Game"
     }
   ],
   "settings": {}

@@ -11,3 +11,6 @@ func _process(delta):
 
 func set_text(new_text: String):
 	loading_indicator_text.text = new_text
+	
+func set_text_color(color: Color):
+	loading_indicator_text.label_settings.font_color = color
