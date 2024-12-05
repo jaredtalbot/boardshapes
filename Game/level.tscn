@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://xklntftxk1rp"]
+[gd_scene load_steps=16 format=3 uid="uid://xklntftxk1rp"]
 
 [ext_resource type="Script" path="res://level.gd" id="1_rfdv8"]
 [ext_resource type="Script" path="res://level_generator.gd" id="1_rygds"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://biui41qabk6dn" path="res://ui/OptionButton.png" id="6_507j4"]
 [ext_resource type="PackedScene" uid="uid://3poplqifejqw" path="res://goal.tscn" id="7_h3hxs"]
 [ext_resource type="Script" path="res://multiplayer_controller.gd" id="8_w82i2"]
+[ext_resource type="PackedScene" uid="uid://bc8yj1ak2pgnc" path="res://mp_indicator.tscn" id="9_ww6yl"]
 
 [sub_resource type="Theme" id="Theme_1nwa3"]
 
@@ -310,8 +311,19 @@ text = "Exit To Main Menu"
 
 [node name="Goal" parent="." instance=ExtResource("7_h3hxs")]
 
-[node name="MultiplayerController" type="Node" parent="."]
+[node name="MPIndicator" parent="." instance=ExtResource("9_ww6yl")]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -252.0
+offset_top = 4.0
+offset_right = -120.0
+offset_bottom = 44.0
+grow_horizontal = 0
+
+[node name="MultiplayerController" type="Node" parent="." node_paths=PackedStringArray("status_indicator")]
 script = ExtResource("8_w82i2")
+status_indicator = NodePath("../MPIndicator")
 
 [node name="MultiplayerTimer" type="Timer" parent="."]
 wait_time = 0.1
@@ -327,8 +339,8 @@ autostart = true
 [connection signal="toggled" from="QuitMenu/QuitWindow/DarkCheck" to="." method="_on_dark_check_toggled"]
 [connection signal="pressed" from="StartEndSelection/StartSelect" to="." method="_set_player_start"]
 [connection signal="pressed" from="StartEndSelection/EndSelect" to="." method="_set_goal_position"]
-[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/SaveLevel" to="." method="save_level"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/PlayAnotherLevel" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/ExitToMenu" to="." method="_on_exit_to_main_menu_button_pressed"]
