@@ -5,7 +5,6 @@ var web_server_url: String = ProjectSettings.get_setting("application/boardwalk/
 var socket = WebSocketPeer.new()
 
 func try_connect(lobby_id: String):
-	assert(is_inside_tree())
 	var join_url = web_server_url + "/api/join"
 	if join_url.begins_with("http://"):
 		join_url = join_url.replace("http://", "ws://")

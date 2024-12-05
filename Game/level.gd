@@ -7,6 +7,8 @@ var base_url = ProjectSettings.get_setting("application/boardwalk/web_server_url
 @onready var multiplayer_timer = $MultiplayerTimer
 @onready var multiplayer_controller = $MultiplayerController
 
+var current_campaign_level: String = ""
+
 func _ready():
 	$"QuitMenu/QuitWindow/volume-slider".set_value_no_signal(100)
 	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
@@ -78,7 +80,6 @@ func start_game(multiplayer_id: String, start_pos: Vector2 = Vector2.ZERO, end_p
 		goal.position = end_pos
 		goal.show()
 		$TouchScreenControls.show()
-		$AudioStreamPlayer.play()
 	else:
 		assert(false, "make sure to set either both start and end positions or neither of them")
 
@@ -134,12 +135,27 @@ func _set_goal_position():
 	$TouchScreenControls.show()
 	$Goal.show()
 	get_tree().paused = false
-	$AudioStreamPlayer.play()
 	
 func _goal_reached(player: Node2D):
-	player.set_physics_process(false)
-	$VictoryScreen.show()
-	%Restart.call_deferred("grab_focus")
+	if current_campaign_level != "":
+		var tree = get_tree()
+		var currlevel = CampagignLevels.levels.find(current_campaign_level)
+		if currlevel + 1 == len(CampagignLevels.levels):
+			player.set_physics_process(false)
+			$VictoryScreen.show()
+			%Restart.call_deferred("grab_focus")
+		else:
+			var nextlevel = CampagignLevels.levels[currlevel + 1]
+			var next_level_node = preload("res://level.tscn").instantiate()
+			next_level_node.current_campaign_level = nextlevel
+			add_sibling(next_level_node)
+			next_level_node.load_level(FileAccess.get_file_as_string(nextlevel))
+			get_tree().set_deferred("current_scene", next_level_node)
+			queue_free()
+	else:
+		player.set_physics_process(false)
+		$VictoryScreen.show()
+		%Restart.call_deferred("grab_focus")
 	
 func _on_audio_stream_player_finished():
 	$AudioStreamPlayer.play()
