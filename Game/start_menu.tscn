@@ -84,7 +84,7 @@ layout_mode = 2
 [node name="BackButton" type="TextureButton" parent="VBoxContainer/OtherButtonRow"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 2
 size_flags_vertical = 4
 focus_neighbor_top = NodePath("../../TextureRect/PlayContainer/PlayButtonRow/UploadImageButton")
 focus_previous = NodePath("../../TextureRect/PlayContainer/PlayButtonRow/LoadLevelButton")
@@ -92,6 +92,7 @@ texture_normal = ExtResource("4_lf6m8")
 
 [node name="TextureButton" type="TextureButton" parent="VBoxContainer/OtherButtonRow"]
 layout_mode = 2
+size_flags_horizontal = 10
 texture_normal = ExtResource("8_bmbfk")
 
 [node name="WebPickImageFile" type="Node" parent="."]
