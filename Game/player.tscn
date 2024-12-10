@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://player.gd" id="1_4byla"]
 [ext_resource type="SpriteFrames" uid="uid://1j6nbm2fptgq" path="res://player_animated_sprite.tres" id="2_3nyo8"]
-[ext_resource type="Texture2D" uid="uid://ctpouvpu8gil0" path="res://badhat.png" id="4_sxuho"]
+[ext_resource type="PackedScene" uid="uid://j47o4nebrxw" path="res://hats/crown/crown.tscn" id="4_ef2m3"]
 [ext_resource type="Script" path="res://after_image_emitter.gd" id="8_0rr0r"]
 
 [sub_resource type="Animation" id="Animation_ajg7s"]
@@ -563,9 +563,6 @@ position = Vector2(1, -20)
 rotation = 0.0460794
 gizmo_extents = 9.0
 
-[node name="Sprite2D" type="Sprite2D" parent="HatPivot/HatPos"]
-position = Vector2(0, -15)
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("4_sxuho")
+[node name="Crown" parent="HatPivot/HatPos" instance=ExtResource("4_ef2m3")]
 
 [connection signal="timeout" from="coyote_timer" to="." method="_on_coyote_timer_timeout"]

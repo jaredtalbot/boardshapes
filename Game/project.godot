@@ -17,7 +17,6 @@ boot_splash/image="res://ui/boardwalkbetalogo.png"
 config/icon="res://icons/boardwalkicon.png"
 boardwalk/web_server_url="https://www.boardmesh.app"
 boardwalk/available_web_server_urls=PackedStringArray("http://localhost:8080", "https://www.boardmesh.app")
-boardwalk/hat_enabled=false
 boardwalk/multiplayer_server_url="https://multiplayer.boardmesh.app"
 
 [autoload]
@@ -39,6 +38,7 @@ Red=""
 Blue=""
 Goal=""
 Black=""
+hats=""
 
 [input]
 

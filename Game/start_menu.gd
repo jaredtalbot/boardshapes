@@ -2,9 +2,9 @@ extends Control
 
 @export var level_scene: PackedScene
 
-@onready var upload_image_button = $VBoxContainer/HBoxContainer/UploadImageButton
-@onready var load_level_button = $VBoxContainer/HBoxContainer/LoadLevelButton
-@onready var back_button = $VBoxContainer/BackButton
+@onready var upload_image_button = %UploadImageButton
+@onready var load_level_button = %LoadLevelButton
+@onready var back_button = %BackButton
 @onready var pick_image_file_dialog = $PickImageFileDialog
 @onready var web_pick_image_file = $WebPickImageFile
 @onready var web_pick_boardwalk_file = $WebPickBoardwalkFile
@@ -67,9 +67,6 @@ func _on_image_confirmation_confirmed():
 	get_tree().set_deferred("current_scene", level)
 	queue_free()
 
-func _on_multiplayer_name_field_text_changed(new_text):
-	Preferences.set_player_name(new_text)
-
 func _on_web_pick_boardwalk_file_file_loaded(content: PackedByteArray, filename: String):
 	load_level_from_data(content)
 
@@ -87,11 +84,7 @@ func load_level_from_data(level_data):
 	queue_free()
 	return level
 
-
-func _on_campagin_button_pressed():
+func _on_campaign_button_pressed():
 	var data := FileAccess.get_file_as_string("res://CampaignLevels/luke.boardwalk")
 	var current_level = load_level_from_data(data)
 	current_level.current_campaign_level = CampagignLevels.levels[0]
-
-	
-	
