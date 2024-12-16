@@ -60,5 +60,10 @@ func _file_loaded_callback(args):
 	JavaScriptBridge.eval("document.getElementById('selectFiles%s').value = \"\";" % str(id), true)
 
 func _exit_tree():
-	JavaScriptBridge.eval("document.getElementById('selectFiles%s').remove();" % str(id), true)
+	JavaScriptBridge.eval("""
+var uploadedFile{id} = undefined;
+var uploadedFileType{id} = undefined;
+var callbacks{id} = undefined;
+document.getElementById('selectFiles{id}').remove();
+""".replace("{id}", str(id)), true)
 	request_ready() # why not
