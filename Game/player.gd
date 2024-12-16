@@ -14,6 +14,8 @@ var can_jump = false
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var hat_pivot: Node2D = $HatPivot
+@onready var hat_pos = $HatPivot/HatPos
+
 
 var initial_position : Vector2
 var last_position_was_floor: bool
@@ -26,7 +28,21 @@ func _ready():
 	animation_player.play("idle animation")
 	animation_player.seek(0.0, true)
 	initial_position = position
-	
+	if Preferences.hat_scene != null:
+		equip_hat(Preferences.hat_scene)
+
+func equip_hat(hat: PackedScene):
+	assert(hat_pos.get_child_count() < 2)
+	if hat != null:
+		if hat_pos.get_child_count() > 0:
+			var existing_hat := hat_pos.get_child(0)
+			existing_hat.replace_by(hat.instantiate())
+			existing_hat.queue_free()
+		else:
+			hat_pos.add_child(hat.instantiate())
+	else:
+		if hat_pos.get_child_count() > 0:
+			hat_pos.get_child(0).queue_free()
 
 func _process(delta):
 	RenderingServer.global_shader_parameter_set("player_position", position)

@@ -1,0 +1,88 @@
+[gd_scene load_steps=6 format=3 uid="uid://drqgdl5k4ooe6"]
+
+[ext_resource type="Texture2D" uid="uid://bdoc676kb83xj" path="res://ui/hat_preview_frame.png" id="1_hjf3o"]
+[ext_resource type="Script" path="res://hats/hat_preview.gd" id="1_k07am"]
+[ext_resource type="Texture2D" uid="uid://dmnrgxds0npah" path="res://ui/locked_hat_background.png" id="3_40jlt"]
+[ext_resource type="Texture2D" uid="uid://dq8616lwv6v3x" path="res://ui/lock.png" id="4_5pk8u"]
+[ext_resource type="Texture2D" uid="uid://ba77vmkq3rhcu" path="res://ui/no_hat_text.png" id="5_17520"]
+
+[node name="HatPreview" type="TextureRect"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_hjf3o")
+script = ExtResource("1_k07am")
+
+[node name="HatHolder" type="Node2D" parent="."]
+show_behind_parent = true
+position = Vector2(147, 147)
+scale = Vector2(10, 10)
+
+[node name="LockedHatUi" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="LockedHatUi"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -147.0
+offset_top = -147.0
+offset_right = 147.0
+offset_bottom = 147.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_40jlt")
+
+[node name="LockIcon" type="TextureRect" parent="LockedHatUi"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.5
+offset_top = -73.0
+offset_right = 64.5
+offset_bottom = 73.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_5pk8u")
+
+[node name="NoHatText" type="TextureRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.5
+offset_top = -116.0
+offset_right = 100.5
+offset_bottom = 116.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_17520")

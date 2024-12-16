@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://j47o4nebrxw"]
+[gd_scene load_steps=9 format=3 uid="uid://j47o4nebrxw"]
 
 [ext_resource type="Texture2D" uid="uid://cxwipu2au2wps" path="res://hats/crown/crown.png" id="1_fcio1"]
 [ext_resource type="Texture2D" uid="uid://h6bqipsh478h" path="res://hats/crown/sparkle.png" id="2_08xq1"]
+[ext_resource type="Script" path="res://hats/crown/crown.gd" id="2_eg4ae"]
 
 [sub_resource type="Curve" id="Curve_j0dc7"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -37,6 +38,7 @@ alpha_curve = SubResource("CurveTexture_4qnbr")
 position = Vector2(0, -11)
 scale = Vector2(0.05, 0.05)
 texture = ExtResource("1_fcio1")
+script = ExtResource("2_eg4ae")
 metadata/_edit_lock_ = true
 
 [node name="SparkleParticles" type="GPUParticles2D" parent="."]

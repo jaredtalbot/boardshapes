@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3 uid="uid://b4ilk2527ato8"]
+
+[ext_resource type="PackedScene" uid="uid://d11d7pielydy8" path="res://cosmetic_preview.tscn" id="1_jeni7"]
+[ext_resource type="Script" path="res://customize_menu.gd" id="1_pv3cl"]
+
+[node name="CustomizeMenu" type="Node"]
+script = ExtResource("1_pv3cl")
+
+[node name="PreviewAnchor" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -256.0
+offset_right = 20.0
+offset_bottom = -216.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="CosmeticPreview" parent="PreviewAnchor" instance=ExtResource("1_jeni7")]
+
+[node name="HatSelectMargin" type="MarginContainer" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+
+[node name="HatSelectScroll" type="ScrollContainer" parent="HatSelectMargin"]
+custom_minimum_size = Vector2(0, 294)
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="HatSelect" type="HBoxContainer" parent="HatSelectMargin/HatSelectScroll"]
+unique_name_in_owner = true
+layout_mode = 2

@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://d11d7pielydy8"]
+
+[ext_resource type="Script" path="res://cosmetic_preview.gd" id="1_16kqf"]
+[ext_resource type="SpriteFrames" uid="uid://1j6nbm2fptgq" path="res://player_animated_sprite.tres" id="2_xpam0"]
+[ext_resource type="AnimationLibrary" uid="uid://dwg71cg4e3my1" path="res://player_animation_library.tres" id="3_igcyw"]
+
+[node name="CosmeticPreview" type="Node2D"]
+scale = Vector2(7.813, 7.813)
+script = ExtResource("1_16kqf")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.128, 0.128)
+sprite_frames = ExtResource("2_xpam0")
+animation = &"idle animation"
+metadata/_edit_lock_ = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": ExtResource("3_igcyw")
+}
+
+[node name="HatPivot" type="Node2D" parent="."]
+metadata/_edit_lock_ = true
+
+[node name="HatPos" type="Marker2D" parent="HatPivot"]
+position = Vector2(1, -20)
+rotation = 0.0460794
+gizmo_extents = 9.0
+metadata/_edit_lock_ = true

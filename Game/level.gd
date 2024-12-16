@@ -175,7 +175,7 @@ func _on_multiplayer_timer_timeout():
 	var player: CharacterBody2D = get_node_or_null("Player")
 	if player != null:
 		var sprite = player.get_node("AnimatedSprite2D") as AnimatedSprite2D
-		$MultiplayerController.send_player_info(Preferences.get_player_name(), sprite.animation, sprite.frame, player.position, sprite.flip_h)
+		$MultiplayerController.send_player_info(Preferences.player_name, sprite.animation, sprite.frame, player.position, sprite.flip_h)
 
 func _on_quit_window_close_requested():
 	get_tree().paused = false

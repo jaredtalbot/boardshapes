@@ -1,0 +1,16 @@
+[
+	{
+		"name": "No Hat",
+		"description": "Stop wearing a hat."
+	},
+	{
+		"name": "Top Hat",
+		"path": "res://hats/tophat/tophat.tscn",
+		"description": "A classy hat."
+	},
+	{
+		"name": "Crown",
+		"path": "res://hats/crown/crown.tscn",
+		"description": "The mark of a champion."
+	}
+]
