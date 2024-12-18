@@ -34,12 +34,13 @@ func _ready():
 func equip_hat(hat: PackedScene):
 	assert(hat_pos.get_child_count() < 2)
 	if hat != null:
+		var new_hat := hat.instantiate()
 		if hat_pos.get_child_count() > 0:
 			var existing_hat := hat_pos.get_child(0)
-			existing_hat.replace_by(hat.instantiate())
+			hat_pos.add_child(new_hat)
 			existing_hat.queue_free()
 		else:
-			hat_pos.add_child(hat.instantiate())
+			hat_pos.add_child(new_hat)
 	else:
 		if hat_pos.get_child_count() > 0:
 			hat_pos.get_child(0).queue_free()

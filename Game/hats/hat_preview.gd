@@ -22,7 +22,7 @@ func set_hat(hat: PackedScene):
 		new_hat.position = Vector2.ZERO
 		if hat_holder.get_child_count() > 0:
 			var existing_hat := hat_holder.get_child(0)
-			existing_hat.replace_by(new_hat)
+			hat_holder.add_child(new_hat)
 			existing_hat.queue_free()
 		else:
 			hat_holder.add_child(new_hat)

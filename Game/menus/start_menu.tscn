@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://bpgex31naxj1w"]
 
-[ext_resource type="Script" path="res://start_menu.gd" id="1_bp1fp"]
+[ext_resource type="Script" path="res://menus/start_menu.gd" id="1_bp1fp"]
 [ext_resource type="Script" path="res://web_pick_image_file.gd" id="2_v3sgg"]
 [ext_resource type="PackedScene" uid="uid://xklntftxk1rp" path="res://level.tscn" id="2_w46sc"]
 [ext_resource type="Texture2D" uid="uid://bmm553vstdx1b" path="res://ui/play_frame.png" id="3_i6oh8"]
@@ -90,7 +90,7 @@ focus_neighbor_top = NodePath("../../TextureRect/PlayContainer/PlayButtonRow/Upl
 focus_previous = NodePath("../../TextureRect/PlayContainer/PlayButtonRow/LoadLevelButton")
 texture_normal = ExtResource("4_lf6m8")
 
-[node name="TextureButton" type="TextureButton" parent="VBoxContainer/OtherButtonRow"]
+[node name="CustomizeButton" type="TextureButton" parent="VBoxContainer/OtherButtonRow"]
 layout_mode = 2
 size_flags_horizontal = 10
 texture_normal = ExtResource("8_bmbfk")
@@ -112,6 +112,7 @@ accept = [".boardwalk"]
 [connection signal="pressed" from="VBoxContainer/TextureRect/PlayContainer/PlayButtonRow/UploadImageButton" to="." method="_on_upload_image_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/TextureRect/PlayContainer/PlayButtonRow/LoadLevelButton" to="." method="_on_load_level_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/OtherButtonRow/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/OtherButtonRow/CustomizeButton" to="." method="_on_customize_button_pressed"]
 [connection signal="file_loaded" from="WebPickImageFile" to="." method="_on_web_pick_image_file_file_loaded"]
 [connection signal="file_loaded" from="WebPickBoardwalkFile" to="." method="_on_web_pick_boardwalk_file_file_loaded"]
 [connection signal="confirmed" from="ImageConfirmation" to="." method="_on_image_confirmation_confirmed"]

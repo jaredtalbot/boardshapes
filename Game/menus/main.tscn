@@ -1,13 +1,13 @@
 [gd_scene load_steps=9 format=3 uid="uid://s2dcpgi066gy"]
 
-[ext_resource type="Script" path="res://menu.gd" id="1_py7cw"]
-[ext_resource type="Texture2D" uid="uid://bwgl64rinsl7o" path="res://ui/boardwalk2.png" id="2_0tc77"]
-[ext_resource type="Texture2D" uid="uid://dcparl8gbox7k" path="res://Whiteboard-Vector-PNG-Photos-3289639508.png" id="2_8b62a"]
-[ext_resource type="Texture2D" uid="uid://bp5lft3kbytc1" path="res://ui/startbutton.png" id="4_yh3xt"]
-[ext_resource type="Texture2D" uid="uid://biui41qabk6dn" path="res://ui/OptionButton.png" id="5_0qv1l"]
-[ext_resource type="Texture2D" uid="uid://fj8ln0fb8t72" path="res://ui/exitbutton.png" id="5_3uxxq"]
-[ext_resource type="PackedScene" uid="uid://blrjxml7nbhjp" path="res://options_window.tscn" id="7_qmff4"]
-[ext_resource type="PackedScene" uid="uid://cpndyiijj6wj8" path="res://debug_widget.tscn" id="8_rpp88"]
+[ext_resource type="Script" path="res://menus/menu.gd" id="1_slpt8"]
+[ext_resource type="Texture2D" uid="uid://dcparl8gbox7k" path="res://Whiteboard-Vector-PNG-Photos-3289639508.png" id="2_d40is"]
+[ext_resource type="Texture2D" uid="uid://bwgl64rinsl7o" path="res://ui/boardwalk2.png" id="3_j0xgp"]
+[ext_resource type="Texture2D" uid="uid://bp5lft3kbytc1" path="res://ui/startbutton.png" id="4_657yp"]
+[ext_resource type="Texture2D" uid="uid://biui41qabk6dn" path="res://ui/OptionButton.png" id="5_gp7bj"]
+[ext_resource type="Texture2D" uid="uid://fj8ln0fb8t72" path="res://ui/exitbutton.png" id="6_lejtg"]
+[ext_resource type="PackedScene" uid="uid://blrjxml7nbhjp" path="res://options_window.tscn" id="7_bj4wj"]
+[ext_resource type="PackedScene" uid="uid://cpndyiijj6wj8" path="res://debug_widget.tscn" id="8_abw83"]
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -16,7 +16,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_py7cw")
+script = ExtResource("1_slpt8")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -25,7 +25,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_8b62a")
+texture = ExtResource("2_d40is")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -47,7 +47,7 @@ alignment = 1
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("2_0tc77")
+texture = ExtResource("3_j0xgp")
 expand_mode = 1
 stretch_mode = 3
 
@@ -56,7 +56,7 @@ custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../Options")
 focus_next = NodePath("../Options")
-texture_normal = ExtResource("4_yh3xt")
+texture_normal = ExtResource("4_657yp")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -67,7 +67,7 @@ focus_neighbor_top = NodePath("../Start")
 focus_neighbor_bottom = NodePath("../Exit")
 focus_next = NodePath("../Exit")
 focus_previous = NodePath("../Start")
-texture_normal = ExtResource("5_0qv1l")
+texture_normal = ExtResource("5_gp7bj")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -76,14 +76,14 @@ custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 focus_neighbor_top = NodePath("../Options")
 focus_previous = NodePath("../Options")
-texture_normal = ExtResource("5_3uxxq")
+texture_normal = ExtResource("6_lejtg")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="OptionsWindow" parent="." instance=ExtResource("7_qmff4")]
+[node name="OptionsWindow" parent="." instance=ExtResource("7_bj4wj")]
 visible = false
 
-[node name="DebugWidget" parent="." instance=ExtResource("8_rpp88")]
+[node name="DebugWidget" parent="." instance=ExtResource("8_abw83")]
 layout_mode = 1
 offset_right = -16.0
 offset_bottom = -16.0

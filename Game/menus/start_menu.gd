@@ -41,7 +41,7 @@ func _on_pick_image_file_dialog_file_selected(path):
 	image_confirmation.show()
 
 func _on_back_button_pressed():
-	get_tree().change_scene_to_file("res://main.tscn")
+	get_tree().change_scene_to_file("res://menus/main.tscn")
 
 func _on_web_pick_image_file_file_loaded(content: PackedByteArray, filename: String):
 	var image = Image.new()
@@ -88,3 +88,7 @@ func _on_campaign_button_pressed():
 	var data := FileAccess.get_file_as_string("res://CampaignLevels/luke.boardwalk")
 	var current_level = load_level_from_data(data)
 	current_level.current_campaign_level = CampagignLevels.levels[0]
+
+
+func _on_customize_button_pressed() -> void:
+	get_tree().change_scene_to_file("res://menus/customize_menu.tscn")

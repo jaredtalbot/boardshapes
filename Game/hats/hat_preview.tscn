@@ -6,19 +6,19 @@
 [ext_resource type="Texture2D" uid="uid://dq8616lwv6v3x" path="res://ui/lock.png" id="4_5pk8u"]
 [ext_resource type="Texture2D" uid="uid://ba77vmkq3rhcu" path="res://ui/no_hat_text.png" id="5_17520"]
 
-[node name="HatPreview" type="TextureRect"]
+[node name="HatPreview" type="TextureButton"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -147.0
+offset_top = -147.0
+offset_right = 147.0
+offset_bottom = 147.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_hjf3o")
+texture_normal = ExtResource("1_hjf3o")
 script = ExtResource("1_k07am")
 
 [node name="HatHolder" type="Node2D" parent="."]
