@@ -1,22 +1,36 @@
 extends Node
 
-var unlocked_hat_paths := PackedStringArray()
+const HAT_LIST = preload("res://hats/hat_list.json")
+
+signal updated
+
+var unlocked_hat_ids := PackedStringArray()
 
 func _ready():
 	load_unlocks()
+
+func unlock_hat(hat_id: String):
+	if hat_id not in unlocked_hat_ids:
+		unlocked_hat_ids.append(hat_id)
+		updated.emit()
+		save_unlocks()
 
 func load_unlocks():
 	var file := FileAccess.open("user://unlocks.json", FileAccess.READ)
 	var err := FileAccess.get_open_error()
 	if err != OK:
-		if err != ERR_FILE_NOT_FOUND:
-			pass #add some kind of alert to the user that unlocks can't load
-		save_unlocks()
+		if err == ERR_FILE_NOT_FOUND:
+			save_unlocks()
+			return
+		#add some kind of alert to the user that unlocks can't load
 		return 
 	
 	var json = JSON.parse_string(file.get_as_text())
 	if json is Dictionary and json.get("hats") is Array:
-		unlocked_hat_paths = PackedStringArray(json.hats)
+		unlocked_hat_ids = PackedStringArray(json.hats)
+		unlocked_hat_ids.append_array(HAT_LIST.data \
+			.filter(func(h): return h.get("always_unlocked", false)) \
+			.map(func(h): return h.id))
 	else:
 		save_unlocks()
 
@@ -26,5 +40,5 @@ func save_unlocks():
 	if err:
 		return #add some kind of alert to the user that unlocks can't save
 	file.store_string(JSON.stringify({
-		"hats": unlocked_hat_paths
+		"hats": unlocked_hat_ids
 	}))

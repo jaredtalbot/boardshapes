@@ -85,9 +85,9 @@ func load_level_from_data(level_data):
 	return level
 
 func _on_campaign_button_pressed():
-	var data := FileAccess.get_file_as_string("res://CampaignLevels/luke.boardwalk")
+	var data := FileAccess.get_file_as_string("res://campaign/luke.boardwalk")
 	var current_level = load_level_from_data(data)
-	current_level.current_campaign_level = CampagignLevels.levels[0]
+	current_level.current_campaign_level = CampaignLevels.levels.data[0].path
 
 
 func _on_customize_button_pressed() -> void:

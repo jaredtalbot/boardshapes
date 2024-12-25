@@ -188,6 +188,9 @@ func _physics_process(delta):
 			dash_direction = get_direction()
 		elif collider.is_in_group("Blue"):
 			velocity.y = -750
+	
+	if Input.is_action_just_pressed("reset"):
+		_death()
 
 func get_direction() -> int:
 	return -1 if animated_sprite.flip_h else 1

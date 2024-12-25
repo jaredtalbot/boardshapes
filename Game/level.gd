@@ -139,13 +139,13 @@ func _set_goal_position():
 func _goal_reached(player: Node2D):
 	if current_campaign_level != "":
 		var tree = get_tree()
-		var currlevel = CampagignLevels.levels.find(current_campaign_level)
-		if currlevel + 1 == len(CampagignLevels.levels):
+		var currlevel = CampaignLevels.levels.data.map(func(l): return l.path).find(current_campaign_level)
+		if currlevel + 1 == len(CampaignLevels.levels.data):
 			player.set_physics_process(false)
 			$VictoryScreen.show()
 			%Restart.call_deferred("grab_focus")
 		else:
-			var nextlevel = CampagignLevels.levels[currlevel + 1]
+			var nextlevel = CampaignLevels.levels.data[currlevel + 1].path
 			var next_level_node = preload("res://level.tscn").instantiate()
 			next_level_node.current_campaign_level = nextlevel
 			add_sibling(next_level_node)

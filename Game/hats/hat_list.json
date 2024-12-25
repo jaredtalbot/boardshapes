@@ -1,14 +1,18 @@
 [
 	{
+		"id": "nohat",
 		"name": "No Hat",
-		"description": "Stop wearing a hat."
+		"description": "Stop wearing a hat.",
+		"always_unlocked": true
 	},
 	{
+		"id": "tophat",
 		"name": "Top Hat",
 		"path": "res://hats/tophat/tophat.tscn",
 		"description": "A classy hat."
 	},
 	{
+		"id": "crown",
 		"name": "Crown",
 		"path": "res://hats/crown/crown.tscn",
 		"description": "The mark of a champion."
