@@ -23,6 +23,7 @@ jobs:
             go:
               - 'WebApp/**'
               - 'DiscordBot/**'
+              - 'MultiplayerServer/**'
             godot:
               - 'Game/**'
               - 'Boardbox/**'
