@@ -39,7 +39,8 @@ Red=""
 Blue=""
 Goal=""
 Black=""
-hats=""
+Hats=""
+Levels="Group that should always contain any and all Level nodes. Optimally only one node should remain in this group at a time."
 
 [input]
 

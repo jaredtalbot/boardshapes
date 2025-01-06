@@ -67,6 +67,7 @@ libraries = {
 position = Vector2(-0.5, 0)
 scale = Vector2(0.5, 0.5)
 shape = SubResource("RectangleShape2D_3fiya")
+metadata/_edit_lock_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, 4.76837e-07)
@@ -74,6 +75,7 @@ scale = Vector2(0.127957, 0.127957)
 sprite_frames = ExtResource("2_3nyo8")
 animation = &"idle animation"
 autoplay = "idle animation"
+metadata/_edit_lock_ = true
 
 [node name="dash_timer" type="Timer" parent="."]
 unique_name_in_owner = true
@@ -89,21 +91,27 @@ wait_time = 0.6
 one_shot = true
 
 [node name="AfterImageEmitter" type="Node2D" parent="." node_paths=PackedStringArray("animated_sprite")]
+unique_name_in_owner = true
 script = ExtResource("8_0rr0r")
 enabled = false
 animated_sprite = NodePath("../AnimatedSprite2D")
 emit_frequency = 0.05
 random_colors = PackedColorArray(1, 0, 0, 0.498039, 0, 1, 0, 0.498039, 0, 0, 1, 0.498039)
+metadata/_edit_lock_ = true
 
 [node name="slide_particles_right" type="GPUParticles2D" parent="."]
 position = Vector2(15, 12)
+emitting = false
 amount = 20
 process_material = SubResource("ParticleProcessMaterial_2bitt")
+metadata/_edit_lock_ = true
 
 [node name="slide_particles_left" type="GPUParticles2D" parent="."]
 position = Vector2(-16, 12)
+emitting = false
 amount = 20
 process_material = SubResource("ParticleProcessMaterial_2bitt")
+metadata/_edit_lock_ = true
 
 [node name="land_particles" type="GPUParticles2D" parent="."]
 position = Vector2(0, 30)
@@ -113,6 +121,7 @@ process_material = SubResource("ParticleProcessMaterial_236bx")
 lifetime = 0.33
 one_shot = true
 explosiveness = 1.0
+metadata/_edit_lock_ = true
 
 [node name="HatPivot" type="Node2D" parent="."]
 metadata/_edit_lock_ = true

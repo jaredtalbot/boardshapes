@@ -26,7 +26,7 @@ font_size = 12
 [sub_resource type="LabelSettings" id="LabelSettings_n0tpc"]
 font_size = 48
 
-[node name="Level" type="Node"]
+[node name="Level" type="Node" groups=["Levels"]]
 script = ExtResource("1_rfdv8")
 
 [node name="TouchScreenControls" parent="." instance=ExtResource("2_1knc0")]
@@ -339,8 +339,8 @@ autostart = true
 [connection signal="toggled" from="QuitMenu/QuitWindow/DarkCheck" to="." method="_on_dark_check_toggled"]
 [connection signal="pressed" from="StartEndSelection/StartSelect" to="." method="_set_player_start"]
 [connection signal="pressed" from="StartEndSelection/EndSelect" to="." method="_set_goal_position"]
-[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/SaveLevel" to="." method="save_level"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/PlayAnotherLevel" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/ExitToMenu" to="." method="_on_exit_to_main_menu_button_pressed"]

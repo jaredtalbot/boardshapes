@@ -7,6 +7,8 @@ var base_url = ProjectSettings.get_setting("application/boardwalk/web_server_url
 @onready var multiplayer_timer = $MultiplayerTimer
 @onready var multiplayer_controller = $MultiplayerController
 
+var player: Player
+
 var current_campaign_level: String = ""
 
 func _ready():
@@ -66,7 +68,7 @@ func start_game(multiplayer_id: String, start_pos: Vector2 = Vector2.ZERO, end_p
 	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
 		$QuitButton.material = ShaderMaterial.new()
 		$QuitButton.material.shader = load("res://color_invert.gdshader")
-	var player = add_player()
+	player = add_player()
 	multiplayer_controller.try_connect(multiplayer_id)
 	loading_indicator.hide()
 	if start_pos == Vector2.ZERO and end_pos == Vector2.ZERO:
@@ -119,7 +121,6 @@ func _on_exit_to_main_menu_button_pressed():
 	
 
 func _set_player_start():
-	var player = $Player
 	player.initial_position = get_viewport().get_mouse_position()
 	player.position = player.initial_position
 	$StartEndSelection/StartSelect.disabled = true
@@ -168,7 +169,6 @@ func _on_restart_button_pressed():
 	get_tree().paused = true
 	$StartEndSelection/StartSelect.disabled = false
 	$StartEndSelection/StartSelect.show()
-	var player = $Player
 	player.set_physics_process(true)
 
 func _on_multiplayer_timer_timeout():
@@ -217,8 +217,8 @@ func _on_color_check_toggled(toggled: bool):
 func _on_dark_check_toggled(toggled: bool):
 	if toggled:
 		RenderingServer.set_default_clear_color(Color(0, 0, 0, 1))
-		$Player.get_node("AnimatedSprite2D").material = ShaderMaterial.new()
-		$Player.get_node("AnimatedSprite2D").material.shader = load("res://color_invert.gdshader")
+		player.get_node("AnimatedSprite2D").material = ShaderMaterial.new()
+		player.get_node("AnimatedSprite2D").material.shader = load("res://color_invert.gdshader")
 		$QuitButton.material = ShaderMaterial.new()
 		$QuitButton.material.shader = load("res://color_invert.gdshader")
 		var level = get_node("GeneratedLevel")
@@ -228,7 +228,7 @@ func _on_dark_check_toggled(toggled: bool):
 				child.get_node("Sprite").material.shader = load("res://color_invert.gdshader")
 	else:
 		RenderingServer.set_default_clear_color(Color(1, 1, 1, 1))
-		$Player.get_node("AnimatedSprite2D").set_material(null)
+		player.get_node("AnimatedSprite2D").set_material(null)
 		$QuitButton.set_material(null)
 		var level = get_node("GeneratedLevel")
 		for child in level.get_children():
@@ -236,7 +236,6 @@ func _on_dark_check_toggled(toggled: bool):
 				child.get_node("Sprite").set_material(null)
 
 func save_level():
-	var player = $Player as Player
 	var goal = $Goal as Area2D
 	var generated_level = $GeneratedLevel as LevelGenerator.GeneratedLevel
 	var level_info = {

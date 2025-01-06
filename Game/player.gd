@@ -15,7 +15,7 @@ var can_jump = false
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var hat_pivot: Node2D = $HatPivot
 @onready var hat_pos = $HatPivot/HatPos
-
+@onready var after_image_emitter = %AfterImageEmitter
 
 var initial_position : Vector2
 var last_position_was_floor: bool
@@ -23,7 +23,9 @@ var last_position_was_wall: bool
 var touched_green: bool = false
 var bonked_wall: bool = false
 var dash_direction: int
-	
+
+signal jumped
+
 func _ready():
 	animation_player.play("idle animation")
 	animation_player.seek(0.0, true)
@@ -37,10 +39,9 @@ func equip_hat(hat: PackedScene):
 		var new_hat := hat.instantiate()
 		if hat_pos.get_child_count() > 0:
 			var existing_hat := hat_pos.get_child(0)
-			hat_pos.add_child(new_hat)
 			existing_hat.queue_free()
-		else:
-			hat_pos.add_child(new_hat)
+		hat_pos.add_child(new_hat)
+		new_hat.owner = self
 	else:
 		if hat_pos.get_child_count() > 0:
 			hat_pos.get_child(0).queue_free()
@@ -108,6 +109,7 @@ func _physics_process(delta):
 	
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and can_jump == true:
+		jumped.emit()
 		if last_position_was_floor:
 			velocity.y = JUMP_VELOCITY
 			can_jump = false
@@ -141,7 +143,7 @@ func _physics_process(delta):
 		else:
 			velocity.x = move_toward(velocity.x, 0, acceleration * delta)
 	
-	$AfterImageEmitter.enabled = is_dashing
+	after_image_emitter.enabled = is_dashing
 	
 	move_and_slide()
 	
