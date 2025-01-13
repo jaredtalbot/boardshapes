@@ -1,4 +1,4 @@
-extends Node
+class_name Level extends Node
 
 var base_url = ProjectSettings.get_setting("application/boardwalk/web_server_url")
 
@@ -6,6 +6,10 @@ var base_url = ProjectSettings.get_setting("application/boardwalk/web_server_url
 @onready var loading_indicator = $LoadingIndicator
 @onready var multiplayer_timer = $MultiplayerTimer
 @onready var multiplayer_controller = $MultiplayerController
+
+signal loaded
+signal started
+signal completed
 
 var player: Player
 
@@ -49,7 +53,7 @@ func load_level(level_data: Variant):
 	add_child(generated_level)
 	var start_pos = json["startPos"]
 	var end_pos = json["endPos"]
-	start_game(str(hash(level_data)), Vector2(start_pos["x"], start_pos["y"]), Vector2(end_pos["x"], end_pos["y"]))
+	initialize_game(str(hash(level_data)), Vector2(start_pos["x"], start_pos["y"]), Vector2(end_pos["x"], end_pos["y"]))
 
 func _on_response_received(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray):
 	if response_code != HTTPClient.RESPONSE_OK:
@@ -62,15 +66,16 @@ func _on_response_received(result: int, response_code: int, headers: PackedStrin
 		show_error("Could not generate level with server response.")
 		return
 	add_child(generated_level)
-	start_game(str(hash(level_data)))
+	initialize_game(str(hash(level_data)))
 
-func start_game(multiplayer_id: String, start_pos: Vector2 = Vector2.ZERO, end_pos: Vector2 = Vector2.ZERO):
+func initialize_game(multiplayer_id: String, start_pos: Vector2 = Vector2.ZERO, end_pos: Vector2 = Vector2.ZERO):
 	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
 		$QuitButton.material = ShaderMaterial.new()
 		$QuitButton.material.shader = load("res://color_invert.gdshader")
 	player = add_player()
 	multiplayer_controller.try_connect(multiplayer_id)
 	loading_indicator.hide()
+	loaded.emit()
 	if start_pos == Vector2.ZERO and end_pos == Vector2.ZERO:
 		get_tree().paused = true
 		$StartEndSelection/StartSelect.disabled = false
@@ -81,9 +86,14 @@ func start_game(multiplayer_id: String, start_pos: Vector2 = Vector2.ZERO, end_p
 		var goal = $Goal
 		goal.position = end_pos
 		goal.show()
-		$TouchScreenControls.show()
+		start_game()
 	else:
 		assert(false, "make sure to set either both start and end positions or neither of them")
+
+func start_game():
+	get_tree().paused = false
+	$TouchScreenControls.show()
+	started.emit()
 
 func show_error(body: Variant, error_code: int = 0):
 	var error_dialog = ErrorDialog.new()
@@ -133,11 +143,11 @@ func _set_goal_position():
 	goal.position = get_viewport().get_mouse_position()
 	$StartEndSelection/EndSelect.disabled = true
 	$StartEndSelection/EndSelect.hide()
-	$TouchScreenControls.show()
 	$Goal.show()
-	get_tree().paused = false
+	start_game()
 	
 func _goal_reached(player: Node2D):
+	completed.emit()
 	if current_campaign_level != "":
 		var tree = get_tree()
 		var currlevel = CampaignLevels.levels.data.map(func(l): return l.path).find(current_campaign_level)
@@ -182,7 +192,7 @@ func _on_quit_window_close_requested():
 	$QuitMenu/QuitWindow.hide()
 
 func _on_volumeslider_value_changed(value: float):
-	$AudioStreamPlayer.set_volume_db(value - 100)
+	$AudioStreamPlayer.set_volume_db(linear_to_db(value/100.0))
 
 func _on_color_check_toggled(toggled: bool):
 	var level = get_node("GeneratedLevel")

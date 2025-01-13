@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://dcparl8gbox7k" path="res://Whiteboard-Vector-PNG-Photos-3289639508.png" id="1_gjkl4"]
 [ext_resource type="PackedScene" uid="uid://crgwrl3y2s3g6" path="res://player.tscn" id="2_kys7y"]
 [ext_resource type="PackedScene" uid="uid://d4mickvsqnq5x" path="res://example_levels/bellyrub.tscn" id="3_udryy"]
-[ext_resource type="AudioStream" uid="uid://3ucxuxrajjmu" path="res://Jungle.wav" id="4_hu53p"]
+[ext_resource type="AudioStream" uid="uid://dffdk5u7kadrd" path="res://BoardWalk (1).ogg" id="4_qarbe"]
 
 [node name="Level" type="Node2D"]
 
@@ -18,6 +18,6 @@ position = Vector2(199, 289)
 [node name="bellyrub" parent="." instance=ExtResource("3_udryy")]
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("4_hu53p")
+stream = ExtResource("4_qarbe")
 autoplay = true
 playback_type = 1

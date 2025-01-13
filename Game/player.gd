@@ -25,6 +25,7 @@ var bonked_wall: bool = false
 var dash_direction: int
 
 signal jumped
+signal died
 
 func _ready():
 	animation_player.play("idle animation")
@@ -56,6 +57,7 @@ func _on_coyote_timer_timeout():
 	can_jump = false
 
 func _death():
+	died.emit()
 	velocity.x = 0
 	velocity.y = 0
 	#make the explosion not blue in dark mode
