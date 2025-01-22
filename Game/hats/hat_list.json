@@ -9,7 +9,8 @@
 		"id": "tophat",
 		"name": "Top Hat",
 		"path": "res://hats/tophat/tophat.tscn",
-		"description": "A classy hat."
+		"description": "A classy hat.",
+		"unlock_hint": "Beat a level."
 	},
 	{
 		"id": "crown",

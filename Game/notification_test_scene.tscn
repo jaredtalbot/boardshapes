@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://dhijtinutar5s"]
+
+[sub_resource type="GDScript" id="GDScript_5j5vj"]
+resource_name = "NotificationTestScene"
+script/source = "extends Node
+
+const HatUnlockNotification = preload(\"res://hat_unlock_notification.tscn\")
+
+func _ready():
+	await get_tree().create_timer(2.0).timeout
+	var notif = HatUnlockNotification.instantiate()
+	add_child(notif)
+	notif.load_hat_by_id(\"tophat\")
+	notif.play_animation()
+"
+
+[node name="NotificationTestScene" type="Node"]
+script = SubResource("GDScript_5j5vj")
