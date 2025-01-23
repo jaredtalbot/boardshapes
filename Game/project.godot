@@ -19,10 +19,15 @@ boardwalk/web_server_url="https://www.boardmesh.app"
 boardwalk/available_web_server_urls=PackedStringArray("http://localhost:8080", "https://www.boardmesh.app")
 boardwalk/multiplayer_server_url="https://multiplayer.boardmesh.app"
 
+[audio]
+
+general/default_playback_type.web=0
+
 [autoload]
 
 FileUploader="*res://file_uploader.gd"
 Preferences="*res://preferences.gd"
+Music="*res://music.tscn"
 Unlocks="*res://unlocks/unlocks.gd"
 UnlockCheckerManager="*res://unlocks/unlock_checker_manager.gd"
 Notifications="*res://notifications.gd"

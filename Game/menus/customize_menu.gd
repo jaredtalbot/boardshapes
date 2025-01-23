@@ -7,6 +7,7 @@ const HAT_PREVIEW = preload("res://hats/hat_preview.tscn")
 @onready var hat_select = %HatSelect
 
 func _ready():
+	Music.stop_all_layers()
 	$HatInfoDisplay.hide()
 	cosmetic_preview.equip_hat(Preferences.hat_scene)
 	Preferences.hat_scene_changed.connect(cosmetic_preview.equip_hat)

@@ -12,6 +12,7 @@ extends Control
 @onready var image_confirmation = $ImageConfirmation
 
 func _ready():
+	Music.stop_all_layers()
 	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
 		upload_image_button.material = ShaderMaterial.new()
 		upload_image_button.material.shader = load("res://color_invert.gdshader")

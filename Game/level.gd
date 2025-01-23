@@ -16,7 +16,7 @@ var player: Player
 var current_campaign_level: String = ""
 
 func _ready():
-	$"QuitMenu/QuitWindow/volume-slider".set_value_no_signal(100)
+	$QuitMenu/QuitWindow/VolumeSlider.set_value_no_signal(Music.volume*100.0)
 	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
 		$QuitMenu/QuitWindow/DarkCheck.set_pressed_no_signal(true)
 	$QuitMenu/QuitWindow/ColorCheck.set_pressed_no_signal(ProjectSettings.get_setting("rendering/environment/defaults/color_blind_mode"))
@@ -76,10 +76,16 @@ func initialize_game(multiplayer_id: String, start_pos: Vector2 = Vector2.ZERO, 
 	multiplayer_controller.try_connect(multiplayer_id)
 	loading_indicator.hide()
 	loaded.emit()
+	Music.play_all_layers()
+	
 	if start_pos == Vector2.ZERO and end_pos == Vector2.ZERO:
 		get_tree().paused = true
 		$StartEndSelection/StartSelect.disabled = false
 		$StartEndSelection/StartSelect.show()
+		Music.drum_layer.volume_db = linear_to_db(Music.volume/3.0)
+		Music.drum_layer.pitch_scale = 0.7
+		Music.sample_layer.volume_db = linear_to_db(0.0)
+		Music.sample_layer.pitch_scale = 0.7
 	elif start_pos != Vector2.ZERO and end_pos != Vector2.ZERO:
 		player.initial_position = start_pos
 		player.position = player.initial_position
@@ -94,6 +100,13 @@ func start_game():
 	get_tree().paused = false
 	$TouchScreenControls.show()
 	started.emit()
+	var tween = create_tween().set_parallel()
+	tween.tween_method(Music.set_layer_volume.bind(Music.drum_layer),
+		db_to_linear(Music.drum_layer.volume_db), Music.volume, 1.0)
+	tween.tween_method(Music.set_layer_volume.bind(Music.sample_layer),
+		db_to_linear(Music.sample_layer.volume_db), Music.volume, 1.0)
+	tween.tween_property(Music.drum_layer, "pitch_scale", 1.0, 1.0)
+	tween.tween_property(Music.sample_layer, "pitch_scale", 1.0, 1.0)
 
 func show_error(body: Variant, error_code: int = 0):
 	var error_dialog = ErrorDialog.new()
@@ -167,9 +180,6 @@ func _goal_reached(player: Node2D):
 		player.set_physics_process(false)
 		$VictoryScreen.show()
 		%Restart.call_deferred("grab_focus")
-	
-func _on_audio_stream_player_finished():
-	$AudioStreamPlayer.play()
 
 func _on_restart_button_pressed():
 	$VictoryScreen.hide()
@@ -192,7 +202,7 @@ func _on_quit_window_close_requested():
 	$QuitMenu/QuitWindow.hide()
 
 func _on_volumeslider_value_changed(value: float):
-	$AudioStreamPlayer.set_volume_db(linear_to_db(value/100.0))
+	Music.set_volume(value / 100.0)
 
 func _on_color_check_toggled(toggled: bool):
 	var level = get_node("GeneratedLevel")
