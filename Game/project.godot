@@ -25,6 +25,7 @@ FileUploader="*res://file_uploader.gd"
 Preferences="*res://preferences.gd"
 Unlocks="*res://unlocks/unlocks.gd"
 UnlockCheckerManager="*res://unlocks/unlock_checker_manager.gd"
+Notifications="*res://notifications.gd"
 
 [display]
 

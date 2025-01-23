@@ -1,6 +1,6 @@
 [gd_scene load_steps=17 format=3 uid="uid://cy84ptparrj5m"]
 
-[ext_resource type="Texture2D" uid="uid://bniy787xyjpf8" path="res://ui/hat_unlock_notification_frame.png" id="1_tkwoi"]
+[ext_resource type="Texture2D" uid="uid://dkkfdpbljgnl8" path="res://ui/notification_background.png" id="1_jncer"]
 [ext_resource type="Script" path="res://hat_unlock_notification.gd" id="2_imwe1"]
 [ext_resource type="Texture2D" uid="uid://bdoc676kb83xj" path="res://ui/hat_preview_frame.png" id="2_t43fb"]
 [ext_resource type="Texture2D" uid="uid://cd785m3w51p6m" path="res://ui/hat_preview_frame_filled.png" id="3_oyqfh"]
@@ -74,7 +74,7 @@ offset_top = -135.5
 offset_bottom = 135.5
 grow_horizontal = 0
 grow_vertical = 2
-texture = ExtResource("1_tkwoi")
+texture = ExtResource("1_jncer")
 stretch_mode = 2
 script = ExtResource("2_imwe1")
 
@@ -161,6 +161,7 @@ scale = Vector2(10, 10)
 
 [node name="UnlockSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_wf22k")
+volume_db = -10.0
 
 [node name="ConfettiPos" type="Control" parent="."]
 layout_mode = 1

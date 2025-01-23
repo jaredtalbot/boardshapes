@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bniy787xyjpf8"
-path="res://.godot/imported/hat_unlock_notification_frame.png-a77e5007c3e6b73feac7196e620e52c0.ctex"
+uid="uid://dkkfdpbljgnl8"
+path="res://.godot/imported/notification_background.png-42e55dd00fb2bdccb835f3da05226896.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://ui/hat_unlock_notification_frame.png"
-dest_files=["res://.godot/imported/hat_unlock_notification_frame.png-a77e5007c3e6b73feac7196e620e52c0.ctex"]
+source_file="res://ui/notification_background.png"
+dest_files=["res://.godot/imported/notification_background.png-42e55dd00fb2bdccb835f3da05226896.ctex"]
 
 [params]
 

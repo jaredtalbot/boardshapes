@@ -4,14 +4,12 @@
 resource_name = "NotificationTestScene"
 script/source = "extends Node
 
-const HatUnlockNotification = preload(\"res://hat_unlock_notification.tscn\")
-
 func _ready():
 	await get_tree().create_timer(2.0).timeout
-	var notif = HatUnlockNotification.instantiate()
-	add_child(notif)
-	notif.load_hat_by_id(\"tophat\")
-	notif.play_animation()
+	Notifications.show_message(\"Notification Test\")
+	Notifications.show_message(\"Message 2\")
+	Notifications.show_hat_unlock(\"tophat\")
+	Notifications.show_message(\"Last message\")
 "
 
 [node name="NotificationTestScene" type="Node"]

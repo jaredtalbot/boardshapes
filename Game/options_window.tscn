@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://blrjxml7nbhjp"]
+[gd_scene load_steps=3 format=3 uid="uid://blrjxml7nbhjp"]
 
 [ext_resource type="Script" path="res://options.gd" id="1_f4alx"]
+[ext_resource type="Texture2D" uid="uid://da3478q4alln2" path="res://red_cb.png" id="2_fpf60"]
 
 [node name="OptionsWindow" type="Window"]
 auto_translate_mode = 1
@@ -33,5 +34,11 @@ layout_mode = 2
 size_flags_vertical = 4
 text = "Colorblind Mode"
 
+[node name="DeleteSaveDataButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Delete Save Data"
+icon = ExtResource("2_fpf60")
+
 [connection signal="toggled" from="VBoxContainer/DarkMode" to="." method="_on_dark_mode_toggled"]
 [connection signal="toggled" from="VBoxContainer/ColorblindMode" to="." method="_on_colorblind_mode_toggled"]
+[connection signal="pressed" from="VBoxContainer/DeleteSaveDataButton" to="." method="_on_delete_save_data_button_pressed"]
