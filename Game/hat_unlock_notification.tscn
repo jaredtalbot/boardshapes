@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cy84ptparrj5m"]
+[gd_scene load_steps=13 format=3 uid="uid://cy84ptparrj5m"]
 
 [ext_resource type="Texture2D" uid="uid://dkkfdpbljgnl8" path="res://ui/notification_background.png" id="1_jncer"]
 [ext_resource type="Script" path="res://hat_unlock_notification.gd" id="2_imwe1"]
@@ -20,40 +20,6 @@ font_color = Color(0, 0, 0, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_o40ij"]
 font_color = Color(0.4, 0.4, 0.4, 1)
 
-[sub_resource type="Curve" id="Curve_ldtfe"]
-_data = [Vector2(0, 1), 0.0, -1.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="CurveTexture" id="CurveTexture_m8g1y"]
-curve = SubResource("Curve_ldtfe")
-
-[sub_resource type="Gradient" id="Gradient_qs28s"]
-interpolation_mode = 1
-offsets = PackedFloat32Array(0, 0.333, 0.667)
-colors = PackedColorArray(1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1)
-metadata/_snap_enabled = true
-metadata/_snap_count = 33
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_emsc0"]
-gradient = SubResource("Gradient_qs28s")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ur1dc"]
-particle_flag_disable_z = true
-emission_shape = 3
-emission_box_extents = Vector3(1, 80, 1)
-angle_min = 1.07288e-05
-angle_max = 360.0
-inherit_velocity_ratio = 0.2
-direction = Vector3(-1, -0.5, 0)
-spread = 90.0
-initial_velocity_min = 300.0
-initial_velocity_max = 700.0
-angular_velocity_min = -1000.0
-angular_velocity_max = 1000.0
-gravity = Vector3(0, 980, 0)
-color_initial_ramp = SubResource("GradientTexture1D_emsc0")
-alpha_curve = SubResource("CurveTexture_m8g1y")
-
 [sub_resource type="Gradient" id="Gradient_xtbwl"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
 
@@ -62,6 +28,13 @@ gradient = SubResource("Gradient_xtbwl")
 width = 24
 height = 8
 fill_from = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_qs28s"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.333, 0.667)
+colors = PackedColorArray(1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1)
+metadata/_snap_enabled = true
+metadata/_snap_count = 33
 
 [node name="HatUnlockNotification" type="TextureRect"]
 anchors_preset = 6
@@ -173,12 +146,24 @@ offset_right = 40.0
 offset_bottom = 20.0
 grow_vertical = 2
 
-[node name="Confetti" type="GPUParticles2D" parent="ConfettiPos"]
+[node name="Confetti" type="CPUParticles2D" parent="ConfettiPos"]
 unique_name_in_owner = true
 emitting = false
 amount = 32
-process_material = SubResource("ParticleProcessMaterial_ur1dc")
-texture = SubResource("GradientTexture2D_60bfc")
 lifetime = 4.0
 one_shot = true
 explosiveness = 0.95
+fixed_fps = 30
+draw_order = 1
+texture = SubResource("GradientTexture2D_60bfc")
+emission_shape = 3
+emission_rect_extents = Vector2(1, 80)
+direction = Vector2(-1, -0.5)
+spread = 90.0
+initial_velocity_min = 300.0
+initial_velocity_max = 700.0
+angular_velocity_min = -1000.0
+angular_velocity_max = 1000.0
+angle_min = 1.07288e-05
+angle_max = 360.0
+color_initial_ramp = SubResource("Gradient_qs28s")

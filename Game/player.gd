@@ -87,7 +87,7 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 		air_time += delta
-		if air_time > 0.05 and animation_player.current_animation != "jumping":
+		if air_time > 0.05 and animated_sprite.animation != "jumping":
 			animation_player.play("jumping")
 	
 	else:
