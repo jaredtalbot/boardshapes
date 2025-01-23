@@ -57,4 +57,6 @@ func clear_unlocks() -> Error:
 	unlocked_hat_ids = PackedStringArray()
 	add_always_unlocked_hats()
 	updated.emit()
+	UnlockCheckerManager.reload_checkers()
+	Preferences.hat_scene = null
 	return save_unlocks()

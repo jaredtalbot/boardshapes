@@ -4,6 +4,13 @@ signal new_level_added(level: Level)
 
 func _ready() -> void:
 	get_tree().node_added.connect(_on_tree_node_added)
+	reload_checkers()
+
+func reload_checkers():
+	var children = get_children()
+	for node in children:
+		remove_child(node)
+		node.queue_free()
 	var unlock_checkers = ProjectSettings.get_global_class_list() \
 		.filter(func(x): return x["base"] == &"UnlockChecker")
 	for uc in unlock_checkers:

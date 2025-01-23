@@ -54,7 +54,7 @@ scale_curve = SubResource("CurveTexture_ibaqu")
 color = Color(0.804743, 0.804743, 0.804743, 1)
 color_ramp = SubResource("GradientTexture1D_08hkq")
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" groups=["EmitterOwners"]]
 collision_layer = 3
 script = ExtResource("1_4byla")
 metadata/_edit_lock_ = true
@@ -91,11 +91,10 @@ one_shot = true
 wait_time = 0.6
 one_shot = true
 
-[node name="AfterImageEmitter" type="Node2D" parent="." node_paths=PackedStringArray("animated_sprite")]
+[node name="AfterImageEmitter" type="Node2D" parent="." node_paths=PackedStringArray("sprite")]
 unique_name_in_owner = true
 script = ExtResource("8_0rr0r")
-enabled = false
-animated_sprite = NodePath("../AnimatedSprite2D")
+sprite = NodePath("../AnimatedSprite2D")
 emit_frequency = 0.05
 random_colors = PackedColorArray(1, 0, 0, 0.498039, 0, 1, 0, 0.498039, 0, 0, 1, 0.498039)
 metadata/_edit_lock_ = true

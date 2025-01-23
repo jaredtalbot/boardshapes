@@ -42,7 +42,6 @@ func equip_hat(hat: PackedScene):
 			var existing_hat := hat_pos.get_child(0)
 			existing_hat.queue_free()
 		hat_pos.add_child(new_hat)
-		new_hat.owner = self
 	else:
 		if hat_pos.get_child_count() > 0:
 			hat_pos.get_child(0).queue_free()
@@ -145,7 +144,7 @@ func _physics_process(delta):
 		else:
 			velocity.x = move_toward(velocity.x, 0, acceleration * delta)
 	
-	after_image_emitter.enabled = is_dashing
+	after_image_emitter.auto_emit = is_dashing
 	
 	move_and_slide()
 	

@@ -4,7 +4,7 @@
 [ext_resource type="SpriteFrames" uid="uid://1j6nbm2fptgq" path="res://player_animated_sprite.tres" id="2_xpam0"]
 [ext_resource type="AnimationLibrary" uid="uid://dwg71cg4e3my1" path="res://player_animation_library.tres" id="3_igcyw"]
 
-[node name="CosmeticPreview" type="Node2D"]
+[node name="CosmeticPreview" type="Node2D" groups=["EmitterOwners"]]
 scale = Vector2(7.813, 7.813)
 script = ExtResource("1_16kqf")
 

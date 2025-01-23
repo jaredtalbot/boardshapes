@@ -43,6 +43,7 @@ Goal=""
 Black=""
 Hats=""
 Levels="Group that should always contain any and all Level nodes. Optimally only one node should remain in this group at a time."
+EmitterOwners="Nodes that have an AfterImageEmitter as a direct child which should be linked to by any descendant OwnedAfterImageEmitters"
 
 [input]
 
