@@ -8,4 +8,5 @@ func _connect_level_signals(level: Level):
 	pass
 
 static func get_hat_id() -> String:
+	assert(false, "get_hat_id should be overridden")
 	return ""

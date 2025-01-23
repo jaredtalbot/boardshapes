@@ -16,6 +16,7 @@
 		"id": "crown",
 		"name": "Crown",
 		"path": "res://hats/crown/crown.tscn",
-		"description": "The mark of a champion."
+		"description": "The mark of a champion.",
+		"unlock_hint": "Beat the final level."
 	}
 ]
