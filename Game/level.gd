@@ -81,6 +81,7 @@ func initialize_game(multiplayer_id: String, start_pos: Vector2 = Vector2.ZERO, 
 	
 	if start_pos == Vector2.ZERO and end_pos == Vector2.ZERO:
 		get_tree().paused = true
+		player.hide()
 		$StartEndSelection/StartSelect.disabled = false
 		$StartEndSelection/StartSelect.show()
 		Music.drum_layer.volume_db = linear_to_db(Music.volume/3.0)
@@ -100,6 +101,7 @@ func initialize_game(multiplayer_id: String, start_pos: Vector2 = Vector2.ZERO, 
 func start_game():
 	get_tree().paused = false
 	$TouchScreenControls.show()
+	player.show()
 	started.emit()
 	var tween = create_tween().set_parallel()
 	tween.tween_method(Music.set_layer_volume.bind(Music.drum_layer),
@@ -147,6 +149,7 @@ func _on_exit_to_main_menu_button_pressed():
 func _set_player_start():
 	player.initial_position = get_viewport().get_mouse_position()
 	player.position = player.initial_position
+	player.show()
 	$StartEndSelection/StartSelect.disabled = true
 	$StartEndSelection/StartSelect.hide()
 	$StartEndSelection/EndSelect.disabled = false
