@@ -76,7 +76,8 @@ func initialize_game(multiplayer_id: String, start_pos: Vector2 = Vector2.ZERO, 
 	multiplayer_controller.try_connect(multiplayer_id)
 	loading_indicator.hide()
 	loaded.emit()
-	Music.play_all_layers()
+	if not Music.playing:
+		Music.play_all_layers()
 	
 	if start_pos == Vector2.ZERO and end_pos == Vector2.ZERO:
 		get_tree().paused = true

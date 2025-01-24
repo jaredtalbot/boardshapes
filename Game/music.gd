@@ -1,5 +1,8 @@
 extends Node
 
+var playing:
+	get:
+		return drum_layer.playing or sample_layer.playing
 var volume = 0.5
 
 @onready var drum_layer: AudioStreamPlayer = $DrumLayer
