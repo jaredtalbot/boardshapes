@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://b4ilk2527ato8"]
+[gd_scene load_steps=11 format=3 uid="uid://b4ilk2527ato8"]
 
 [ext_resource type="PackedScene" uid="uid://d11d7pielydy8" path="res://cosmetic_preview.tscn" id="1_jeni7"]
 [ext_resource type="Script" path="res://menus/customize_menu.gd" id="1_pv3cl"]
+[ext_resource type="Texture2D" uid="uid://bc08to1p712p0" path="res://ui/ShortTextField.png" id="3_7b2fc"]
 [ext_resource type="Texture2D" uid="uid://bsi82n0dq31aj" path="res://ui/BackButton.png" id="3_q28ko"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_o3nji"]
@@ -15,6 +16,26 @@ font_color = Color(0.4, 0.4, 0.4, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_fxxvy"]
 font_size = 32
 font_color = Color(0.6, 0.6, 0.6, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_3qflv"]
+font_size = 40
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b34f7"]
+content_margin_left = 32.0
+content_margin_top = 16.0
+content_margin_right = 32.0
+content_margin_bottom = 16.0
+
+[sub_resource type="Theme" id="Theme_dx5ji"]
+LineEdit/colors/caret_color = Color(0, 0, 0, 1)
+LineEdit/colors/clear_button_color = Color(0.1, 0.1, 0.1, 1)
+LineEdit/colors/clear_button_color_pressed = Color(1, 1, 1, 1)
+LineEdit/colors/font_color = Color(0, 0, 0, 1)
+LineEdit/colors/font_placeholder_color = Color(0.2, 0.2, 0.2, 1)
+LineEdit/font_sizes/font_size = 40
+LineEdit/styles/focus = SubResource("StyleBoxEmpty_b34f7")
+LineEdit/styles/normal = SubResource("StyleBoxEmpty_b34f7")
 
 [node name="CustomizeMenu" type="Node"]
 script = ExtResource("1_pv3cl")
@@ -52,17 +73,6 @@ vertical_scroll_mode = 0
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BackButton" type="TextureButton" parent="."]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 32.0
-offset_top = -296.0
-offset_right = 547.0
-offset_bottom = -32.0
-grow_vertical = 0
-texture_normal = ExtResource("3_q28ko")
-
 [node name="HatInfoDisplay" type="VBoxContainer" parent="."]
 anchors_preset = -1
 anchor_left = 0.667
@@ -96,4 +106,46 @@ text = "Unlock Hint"
 label_settings = SubResource("LabelSettings_fxxvy")
 autowrap_mode = 3
 
-[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
+[node name="BottomLeftControls" type="VBoxContainer" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = -296.0
+offset_right = 547.0
+offset_bottom = -32.0
+grow_vertical = 0
+
+[node name="MultiplayerNameFieldLabel" type="Label" parent="BottomLeftControls"]
+layout_mode = 2
+text = "Multiplayer Name"
+label_settings = SubResource("LabelSettings_3qflv")
+horizontal_alignment = 1
+
+[node name="FieldTexture" type="TextureRect" parent="BottomLeftControls"]
+layout_mode = 2
+texture = ExtResource("3_7b2fc")
+stretch_mode = 4
+
+[node name="MultiplayerNameField" type="LineEdit" parent="BottomLeftControls/FieldTexture"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_dx5ji")
+max_length = 20
+clear_button_enabled = true
+
+[node name="Space" type="Control" parent="BottomLeftControls"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+
+[node name="BackButton" type="TextureButton" parent="BottomLeftControls"]
+layout_mode = 2
+texture_normal = ExtResource("3_q28ko")
+
+[connection signal="text_changed" from="BottomLeftControls/FieldTexture/MultiplayerNameField" to="." method="_on_multiplayer_name_field_text_changed"]
+[connection signal="pressed" from="BottomLeftControls/BackButton" to="." method="_on_back_button_pressed"]
