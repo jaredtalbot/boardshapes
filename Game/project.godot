@@ -92,6 +92,8 @@ tls/certificate_bundle_override="res://trusted_certs/ca-certificates.crt"
 
 [rendering]
 
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
 environment/defaults/default_clear_color=Color(1, 1, 1, 1)
 environment/defaults/color_blind_mode=false
 
