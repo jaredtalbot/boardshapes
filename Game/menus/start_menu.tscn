@@ -1,0 +1,120 @@
+[gd_scene load_steps=13 format=3 uid="uid://bpgex31naxj1w"]
+
+[ext_resource type="Script" path="res://menus/start_menu.gd" id="1_bp1fp"]
+[ext_resource type="Script" path="res://web_pick_image_file.gd" id="2_v3sgg"]
+[ext_resource type="PackedScene" uid="uid://xklntftxk1rp" path="res://level.tscn" id="2_w46sc"]
+[ext_resource type="Texture2D" uid="uid://bmm553vstdx1b" path="res://ui/play_frame.png" id="3_i6oh8"]
+[ext_resource type="PackedScene" uid="uid://64bqxwu4em4s" path="res://image_confirmation.tscn" id="3_iojqf"]
+[ext_resource type="Texture2D" uid="uid://d3xi53hb6itv8" path="res://ui/campaign_red.png" id="4_d3m4d"]
+[ext_resource type="Texture2D" uid="uid://bsi82n0dq31aj" path="res://ui/BackButton.png" id="4_lf6m8"]
+[ext_resource type="Texture2D" uid="uid://m7t5hfoqwor6" path="res://ui/upload_green.png" id="5_ljjqm"]
+[ext_resource type="PackedScene" uid="uid://cbbx0v3mpscgm" path="res://pick_image_file.tscn" id="5_lnlgg"]
+[ext_resource type="Texture2D" uid="uid://c0y2sm6u8jfdi" path="res://ui/load_blue.png" id="6_pedtt"]
+[ext_resource type="Texture2D" uid="uid://dk37hwiweyiqw" path="res://ui/customize.png" id="8_bmbfk"]
+[ext_resource type="PackedScene" uid="uid://bvxbdyktcqgqx" path="res://pick_boardwalk_file_dialog.tscn" id="9_tljks"]
+
+[node name="StartMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bp1fp")
+level_scene = ExtResource("2_w46sc")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 64
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
+layout_mode = 2
+texture = ExtResource("3_i6oh8")
+
+[node name="PlayContainer" type="MarginContainer" parent="VBoxContainer/TextureRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_bottom = 32
+
+[node name="PlayButtonRow" type="HBoxContainer" parent="VBoxContainer/TextureRect/PlayContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="CampaginButton" type="TextureButton" parent="VBoxContainer/TextureRect/PlayContainer/PlayButtonRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+focus_neighbor_top = NodePath("../UploadImageButton")
+focus_previous = NodePath("../LoadLevelButton")
+texture_normal = ExtResource("4_d3m4d")
+
+[node name="UploadImageButton" type="TextureButton" parent="VBoxContainer/TextureRect/PlayContainer/PlayButtonRow"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_right = NodePath("../LoadLevelButton")
+focus_neighbor_bottom = NodePath("../../../../OtherButtonRow/BackButton")
+focus_next = NodePath("../LoadLevelButton")
+texture_normal = ExtResource("5_ljjqm")
+
+[node name="LoadLevelButton" type="TextureButton" parent="VBoxContainer/TextureRect/PlayContainer/PlayButtonRow"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_left = NodePath("../UploadImageButton")
+focus_neighbor_bottom = NodePath("../../../../OtherButtonRow/BackButton")
+focus_next = NodePath("../../../../OtherButtonRow/BackButton")
+focus_previous = NodePath("../UploadImageButton")
+texture_normal = ExtResource("6_pedtt")
+
+[node name="OtherButtonRow" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="BackButton" type="TextureButton" parent="VBoxContainer/OtherButtonRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 4
+focus_neighbor_top = NodePath("../../TextureRect/PlayContainer/PlayButtonRow/UploadImageButton")
+focus_previous = NodePath("../../TextureRect/PlayContainer/PlayButtonRow/LoadLevelButton")
+texture_normal = ExtResource("4_lf6m8")
+
+[node name="CustomizeButton" type="TextureButton" parent="VBoxContainer/OtherButtonRow"]
+layout_mode = 2
+size_flags_horizontal = 10
+texture_normal = ExtResource("8_bmbfk")
+
+[node name="WebPickImageFile" type="Node" parent="."]
+script = ExtResource("2_v3sgg")
+
+[node name="WebPickBoardwalkFile" type="Node" parent="."]
+script = ExtResource("2_v3sgg")
+accept = [".boardwalk"]
+
+[node name="ImageConfirmation" parent="." instance=ExtResource("3_iojqf")]
+
+[node name="PickImageFileDialog" parent="." instance=ExtResource("5_lnlgg")]
+
+[node name="PickBoardwalkFileDialog" parent="." instance=ExtResource("9_tljks")]
+
+[connection signal="pressed" from="VBoxContainer/TextureRect/PlayContainer/PlayButtonRow/CampaginButton" to="." method="_on_campaign_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/TextureRect/PlayContainer/PlayButtonRow/UploadImageButton" to="." method="_on_upload_image_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/TextureRect/PlayContainer/PlayButtonRow/LoadLevelButton" to="." method="_on_load_level_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/OtherButtonRow/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/OtherButtonRow/CustomizeButton" to="." method="_on_customize_button_pressed"]
+[connection signal="file_loaded" from="WebPickImageFile" to="." method="_on_web_pick_image_file_file_loaded"]
+[connection signal="file_loaded" from="WebPickBoardwalkFile" to="." method="_on_web_pick_boardwalk_file_file_loaded"]
+[connection signal="confirmed" from="ImageConfirmation" to="." method="_on_image_confirmation_confirmed"]
+[connection signal="file_selected" from="PickImageFileDialog" to="." method="_on_pick_image_file_dialog_file_selected"]
+[connection signal="file_selected" from="PickBoardwalkFileDialog" to="." method="_on_pick_boardwalk_file_dialog_file_selected"]

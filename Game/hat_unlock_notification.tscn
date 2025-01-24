@@ -1,0 +1,175 @@
+[gd_scene load_steps=15 format=3 uid="uid://cy84ptparrj5m"]
+
+[ext_resource type="Texture2D" uid="uid://dkkfdpbljgnl8" path="res://ui/notification_background.png" id="1_jncer"]
+[ext_resource type="Script" path="res://hat_unlock_notification.gd" id="2_imwe1"]
+[ext_resource type="Texture2D" uid="uid://bdoc676kb83xj" path="res://ui/hat_preview_frame.png" id="2_t43fb"]
+[ext_resource type="Texture2D" uid="uid://cd785m3w51p6m" path="res://ui/hat_preview_frame_filled.png" id="3_oyqfh"]
+[ext_resource type="AudioStream" uid="uid://cf32gi07r35ic" path="res://audio/sfx/unlock_get.ogg" id="5_wf22k"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_75a7c"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="LabelSettings" id="LabelSettings_3hnco"]
+font_size = 24
+font_color = Color(0.4, 0.4, 0.4, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_jrma0"]
+font_size = 40
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_o40ij"]
+font_color = Color(0.4, 0.4, 0.4, 1)
+
+[sub_resource type="Gradient" id="Gradient_qs28s"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.333, 0.667)
+colors = PackedColorArray(1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1)
+metadata/_snap_enabled = true
+metadata/_snap_count = 33
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_wrtuv"]
+gradient = SubResource("Gradient_qs28s")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sh8ms"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 80, 0)
+angle_min = 1.07288e-05
+angle_max = 360.0
+direction = Vector3(-1, -0.5, 0)
+spread = 90.0
+initial_velocity_min = 300.0
+initial_velocity_max = 700.0
+angular_velocity_min = -1000.0
+angular_velocity_max = 1000.0
+gravity = Vector3(0, 980, 0)
+color_initial_ramp = SubResource("GradientTexture1D_wrtuv")
+
+[sub_resource type="Gradient" id="Gradient_xtbwl"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_60bfc"]
+gradient = SubResource("Gradient_xtbwl")
+width = 24
+height = 8
+fill_from = Vector2(0, 1)
+
+[node name="HatUnlockNotification" type="TextureRect"]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -674.0
+offset_top = -135.5
+offset_bottom = 135.5
+grow_horizontal = 0
+grow_vertical = 2
+texture = ExtResource("1_jncer")
+stretch_mode = 2
+script = ExtResource("2_imwe1")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="HatTexture" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+texture = SubResource("ViewportTexture_75a7c")
+expand_mode = 2
+
+[node name="LabelContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/HBoxContainer/LabelContainer"]
+layout_mode = 2
+text = "HAT UNLOCKED"
+label_settings = SubResource("LabelSettings_3hnco")
+
+[node name="HatNameLabel" type="Label" parent="MarginContainer/HBoxContainer/LabelContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "HAT NAME"
+label_settings = SubResource("LabelSettings_jrma0")
+uppercase = true
+
+[node name="HatUnlockHintLabel" type="Label" parent="MarginContainer/HBoxContainer/LabelContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 126)
+layout_mode = 2
+size_flags_vertical = 3
+text = "HAT UNLOCK HINT"
+label_settings = SubResource("LabelSettings_o40ij")
+autowrap_mode = 3
+max_lines_visible = 5
+
+[node name="SubViewport" type="SubViewport" parent="."]
+disable_3d = true
+size = Vector2i(294, 294)
+
+[node name="HatPreviewFrame" type="TextureRect" parent="SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_t43fb")
+
+[node name="HatPreviewFrameMask" type="TextureRect" parent="SubViewport/HatPreviewFrame"]
+show_behind_parent = true
+clip_children = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_oyqfh")
+
+[node name="HatHolder" type="Control" parent="SubViewport/HatPreviewFrame/HatPreviewFrameMask"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(10, 10)
+
+[node name="UnlockSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_wf22k")
+volume_db = -10.0
+
+[node name="ConfettiPos" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -20.0
+offset_right = 40.0
+offset_bottom = 20.0
+grow_vertical = 2
+
+[node name="Confetti" type="GPUParticles2D" parent="ConfettiPos"]
+unique_name_in_owner = true
+emitting = false
+amount = 32
+process_material = SubResource("ParticleProcessMaterial_sh8ms")
+texture = SubResource("GradientTexture2D_60bfc")
+lifetime = 4.0
+one_shot = true
+explosiveness = 0.95

@@ -1,0 +1,22 @@
+[
+	{
+		"id": "nohat",
+		"name": "No Hat",
+		"description": "Stop wearing a hat.",
+		"always_unlocked": true
+	},
+	{
+		"id": "tophat",
+		"name": "Top Hat",
+		"path": "res://hats/tophat/tophat.tscn",
+		"description": "A classy hat.",
+		"unlock_hint": "Beat a level."
+	},
+	{
+		"id": "crown",
+		"name": "Crown",
+		"path": "res://hats/crown/crown.tscn",
+		"description": "The mark of a champion.",
+		"unlock_hint": "Beat the final level."
+	}
+]

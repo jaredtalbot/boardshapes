@@ -12,5 +12,10 @@ func _on_colorblind_mode_toggled(toggled):
 	else:
 		ProjectSettings.set_setting("rendering/environment/defaults/color_blind_mode", false)
 
-func _on_hat_enabled_toggled(toggled):
-	ProjectSettings.set_setting("application/boardwalk/hat_enabled", toggled)
+func _on_delete_save_data_button_pressed():
+	# todo: confirmation
+	var err = Unlocks.clear_unlocks()
+	if err == OK:
+		Notifications.show_message("Save data deleted.")
+	else:
+		Notifications.show_message("Error with deleting save data:\n" + error_string(err))

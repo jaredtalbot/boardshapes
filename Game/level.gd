@@ -1,4 +1,4 @@
-extends Node
+class_name Level extends Node
 
 var base_url = ProjectSettings.get_setting("application/boardwalk/web_server_url")
 
@@ -7,10 +7,16 @@ var base_url = ProjectSettings.get_setting("application/boardwalk/web_server_url
 @onready var multiplayer_timer = $MultiplayerTimer
 @onready var multiplayer_controller = $MultiplayerController
 
+signal loaded
+signal started
+signal completed
+
+var player: Player
+
 var current_campaign_level: String = ""
 
 func _ready():
-	$"QuitMenu/QuitWindow/volume-slider".set_value_no_signal(100)
+	$QuitMenu/QuitWindow/VolumeSlider.set_value_no_signal(Music.volume*100.0)
 	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
 		$QuitMenu/QuitWindow/DarkCheck.set_pressed_no_signal(true)
 	$QuitMenu/QuitWindow/ColorCheck.set_pressed_no_signal(ProjectSettings.get_setting("rendering/environment/defaults/color_blind_mode"))
@@ -47,7 +53,7 @@ func load_level(level_data: Variant):
 	add_child(generated_level)
 	var start_pos = json["startPos"]
 	var end_pos = json["endPos"]
-	start_game(str(hash(level_data)), Vector2(start_pos["x"], start_pos["y"]), Vector2(end_pos["x"], end_pos["y"]))
+	initialize_game(str(hash(level_data)), Vector2(start_pos["x"], start_pos["y"]), Vector2(end_pos["x"], end_pos["y"]))
 
 func _on_response_received(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray):
 	if response_code != HTTPClient.RESPONSE_OK:
@@ -60,28 +66,50 @@ func _on_response_received(result: int, response_code: int, headers: PackedStrin
 		show_error("Could not generate level with server response.")
 		return
 	add_child(generated_level)
-	start_game(str(hash(level_data)))
+	initialize_game(str(hash(level_data)))
 
-func start_game(multiplayer_id: String, start_pos: Vector2 = Vector2.ZERO, end_pos: Vector2 = Vector2.ZERO):
+func initialize_game(multiplayer_id: String, start_pos: Vector2 = Vector2.ZERO, end_pos: Vector2 = Vector2.ZERO):
 	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
 		$QuitButton.material = ShaderMaterial.new()
 		$QuitButton.material.shader = load("res://color_invert.gdshader")
-	var player = add_player()
+	player = add_player()
 	multiplayer_controller.try_connect(multiplayer_id)
 	loading_indicator.hide()
+	loaded.emit()
+	if not Music.playing:
+		Music.play_all_layers()
+	
 	if start_pos == Vector2.ZERO and end_pos == Vector2.ZERO:
 		get_tree().paused = true
+		player.hide()
 		$StartEndSelection/StartSelect.disabled = false
 		$StartEndSelection/StartSelect.show()
+		Music.drum_layer.volume_db = linear_to_db(Music.volume/3.0)
+		Music.drum_layer.pitch_scale = 0.7
+		Music.sample_layer.volume_db = linear_to_db(0.0)
+		Music.sample_layer.pitch_scale = 0.7
 	elif start_pos != Vector2.ZERO and end_pos != Vector2.ZERO:
 		player.initial_position = start_pos
 		player.position = player.initial_position
 		var goal = $Goal
 		goal.position = end_pos
 		goal.show()
-		$TouchScreenControls.show()
+		start_game()
 	else:
 		assert(false, "make sure to set either both start and end positions or neither of them")
+
+func start_game():
+	get_tree().paused = false
+	$TouchScreenControls.show()
+	player.show()
+	started.emit()
+	var tween = create_tween().set_parallel()
+	tween.tween_method(Music.set_layer_volume.bind(Music.drum_layer),
+		db_to_linear(Music.drum_layer.volume_db), Music.volume, 1.0)
+	tween.tween_method(Music.set_layer_volume.bind(Music.sample_layer),
+		db_to_linear(Music.sample_layer.volume_db), Music.volume, 1.0)
+	tween.tween_property(Music.drum_layer, "pitch_scale", 1.0, 1.0)
+	tween.tween_property(Music.sample_layer, "pitch_scale", 1.0, 1.0)
 
 func show_error(body: Variant, error_code: int = 0):
 	var error_dialog = ErrorDialog.new()
@@ -112,16 +140,16 @@ func _on_back_button_pressed():
 	go_back()
 
 func go_back():
-	get_tree().change_scene_to_file("res://start_menu.tscn")
+	get_tree().change_scene_to_file("res://menus/start_menu.tscn")
 
 func _on_exit_to_main_menu_button_pressed():
-	get_tree().change_scene_to_file("res://main.tscn")
+	get_tree().change_scene_to_file("res://menus/main.tscn")
 	
 
 func _set_player_start():
-	var player = $Player
 	player.initial_position = get_viewport().get_mouse_position()
 	player.position = player.initial_position
+	player.show()
 	$StartEndSelection/StartSelect.disabled = true
 	$StartEndSelection/StartSelect.hide()
 	$StartEndSelection/EndSelect.disabled = false
@@ -132,20 +160,20 @@ func _set_goal_position():
 	goal.position = get_viewport().get_mouse_position()
 	$StartEndSelection/EndSelect.disabled = true
 	$StartEndSelection/EndSelect.hide()
-	$TouchScreenControls.show()
 	$Goal.show()
-	get_tree().paused = false
+	start_game()
 	
 func _goal_reached(player: Node2D):
+	completed.emit()
 	if current_campaign_level != "":
 		var tree = get_tree()
-		var currlevel = CampagignLevels.levels.find(current_campaign_level)
-		if currlevel + 1 == len(CampagignLevels.levels):
+		var currlevel = CampaignLevels.levels.data.map(func(l): return l.path).find(current_campaign_level)
+		if currlevel + 1 == len(CampaignLevels.levels.data):
 			player.set_physics_process(false)
 			$VictoryScreen.show()
 			%Restart.call_deferred("grab_focus")
 		else:
-			var nextlevel = CampagignLevels.levels[currlevel + 1]
+			var nextlevel = CampaignLevels.levels.data[currlevel + 1].path
 			var next_level_node = preload("res://level.tscn").instantiate()
 			next_level_node.current_campaign_level = nextlevel
 			add_sibling(next_level_node)
@@ -156,9 +184,6 @@ func _goal_reached(player: Node2D):
 		player.set_physics_process(false)
 		$VictoryScreen.show()
 		%Restart.call_deferred("grab_focus")
-	
-func _on_audio_stream_player_finished():
-	$AudioStreamPlayer.play()
 
 func _on_restart_button_pressed():
 	$VictoryScreen.hide()
@@ -168,21 +193,20 @@ func _on_restart_button_pressed():
 	get_tree().paused = true
 	$StartEndSelection/StartSelect.disabled = false
 	$StartEndSelection/StartSelect.show()
-	var player = $Player
 	player.set_physics_process(true)
 
 func _on_multiplayer_timer_timeout():
 	var player: CharacterBody2D = get_node_or_null("Player")
 	if player != null:
 		var sprite = player.get_node("AnimatedSprite2D") as AnimatedSprite2D
-		$MultiplayerController.send_player_info(Preferences.get_player_name(), sprite.animation, sprite.frame, player.position, sprite.flip_h)
+		$MultiplayerController.send_player_info(Preferences.player_name, sprite.animation, sprite.frame, player.position, sprite.flip_h)
 
 func _on_quit_window_close_requested():
 	get_tree().paused = false
 	$QuitMenu/QuitWindow.hide()
 
 func _on_volumeslider_value_changed(value: float):
-	$AudioStreamPlayer.set_volume_db(value - 100)
+	Music.set_volume(value / 100.0)
 
 func _on_color_check_toggled(toggled: bool):
 	var level = get_node("GeneratedLevel")
@@ -217,8 +241,8 @@ func _on_color_check_toggled(toggled: bool):
 func _on_dark_check_toggled(toggled: bool):
 	if toggled:
 		RenderingServer.set_default_clear_color(Color(0, 0, 0, 1))
-		$Player.get_node("AnimatedSprite2D").material = ShaderMaterial.new()
-		$Player.get_node("AnimatedSprite2D").material.shader = load("res://color_invert.gdshader")
+		player.get_node("AnimatedSprite2D").material = ShaderMaterial.new()
+		player.get_node("AnimatedSprite2D").material.shader = load("res://color_invert.gdshader")
 		$QuitButton.material = ShaderMaterial.new()
 		$QuitButton.material.shader = load("res://color_invert.gdshader")
 		var level = get_node("GeneratedLevel")
@@ -228,7 +252,7 @@ func _on_dark_check_toggled(toggled: bool):
 				child.get_node("Sprite").material.shader = load("res://color_invert.gdshader")
 	else:
 		RenderingServer.set_default_clear_color(Color(1, 1, 1, 1))
-		$Player.get_node("AnimatedSprite2D").set_material(null)
+		player.get_node("AnimatedSprite2D").set_material(null)
 		$QuitButton.set_material(null)
 		var level = get_node("GeneratedLevel")
 		for child in level.get_children():
@@ -236,7 +260,6 @@ func _on_dark_check_toggled(toggled: bool):
 				child.get_node("Sprite").set_material(null)
 
 func save_level():
-	var player = $Player as Player
 	var goal = $Goal as Area2D
 	var generated_level = $GeneratedLevel as LevelGenerator.GeneratedLevel
 	var level_info = {

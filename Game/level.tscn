@@ -1,10 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://xklntftxk1rp"]
+[gd_scene load_steps=15 format=3 uid="uid://xklntftxk1rp"]
 
 [ext_resource type="Script" path="res://level.gd" id="1_rfdv8"]
 [ext_resource type="Script" path="res://level_generator.gd" id="1_rygds"]
 [ext_resource type="PackedScene" uid="uid://ca40sxi6lp5lx" path="res://touch_screen_controls.tscn" id="2_1knc0"]
 [ext_resource type="PackedScene" uid="uid://blw1ecr3vvp3q" path="res://loading_indicator.tscn" id="2_07l0p"]
-[ext_resource type="AudioStream" uid="uid://dffdk5u7kadrd" path="res://BoardWalk (1).ogg" id="5_4w55l"]
 [ext_resource type="Texture2D" uid="uid://biui41qabk6dn" path="res://ui/OptionButton.png" id="6_507j4"]
 [ext_resource type="PackedScene" uid="uid://3poplqifejqw" path="res://goal.tscn" id="7_h3hxs"]
 [ext_resource type="Script" path="res://multiplayer_controller.gd" id="8_w82i2"]
@@ -26,7 +25,7 @@ font_size = 12
 [sub_resource type="LabelSettings" id="LabelSettings_n0tpc"]
 font_size = 48
 
-[node name="Level" type="Node"]
+[node name="Level" type="Node" groups=["Levels"]]
 script = ExtResource("1_rfdv8")
 
 [node name="TouchScreenControls" parent="." instance=ExtResource("2_1knc0")]
@@ -36,11 +35,6 @@ script = ExtResource("1_rygds")
 
 [node name="LoadingIndicator" parent="." instance=ExtResource("2_07l0p")]
 visible = false
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("5_4w55l")
-autoplay = true
-parameters/looping = false
 
 [node name="QuitButton" type="TextureButton" parent="."]
 offset_left = 1808.0
@@ -128,7 +122,7 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Resume"
 
-[node name="volume-slider" type="HSlider" parent="QuitMenu/QuitWindow"]
+[node name="VolumeSlider" type="HSlider" parent="QuitMenu/QuitWindow"]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -329,18 +323,17 @@ status_indicator = NodePath("../MPIndicator")
 wait_time = 0.1
 autostart = true
 
-[connection signal="finished" from="AudioStreamPlayer" to="." method="_on_audio_stream_player_finished"]
 [connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="close_requested" from="QuitMenu/QuitWindow" to="." method="_on_quit_window_close_requested"]
 [connection signal="pressed" from="QuitMenu/QuitWindow/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="QuitMenu/QuitWindow/Resume Button" to="." method="_on_resume_button_pressed"]
-[connection signal="value_changed" from="QuitMenu/QuitWindow/volume-slider" to="." method="_on_volumeslider_value_changed"]
+[connection signal="value_changed" from="QuitMenu/QuitWindow/VolumeSlider" to="." method="_on_volumeslider_value_changed"]
 [connection signal="toggled" from="QuitMenu/QuitWindow/ColorCheck" to="." method="_on_color_check_toggled"]
 [connection signal="toggled" from="QuitMenu/QuitWindow/DarkCheck" to="." method="_on_dark_check_toggled"]
 [connection signal="pressed" from="StartEndSelection/StartSelect" to="." method="_set_player_start"]
 [connection signal="pressed" from="StartEndSelection/EndSelect" to="." method="_set_goal_position"]
-[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/SaveLevel" to="." method="save_level"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/PlayAnotherLevel" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/ExitToMenu" to="." method="_on_exit_to_main_menu_button_pressed"]

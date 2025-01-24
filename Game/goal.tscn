@@ -6,6 +6,8 @@
 size = Vector2(32, 32)
 
 [node name="Goal" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_5fxrc")

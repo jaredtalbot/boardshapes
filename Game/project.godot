@@ -11,19 +11,26 @@ config_version=5
 [application]
 
 config/name="Boardwalk"
-run/main_scene="res://main.tscn"
+run/main_scene="res://menus/main.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 boot_splash/image="res://ui/boardwalkbetalogo.png"
 config/icon="res://icons/boardwalkicon.png"
 boardwalk/web_server_url="https://www.boardmesh.app"
 boardwalk/available_web_server_urls=PackedStringArray("http://localhost:8080", "https://www.boardmesh.app")
-boardwalk/hat_enabled=false
 boardwalk/multiplayer_server_url="https://multiplayer.boardmesh.app"
+
+[audio]
+
+general/default_playback_type.web=0
 
 [autoload]
 
 FileUploader="*res://file_uploader.gd"
 Preferences="*res://preferences.gd"
+Music="*res://music.tscn"
+Unlocks="*res://unlocks/unlocks.gd"
+UnlockCheckerManager="*res://unlocks/unlock_checker_manager.gd"
+Notifications="*res://notifications.gd"
 
 [display]
 
@@ -39,6 +46,9 @@ Red=""
 Blue=""
 Goal=""
 Black=""
+Hats=""
+Levels="Group that should always contain any and all Level nodes. Optimally only one node should remain in this group at a time."
+EmitterOwners="Nodes that have an AfterImageEmitter as a direct child which should be linked to by any descendant OwnedAfterImageEmitters"
 
 [input]
 
@@ -70,6 +80,11 @@ Dash={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194325,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+reset={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":82,"key_label":0,"unicode":114,"location":0,"echo":false,"script":null)
+]
+}
 
 [network]
 
@@ -77,6 +92,8 @@ tls/certificate_bundle_override="res://trusted_certs/ca-certificates.crt"
 
 [rendering]
 
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
 environment/defaults/default_clear_color=Color(1, 1, 1, 1)
 environment/defaults/color_blind_mode=false
 

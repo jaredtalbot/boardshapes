@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://ciw33a8r7yane"]
+
+[ext_resource type="Texture2D" uid="uid://dd0yw8f70mtt7" path="res://hats/tophat/tophat.png" id="1_756a0"]
+[ext_resource type="Script" path="res://owned_after_image_emitter.gd" id="2_ox31n"]
+
+[node name="TopHat" type="Sprite2D" groups=["Hats"]]
+position = Vector2(0, -13)
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("1_756a0")
+metadata/_edit_lock_ = true
+
+[node name="HatAfterImageEmitter" type="Node2D" parent="." node_paths=PackedStringArray("sprite")]
+script = ExtResource("2_ox31n")
+sprite = NodePath("..")

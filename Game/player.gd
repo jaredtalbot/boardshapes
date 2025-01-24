@@ -14,6 +14,8 @@ var can_jump = false
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var hat_pivot: Node2D = $HatPivot
+@onready var hat_pos = $HatPivot/HatPos
+@onready var after_image_emitter = %AfterImageEmitter
 
 var initial_position : Vector2
 var last_position_was_floor: bool
@@ -21,13 +23,28 @@ var last_position_was_wall: bool
 var touched_green: bool = false
 var bonked_wall: bool = false
 var dash_direction: int
-	
+
+signal jumped
+signal died
+
 func _ready():
 	animation_player.play("idle animation")
 	animation_player.seek(0.0, true)
 	initial_position = position
-	hat_pivot.visible = ProjectSettings.get_setting("application/boardwalk/hat_enabled")
-	
+	if Preferences.hat_scene != null:
+		equip_hat(Preferences.hat_scene)
+
+func equip_hat(hat: PackedScene):
+	assert(hat_pos.get_child_count() < 2)
+	if hat != null:
+		var new_hat := hat.instantiate()
+		if hat_pos.get_child_count() > 0:
+			var existing_hat := hat_pos.get_child(0)
+			existing_hat.queue_free()
+		hat_pos.add_child(new_hat)
+	else:
+		if hat_pos.get_child_count() > 0:
+			hat_pos.get_child(0).queue_free()
 
 func _process(delta):
 	RenderingServer.global_shader_parameter_set("player_position", position)
@@ -39,6 +56,7 @@ func _on_coyote_timer_timeout():
 	can_jump = false
 
 func _death():
+	died.emit()
 	velocity.x = 0
 	velocity.y = 0
 	#make the explosion not blue in dark mode
@@ -69,7 +87,7 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 		air_time += delta
-		if air_time > 0.05 and animation_player.current_animation != "jumping":
+		if air_time > 0.05 and animated_sprite.animation != "jumping":
 			animation_player.play("jumping")
 	
 	else:
@@ -92,6 +110,7 @@ func _physics_process(delta):
 	
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and can_jump == true:
+		jumped.emit()
 		if last_position_was_floor:
 			velocity.y = JUMP_VELOCITY
 			can_jump = false
@@ -125,7 +144,7 @@ func _physics_process(delta):
 		else:
 			velocity.x = move_toward(velocity.x, 0, acceleration * delta)
 	
-	$AfterImageEmitter.enabled = is_dashing
+	after_image_emitter.auto_emit = is_dashing
 	
 	move_and_slide()
 	
@@ -172,6 +191,9 @@ func _physics_process(delta):
 			dash_direction = get_direction()
 		elif collider.is_in_group("Blue"):
 			velocity.y = -750
+	
+	if Input.is_action_just_pressed("reset"):
+		_death()
 
 func get_direction() -> int:
 	return -1 if animated_sprite.flip_h else 1

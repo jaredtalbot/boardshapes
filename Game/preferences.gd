@@ -1,9 +1,12 @@
 extends Node
 
-var player_name := ""
+var player_name := "":
+	get():
+		return player_name if player_name != "" else "Player"
 
-func get_player_name():
-	return player_name if player_name != "" else "Player"
+var hat_scene: PackedScene:
+	set(value):
+		hat_scene = value
+		hat_scene_changed.emit(hat_scene)
 
-func set_player_name(new_player_name: String):
-	player_name = new_player_name
+signal hat_scene_changed(hat_scene: PackedScene)
