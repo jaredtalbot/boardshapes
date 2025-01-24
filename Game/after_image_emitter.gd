@@ -12,6 +12,7 @@ var current_color: int = 0
 func _ready():
 	assert(animated_sprite != null)
 
+#
 func _process(delta):
 	if enabled:
 		emit_progress += delta
