@@ -13,7 +13,7 @@ func play_animation() -> void:
 	tween.tween_property(self, "position", on_screen_position, 0.5) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, "position", off_screen_position, 0.5) \
-		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN).set_delay(5.0)
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN).set_delay(3.0)
 	tween.tween_callback(finished.emit)
 	
 	_on_play_animation()
