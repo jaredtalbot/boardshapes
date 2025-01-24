@@ -1,8 +1,9 @@
 extends Sprite2D
 
-@onready var sparkle_particles: CPUParticles2D = $SparkleParticles
+@onready var sparkle_particles: GPUParticles2D = $SparkleParticles
 
 func _process(delta):
+	var process_material: ParticleProcessMaterial = sparkle_particles.process_material
 	var crown_scale = global_scale.length()
-	sparkle_particles.scale_amount_max = crown_scale
-	sparkle_particles.scale_amount_min = crown_scale
+	process_material.scale_max = crown_scale
+	process_material.scale_min = crown_scale
