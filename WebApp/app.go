@@ -339,7 +339,6 @@ func main() {
 
 	router.NoRoute(gin.Logger(), func(ctx *gin.Context) {
 		ctx.File("./homepage/board-site/dist/index.html")
-		ctx.Status(200)
 	})
 
 	port := Port
