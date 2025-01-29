@@ -7,11 +7,13 @@ sudo apt install unzip
 echo Unzipping Godot...
 unzip -p godot.zip Godot_v*-stable_linux.x86_64 > godot.x86_64
 echo Unzipping export templates...
-unzip templates.zip templates/web_nothreads_debug.zip templates/web_nothreads_release.zip
+unzip templates.zip templates/web_nothreads_debug.zip templates/web_nothreads_release.zip templates/web_debug.zip templates/web_release.zip
 echo Installing export templates...
 mkdir -p ~/.local/share/godot/export_templates/4.3.stable
 cp ./templates/web_nothreads_debug.zip ~/.local/share/godot/export_templates/4.3.stable/web_nothreads_debug.zip
 cp ./templates/web_nothreads_release.zip ~/.local/share/godot/export_templates/4.3.stable/web_nothreads_release.zip
+cp ./templates/web_debug.zip ~/.local/share/godot/export_templates/4.3.stable/web_debug.zip
+cp ./templates/web_release.zip ~/.local/share/godot/export_templates/4.3.stable/web_release.zip
 chmod +xr godot.x86_64
 echo Exporting Boardwalk...
 mkdir exported-game
