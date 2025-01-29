@@ -1,4 +1,4 @@
-extends Control
+class_name HatPreview extends Control
 
 var hat_id: String
 var hat_name: String

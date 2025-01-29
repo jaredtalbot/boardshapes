@@ -19,12 +19,12 @@ func _ready():
 		var hat_preview = HAT_PREVIEW.instantiate()
 		hat_preview.load_hat_from_json(hat_json)
 		hat_select.add_child(hat_preview)
-		hat_preview.pressed.connect(set_hat.bind(hat_preview.hat_scene, hat_preview.unlocked))
+		hat_preview.pressed.connect(set_hat_from_preview.bind(hat_preview))
 		hat_preview.focus_entered.connect(set_hat_info_display.bind(hat_preview.hat_name, hat_preview.hat_description, hat_preview.hat_unlock_hint))
 
-func set_hat(new_hat: PackedScene, unlocked: bool):
-	if unlocked:
-		Preferences.hat_scene = new_hat
+func set_hat_from_preview(hat_preview: HatPreview):
+	if hat_preview.unlocked:
+		Preferences.hat_scene = hat_preview.hat_scene
 
 func set_hat_info_display(hat_name: String, hat_description: String, hat_unlock_hint: String):
 	$HatInfoDisplay/HatNameLabel.text = hat_name
