@@ -5,6 +5,7 @@ import (
 	"codejester27/cmps401fa2024/web-app/processing"
 	"encoding/base64"
 	"encoding/json"
+	"strings"
 
 	"image"
 	"image/color"
@@ -336,10 +337,17 @@ func main() {
 	logged.POST("/api/simplify", simplifyImage)
 	logged.POST("/api/build-level", buildLevel)
 	router.GET("/api/ws", connectListenerWebsocket)
+	router.POST("/lol", func(ctx *gin.Context) {
+		log.Println("the button was pressed")
+	})
 
 	router.NoRoute(gin.Logger(), func(ctx *gin.Context) {
+		url := ctx.Request.URL.Path
+		if strings.Contains(url, "wp") || strings.Contains(url, "wordpress") || strings.Contains(url, "admin") || strings.Contains(url, "php") {
+			ctx.File("./other-pages/go-away.html")
+			return
+		}
 		ctx.File("./homepage/board-site/dist/index.html")
-		ctx.Status(200)
 	})
 
 	port := Port
