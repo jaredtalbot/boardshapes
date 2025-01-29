@@ -328,12 +328,17 @@ func main() {
 		ctx.Header("Access-Control-Allow-Origin", "*")
 	})
 
+	games := logged.Group("", func(ctx *gin.Context) {
+		ctx.Header("Cross-Origin-Embedder-Policy", "require-corp")
+		ctx.Header("Cross-Origin-Opener-Policy", "same-origin")
+	})
+
 	logged.StaticFile("/", "./homepage/board-site/dist/index.html")
 	logged.StaticFile("/board.svg", "./homepage/board-site/dist/board.svg")
 	logged.Static("/assets", "./homepage/board-site/dist/assets")
-	logged.Static("/boardwalk", "./exported-game")
+	games.Static("/boardwalk", "./exported-game")
 	logged.StaticFile("/manual", "./exported-manual/User Manual.pdf")
-	logged.Static("/boardbox", "./exported-boardbox")
+	games.Static("/boardbox", "./exported-boardbox")
 	logged.POST("/api/simplify", simplifyImage)
 	logged.POST("/api/build-level", buildLevel)
 	router.GET("/api/ws", connectListenerWebsocket)
