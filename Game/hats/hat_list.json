@@ -18,5 +18,13 @@
 		"path": "res://hats/crown/crown.tscn",
 		"description": "The mark of a champion.",
 		"unlock_hint": "Beat the final level."
+	},
+	{
+		"id": "jester",
+		"name": "Jester Hat",
+		"path": "res://hats/jester/jester.tscn",
+		"description": "A silly hat.",
+		"unlock_hint": "Where else have I seen this?",
+		"always_unlocked": "true"
 	}
 ]
