@@ -53,15 +53,18 @@ type MultiplayerPlayer struct {
 }
 
 type PlayerStatusMessage struct {
-	Animation  string         `json:"animation"`
-	Frame      int            `json:"frame"`
-	Position   PlayerPosition `json:"position"`
-	Name       string         `json:"name"`
-	FacingLeft bool           `json:"facingLeft"`
-	Id         string         `json:"id,omitempty"`
+	Animation   string   `json:"animation"`
+	Frame       int      `json:"frame"`
+	Position    Position `json:"position"`
+	Name        string   `json:"name"`
+	HatId       string   `json:"hatId"`
+	HatPosition Position `json:"hatPosition"`
+	HatRotation float32  `json:"hatRotation"`
+	FacingLeft  bool     `json:"facingLeft"`
+	Id          string   `json:"id,omitempty"`
 }
 
-type PlayerPosition struct {
+type Position struct {
 	X float32 `json:"x"`
 	Y float32 `json:"y"`
 }
@@ -188,9 +191,16 @@ func main() {
 
 	go cleanupEmptyLobbies()
 
-	port := Port
+	/*port := Port
 	if port == "" {
 		port = "443"
 	}
-	router.RunTLS(":"+port, "multiplayer.boardmesh.app-crt.pem", "multiplayer.boardmesh.app-key.pem")
+	router.RunTLS(":"+port, "multiplayer.boardmesh.app-crt.pem", "multiplayer.boardmesh.app-key.pem")*/
+
+	//LOCAL SERVER STUFF
+	port := Port
+	if port == "" {
+		port = "8080"
+	}
+	router.Run(":" + port)
 }

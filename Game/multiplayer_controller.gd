@@ -1,5 +1,7 @@
 class_name MultiplayerController extends Node
 
+const HAT_LIST = preload("res://hats/hat_list.json")
+
 var multiplayer_server_url: String = ProjectSettings.get_setting("application/boardwalk/multiplayer_server_url")
 
 @export var status_indicator: MPIndicator
@@ -49,6 +51,10 @@ func update_players():
 			and json_obj.get("position") is Dictionary \
 			and json_obj["position"].get("x") is float or json_obj["position"].get("x") is int \
 			and json_obj["position"].get("y") is float or json_obj["position"].get("y") is int \
+			and json_obj.get("hatId") is String \
+			and json_obj["hatPosition"].get("x") is float or json_obj["hatPosition"].get("x") is int \
+			and json_obj["hatPosition"].get("y") is float or json_obj["hatPosition"].get("y") is int \
+			and json_obj.get("hatRotation") is float or json_obj.get("hatRotation") is int \
 			and json_obj.get("facingLeft") is bool:
 			var ghost: AnimatedSprite2D
 			ghost = get_node_or_null(json_obj["id"])
@@ -60,16 +66,27 @@ func update_players():
 			ghost.animation = json_obj["animation"]
 			ghost.frame = json_obj["frame"]
 			ghost.position = Vector2(json_obj["position"]["x"], json_obj["position"]["y"])
+			if json_obj["hatId"] != "nohat":
+				for hat_json in HAT_LIST.data:
+					if hat_json["id"] == json_obj["hatId"]:
+						var hat_scene = load(hat_json["path"]) if hat_json.get("path") is String else null
+						ghost.get_node("HatPivot/HatPos").add_child(hat_scene.instantiate())
+			ghost.get_node("HatPivot/HatPos").position = Vector2(json_obj["hatPosition"]["x"], json_obj["hatPosition"]["y"])
+			ghost.get_node("HatPivot/HatPos").rotation = json_obj["hatRotation"] 
 			ghost.flip_h = json_obj["facingLeft"]
+			
 			ghost.last_updated = Time.get_unix_time_from_system()
 
-func send_player_info(name: String, animation: String, frame: int, position: Vector2, facingLeft: bool):
+func send_player_info(name: String, animation: String, frame: int, position: Vector2, hatId: String, hatPosition: Vector2, hatRotation: float, facingLeft: bool):
 	if socket.get_ready_state() == WebSocketPeer.STATE_OPEN:
 		var info_dict = {
 			"name": name,
 			"animation": animation,
 			"frame": frame,
 			"position": {"x": position.x, "y": position.y},
+			"hatId": hatId,
+			"hatPosition": {"x": hatPosition.x, "y": hatPosition.y},
+			"hatRotation": hatRotation,
 			"facingLeft": facingLeft
 		}
 		var json = JSON.stringify(info_dict)
