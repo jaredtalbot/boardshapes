@@ -21,3 +21,11 @@ func _on_options_pressed():
 	
 func _on_options_close_pressed():
 	$OptionsWindow.hide()
+
+func _on_credits_pressed():
+	get_tree().change_scene_to_file("res://credits_screen.tscn")
+
+
+func _on_back_pressed() -> void:
+	$Back.hide()
+	$CreditsScreen.hide()
