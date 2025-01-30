@@ -10,7 +10,7 @@ var unlocked: bool:
 		$LockedHatUi.visible = not value
 		unlocked = value
 
-@onready var hat_holder = $HatHolder
+@onready var hat_holder = %HatHolder
 
 func load_hat_from_json(json: Dictionary):
 	hat_scene = load(json.path) if json.get("path") is String else null
