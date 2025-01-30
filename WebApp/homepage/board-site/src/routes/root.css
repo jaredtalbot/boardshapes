@@ -29,7 +29,18 @@
 .AboutTitle {
   color: #000000;
   font-size: xx-large;
+  font-weight: 600;
   padding-top: 0;
+}
+
+a.AboutTitle {
+  transition: transform 0.5s;
+  display: inline-block;
+}
+
+a.AboutTitle:hover {
+  color: #000000;
+  transform: scale(1.2, 1.2);
 }
 
 .AboutDescription {

@@ -24,7 +24,6 @@
 		"name": "Jester Hat",
 		"path": "res://hats/jester/jester.tscn",
 		"description": "A silly hat.",
-		"unlock_hint": "Where else have I seen this?",
-		"always_unlocked": "true"
+		"unlock_hint": "Follow the leader!",
 	}
 ]

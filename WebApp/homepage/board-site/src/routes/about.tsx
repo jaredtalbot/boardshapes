@@ -1,12 +1,27 @@
 import { Link } from "react-router-dom";
 import "./root.css";
+import { useMemo } from "react";
 
 function About() {
+  const todayHash = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return today
+      .toISOString()
+      .split("")
+      .reduce((a, b) => {
+        a = (a << 5) - a + b.charCodeAt(0);
+        return a & a;
+      }, 0);
+  }, []);
+
   return (
     <>
       <div className="body1">
         <h1>About The Devs:</h1>
-        <p className="AboutTitle">Jared</p>
+        <a className="AboutTitle" href={`/boardwalk?unlock=${todayHash}`}>
+          Jared
+        </a>
         <p className="AboutDescription">
           Jared is a Fifth-Semester Junior majoring in Computer Science. He is
           the project leader!
