@@ -328,7 +328,9 @@ func main() {
 		ctx.Header("Access-Control-Allow-Origin", "*")
 	})
 
-	games := logged.Group("", func(ctx *gin.Context) {
+	games := logged.Group("")
+
+	games.Use(func(ctx *gin.Context) {
 		ctx.Header("Cross-Origin-Embedder-Policy", "require-corp")
 		ctx.Header("Cross-Origin-Opener-Policy", "same-origin")
 	})
