@@ -2,8 +2,6 @@ extends Control
 
 func _ready():
 	Music.stop_all_layers()
-	$CreditsScreen.hide()
-	$Back.hide()
 	if OS.has_feature("web"):
 		$MarginContainer/VBoxContainer/Exit.hide()
 	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
@@ -25,8 +23,7 @@ func _on_options_close_pressed():
 	$OptionsWindow.hide()
 
 func _on_credits_pressed():
-	$CreditsScreen.show()
-	$Back.show()
+	get_tree().change_scene_to_file("res://credits_screen.tscn")
 
 
 func _on_back_pressed() -> void:

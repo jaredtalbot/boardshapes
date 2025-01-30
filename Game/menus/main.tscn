@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://s2dcpgi066gy"]
+[gd_scene load_steps=10 format=3 uid="uid://s2dcpgi066gy"]
 
 [ext_resource type="Script" path="res://menus/menu.gd" id="1_slpt8"]
 [ext_resource type="Texture2D" uid="uid://dcparl8gbox7k" path="res://Whiteboard-Vector-PNG-Photos-3289639508.png" id="2_d40is"]
@@ -9,8 +9,6 @@
 [ext_resource type="Texture2D" uid="uid://fj8ln0fb8t72" path="res://ui/exitbutton.png" id="6_lejtg"]
 [ext_resource type="PackedScene" uid="uid://blrjxml7nbhjp" path="res://options_window.tscn" id="7_bj4wj"]
 [ext_resource type="PackedScene" uid="uid://cpndyiijj6wj8" path="res://debug_widget.tscn" id="8_abw83"]
-[ext_resource type="Texture2D" uid="uid://cwi2dhjuj3n35" path="res://ui/credsforboardwalkreal.png" id="10_na1yn"]
-[ext_resource type="Texture2D" uid="uid://bsi82n0dq31aj" path="res://ui/BackButton.png" id="11_fg725"]
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -107,23 +105,8 @@ texture = ExtResource("3_j0xgp")
 expand_mode = 1
 stretch_mode = 3
 
-[node name="CreditsScreen" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = -1.0
-offset_top = 1.0
-offset_right = 1919.0
-offset_bottom = 1081.0
-texture = ExtResource("10_na1yn")
-
-[node name="Back" type="TextureButton" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-texture_normal = ExtResource("11_fg725")
-
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Options" to="." method="_on_options_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Credits" to="." method="_on_credits_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Exit" to="." method="_on_exit_pressed"]
 [connection signal="close_requested" from="OptionsWindow" to="." method="_on_options_close_pressed"]
-[connection signal="pressed" from="Back" to="." method="_on_back_pressed"]

@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://cqm41k2nlypyk"]
+
+[ext_resource type="Texture2D" uid="uid://cwi2dhjuj3n35" path="res://ui/credsforboardwalkreal.png" id="1_gft1c"]
+[ext_resource type="Script" path="res://credits_screen.gd" id="1_qnkqg"]
+[ext_resource type="Texture2D" uid="uid://bsi82n0dq31aj" path="res://ui/BackButton.png" id="2_2iulf"]
+
+[node name="CreditsScreen" type="Node2D"]
+script = ExtResource("1_qnkqg")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_gft1c")
+
+[node name="TextureButton" type="TextureButton" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+texture_normal = ExtResource("2_2iulf")
+
+[connection signal="pressed" from="TextureButton" to="." method="_on_texture_button_pressed"]
