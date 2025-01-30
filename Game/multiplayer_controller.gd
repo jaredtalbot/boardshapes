@@ -74,7 +74,10 @@ func update_players():
 			ghost.get_node("HatPivot/HatPos").position = Vector2(json_obj["hatPosition"]["x"], json_obj["hatPosition"]["y"])
 			ghost.get_node("HatPivot/HatPos").rotation = json_obj["hatRotation"] 
 			ghost.flip_h = json_obj["facingLeft"]
-			
+			if json_obj["facingLeft"]:
+				ghost.get_node("HatPivot").scale.x = -7.813
+			else:
+				ghost.get_node("HatPivot").scale.x = 7.813
 			ghost.last_updated = Time.get_unix_time_from_system()
 
 func send_player_info(name: String, animation: String, frame: int, position: Vector2, hatId: String, hatPosition: Vector2, hatRotation: float, facingLeft: bool):

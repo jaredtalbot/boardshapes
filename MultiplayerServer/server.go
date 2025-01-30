@@ -191,16 +191,10 @@ func main() {
 
 	go cleanupEmptyLobbies()
 
-	/*port := Port
+	port := Port
 	if port == "" {
 		port = "443"
 	}
-	router.RunTLS(":"+port, "multiplayer.boardmesh.app-crt.pem", "multiplayer.boardmesh.app-key.pem")*/
+	router.RunTLS(":"+port, "multiplayer.boardmesh.app-crt.pem", "multiplayer.boardmesh.app-key.pem")
 
-	//LOCAL SERVER STUFF
-	port := Port
-	if port == "" {
-		port = "8080"
-	}
-	router.Run(":" + port)
 }
