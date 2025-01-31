@@ -1,12 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://7o4hw24vtylw"]
+[gd_scene load_steps=4 format=3 uid="uid://7o4hw24vtylw"]
 
 [ext_resource type="Texture2D" uid="uid://bqv45dcfidrki" path="res://hats/jester/jester.png" id="1_a47p5"]
 [ext_resource type="PackedScene" uid="uid://dmfx4obhuqonr" path="res://hats/jester/jester_bell.tscn" id="2_7h86j"]
+[ext_resource type="Script" path="res://owned_after_image_emitter.gd" id="2_q6dhf"]
 
 [node name="JesterHat" type="Sprite2D"]
 position = Vector2(-0.5, -12)
 scale = Vector2(0.065, 0.065)
 texture = ExtResource("1_a47p5")
+
+[node name="OwnedAfterImageEmitter" type="Node2D" parent="." node_paths=PackedStringArray("sprite")]
+script = ExtResource("2_q6dhf")
+sprite = NodePath("..")
 
 [node name="JesterBell" parent="." instance=ExtResource("2_7h86j")]
 position = Vector2(-201.827, 46.704)
