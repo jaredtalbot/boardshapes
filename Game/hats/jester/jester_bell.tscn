@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://dmfx4obhuqonr"]
+
+[ext_resource type="Script" path="res://hats/jester/jester_bell.gd" id="1_24nei"]
+[ext_resource type="Texture2D" uid="uid://dbv6juy35526t" path="res://hats/jester/jesterbell.png" id="2_yd5fj"]
+
+[node name="JesterBell" type="Node2D"]
+script = ExtResource("1_24nei")
+
+[node name="BellSprite" type="Sprite2D" parent="."]
+position = Vector2(0, 16)
+texture = ExtResource("2_yd5fj")
