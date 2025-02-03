@@ -1,11 +1,10 @@
 extends Control
 
-@onready var hat_dir = DirAccess.open("res://hats")
-
 func _ready():
-	for path in hat_dir.get_directories():
-		var hat_path = str("res://hats/"+path+"/"+path+".tscn")
-		ResourceLoader.load(hat_path)
+	for hat in Unlocks.HAT_LIST.data:
+		var hat_path = hat.get("path")
+		if hat_path != null:
+			ResourceLoader.load(hat_path)
 		
 	Music.stop_all_layers()
 	if OS.has_feature("web"):
