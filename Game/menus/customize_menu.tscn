@@ -40,6 +40,11 @@ LineEdit/styles/normal = SubResource("StyleBoxEmpty_b34f7")
 [node name="CustomizeMenu" type="Node"]
 script = ExtResource("1_pv3cl")
 
+[node name="SaveTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 2.0
+one_shot = true
+
 [node name="PreviewAnchor" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 7
@@ -147,5 +152,7 @@ layout_mode = 2
 layout_mode = 2
 texture_normal = ExtResource("3_q28ko")
 
+[connection signal="timeout" from="SaveTimer" to="." method="_on_save_timer_timeout"]
+[connection signal="tree_exited" from="SaveTimer" to="." method="_on_save_timer_tree_exited"]
 [connection signal="text_changed" from="BottomLeftControls/FieldTexture/MultiplayerNameField" to="." method="_on_multiplayer_name_field_text_changed"]
 [connection signal="pressed" from="BottomLeftControls/BackButton" to="." method="_on_back_button_pressed"]
