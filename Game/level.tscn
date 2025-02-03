@@ -36,16 +36,9 @@ script = ExtResource("1_rygds")
 [node name="LoadingIndicator" parent="." instance=ExtResource("2_07l0p")]
 visible = false
 
-[node name="QuitButton" type="TextureButton" parent="."]
-offset_left = 1808.0
-offset_top = 2.0
-offset_right = 2355.0
-offset_bottom = 298.0
-scale = Vector2(0.2, 0.2)
-texture_normal = ExtResource("6_507j4")
-
 [node name="QuitMenu" type="CanvasLayer" parent="."]
 process_mode = 2
+layer = 3
 
 [node name="QuitWindow" type="Window" parent="QuitMenu"]
 transparent_bg = true
@@ -305,25 +298,39 @@ text = "Exit To Main Menu"
 
 [node name="Goal" parent="." instance=ExtResource("7_h3hxs")]
 
-[node name="MPIndicator" parent="." instance=ExtResource("9_ww6yl")]
+[node name="LevelUI" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LevelUI"]
+custom_minimum_size = Vector2(0, 40)
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -252.0
-offset_top = 4.0
-offset_right = -120.0
-offset_bottom = 44.0
+offset_left = -212.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 40.0
 grow_horizontal = 0
+alignment = 2
+
+[node name="MPIndicator" parent="LevelUI/HBoxContainer" instance=ExtResource("9_ww6yl")]
+layout_mode = 2
+
+[node name="QuitButton" type="TextureButton" parent="LevelUI/HBoxContainer"]
+custom_minimum_size = Vector2(74, 0)
+layout_mode = 2
+texture_normal = ExtResource("6_507j4")
+ignore_texture_size = true
+stretch_mode = 5
 
 [node name="MultiplayerController" type="Node" parent="." node_paths=PackedStringArray("status_indicator")]
 script = ExtResource("8_w82i2")
-status_indicator = NodePath("../MPIndicator")
+status_indicator = NodePath("../LevelUI/HBoxContainer/MPIndicator")
 
 [node name="MultiplayerTimer" type="Timer" parent="."]
 wait_time = 0.1
 autostart = true
 
-[connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="close_requested" from="QuitMenu/QuitWindow" to="." method="_on_quit_window_close_requested"]
 [connection signal="pressed" from="QuitMenu/QuitWindow/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="QuitMenu/QuitWindow/Resume Button" to="." method="_on_resume_button_pressed"]
@@ -332,10 +339,11 @@ autostart = true
 [connection signal="toggled" from="QuitMenu/QuitWindow/DarkCheck" to="." method="_on_dark_check_toggled"]
 [connection signal="pressed" from="StartEndSelection/StartSelect" to="." method="_set_player_start"]
 [connection signal="pressed" from="StartEndSelection/EndSelect" to="." method="_set_goal_position"]
-[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/SaveLevel" to="." method="save_level"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/PlayAnotherLevel" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/ExitToMenu" to="." method="_on_exit_to_main_menu_button_pressed"]
 [connection signal="body_entered" from="Goal" to="." method="_goal_reached"]
+[connection signal="pressed" from="LevelUI/HBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="timeout" from="MultiplayerTimer" to="." method="_on_multiplayer_timer_timeout"]
