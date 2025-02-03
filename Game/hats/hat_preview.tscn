@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://drqgdl5k4ooe6"]
+[gd_scene load_steps=7 format=3 uid="uid://drqgdl5k4ooe6"]
 
 [ext_resource type="Texture2D" uid="uid://bdoc676kb83xj" path="res://ui/hat_preview_frame.png" id="1_hjf3o"]
 [ext_resource type="Script" path="res://hats/hat_preview.gd" id="1_k07am"]
 [ext_resource type="Texture2D" uid="uid://dmnrgxds0npah" path="res://ui/locked_hat_background.png" id="3_40jlt"]
+[ext_resource type="Texture2D" uid="uid://cd785m3w51p6m" path="res://ui/hat_preview_frame_filled.png" id="3_r28mj"]
 [ext_resource type="Texture2D" uid="uid://dq8616lwv6v3x" path="res://ui/lock.png" id="4_5pk8u"]
 [ext_resource type="Texture2D" uid="uid://ba77vmkq3rhcu" path="res://ui/no_hat_text.png" id="5_17520"]
 
@@ -21,7 +22,19 @@ grow_vertical = 2
 texture_normal = ExtResource("1_hjf3o")
 script = ExtResource("1_k07am")
 
-[node name="HatHolder" type="Control" parent="."]
+[node name="Clip" type="TextureRect" parent="."]
+show_behind_parent = true
+clip_children = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_r28mj")
+
+[node name="HatHolder" type="Control" parent="Clip"]
+unique_name_in_owner = true
 show_behind_parent = true
 layout_mode = 1
 anchors_preset = 8
@@ -47,6 +60,7 @@ offset_right = 20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 
 [node name="Background" type="TextureRect" parent="LockedHatUi"]
 layout_mode = 1
