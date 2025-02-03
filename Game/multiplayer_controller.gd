@@ -66,7 +66,7 @@ func update_players():
 			ghost.animation = json_obj["animation"]
 			ghost.frame = json_obj["frame"]
 			ghost.position = Vector2(json_obj["position"]["x"], json_obj["position"]["y"])
-			if json_obj["hatId"] != "nohat":
+			if json_obj["hatId"] != "nohat" && ghost.get_node("HatPivot/HatPos").get_child_count() < 1:
 				for hat_json in HAT_LIST.data:
 					if hat_json["id"] == json_obj["hatId"]:
 						var hat_scene = load(hat_json["path"]) if hat_json.get("path") is String else null
