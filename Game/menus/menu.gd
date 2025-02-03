@@ -1,6 +1,13 @@
 extends Control
 
+@onready var hat_dir = DirAccess.open("res://hats")
+
 func _ready():
+	for path in hat_dir.get_directories():
+		var hat_path = str("res://hats/"+path+"/"+path+".tscn")
+		print(hat_path)
+		ResourceLoader.load(hat_path)
+		
 	Music.stop_all_layers()
 	if OS.has_feature("web"):
 		$MarginContainer/VBoxContainer/Exit.hide()
