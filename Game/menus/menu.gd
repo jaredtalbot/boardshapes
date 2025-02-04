@@ -1,6 +1,11 @@
 extends Control
 
 func _ready():
+	for hat in Unlocks.HAT_LIST.data:
+		var hat_path = hat.get("path")
+		if hat_path != null:
+			ResourceLoader.load(hat_path)
+		
 	Music.stop_all_layers()
 	if OS.has_feature("web"):
 		$MarginContainer/VBoxContainer/Exit.hide()

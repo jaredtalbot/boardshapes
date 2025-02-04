@@ -32,6 +32,7 @@ scale = Vector2(0.05, 0.05)
 texture = ExtResource("1_fcio1")
 script = ExtResource("2_eg4ae")
 metadata/_edit_lock_ = true
+metadata/hatId = "crown"
 
 [node name="SparkleParticles" type="GPUParticles2D" parent="."]
 amount = 3

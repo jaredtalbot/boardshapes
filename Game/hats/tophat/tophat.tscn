@@ -8,6 +8,7 @@ position = Vector2(0, -13)
 scale = Vector2(0.05, 0.05)
 texture = ExtResource("1_756a0")
 metadata/_edit_lock_ = true
+metadata/hatId = "tophat"
 
 [node name="HatAfterImageEmitter" type="Node2D" parent="." node_paths=PackedStringArray("sprite")]
 script = ExtResource("2_ox31n")
