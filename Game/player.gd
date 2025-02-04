@@ -25,6 +25,7 @@ var bonked_wall: bool = false
 var dash_direction: int
 
 signal jumped
+signal dashed
 signal died
 
 func _ready():
@@ -130,6 +131,7 @@ func _physics_process(delta):
 			$dash_timer.start()
 			$dash_cooldown_timer.start()
 			dash_direction = get_direction()
+			dashed.emit()
 			
 	if is_dashing:
 			if not test_move(transform, Vector2(0, 2)):

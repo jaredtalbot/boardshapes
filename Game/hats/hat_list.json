@@ -21,9 +21,16 @@
 	},
 	{
 		"id": "jester",
-		"name": "Jester Hat",
+		"name": "The Jolly Jester",
 		"path": "res://hats/jester/jester.tscn",
-		"description": "A silly hat.",
+		"description": "The badge of a royal comedian.",
 		"unlock_hint": "Follow the leader!",
+	},
+	{
+		"id": "goggles",
+		"name": "Swing-Specs",
+		"path": "res://hats/goggles/goggles.tscn",
+		"description": "Now you're seeing it my way!",
+		"unlock_hint": "Beat C's Level without jumping or dashing.",
 	}
 ]
