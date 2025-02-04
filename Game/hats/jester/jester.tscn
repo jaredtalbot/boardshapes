@@ -8,6 +8,7 @@
 position = Vector2(-0.5, -12)
 scale = Vector2(0.065, 0.065)
 texture = ExtResource("1_a47p5")
+metadata/hatId = "jester"
 
 [node name="OwnedAfterImageEmitter" type="Node2D" parent="." node_paths=PackedStringArray("sprite")]
 script = ExtResource("2_q6dhf")
