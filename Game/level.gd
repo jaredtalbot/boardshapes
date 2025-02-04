@@ -197,9 +197,16 @@ func _on_restart_button_pressed():
 
 func _on_multiplayer_timer_timeout():
 	var player: CharacterBody2D = get_node_or_null("Player")
+	var hatPos: Marker2D = get_node_or_null("Player/HatPivot/HatPos") 
 	if player != null:
 		var sprite = player.get_node("AnimatedSprite2D") as AnimatedSprite2D
-		$MultiplayerController.send_player_info(Preferences.player_name, sprite.animation, sprite.frame, player.position, sprite.flip_h)
+		var hatId: String
+		if hatPos != null:
+			if hatPos.get_child_count() > 0:
+				hatId = hatPos.get_child(0).get_meta("hatId")
+			else:
+				hatId = "nohat"
+		$MultiplayerController.send_player_info(Preferences.player_name, sprite.animation, sprite.frame, player.position, hatId, hatPos.position, hatPos.rotation, sprite.flip_h)
 
 func _on_quit_window_close_requested():
 	get_tree().paused = false
