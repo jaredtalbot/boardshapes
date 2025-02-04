@@ -8,6 +8,7 @@ position = Vector2(-0.84, -4.195)
 rotation = -0.0523599
 scale = Vector2(0.021, 0.021)
 texture = ExtResource("1_4rsot")
+metadata/hatId = "goggles"
 
 [node name="HatAfterImageEmitter" type="Node2D" parent="." node_paths=PackedStringArray("sprite")]
 script = ExtResource("2_knkn3")
