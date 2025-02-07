@@ -6,7 +6,7 @@
 [ext_resource type="Script" path="res://after_image_emitter.gd" id="8_0rr0r"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3fiya"]
-size = Vector2(62, 120)
+size = Vector2(48, 94)
 
 [sub_resource type="Gradient" id="Gradient_l4r4b"]
 offsets = PackedFloat32Array(0, 0.991803, 1)
@@ -78,10 +78,9 @@ libraries = {
 }
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-0.5, 0)
+position = Vector2(0, 6.5)
 scale = Vector2(0.5, 0.5)
 shape = SubResource("RectangleShape2D_3fiya")
-metadata/_edit_lock_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, 4.76837e-07)
