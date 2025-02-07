@@ -16,7 +16,9 @@ func _c_level_complete(level: Level):
 		Unlocks.unlock_hat("goggles")
 
 func _connect_level_signals(level: Level):
-	level.loaded.connect(func(): level.player.jumped.connect(_jumped_or_dashed); level.player.dashed.connect(_jumped_or_dashed))
-	level.loaded.connect(func(): level.player.died.connect(_died))
+	level.loaded.connect(func(): 
+		level.player.died.connect(_died)
+		level.player.jumped.connect(_jumped_or_dashed)
+		level.player.dashed.connect(_jumped_or_dashed))
 	has_jumped_or_dashed = false
 	level.completed.connect(_c_level_complete.bind(level))
