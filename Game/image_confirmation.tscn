@@ -1,13 +1,13 @@
 [gd_scene load_steps=7 format=3 uid="uid://64bqxwu4em4s"]
 
 [ext_resource type="Script" path="res://image_confirmation.gd" id="1_q2vt0"]
-[ext_resource type="Texture2D" uid="uid://boqjv0mj63juc" path="res://ui/white_checked.png" id="2_6mbem"]
-[ext_resource type="Texture2D" uid="uid://faev7n0saiul" path="res://ui/white_unchecked.png" id="3_yovyy"]
 
 [sub_resource type="Theme" id="Theme_j0qsh"]
 AcceptDialog/constants/buttons_min_width = 200
 AcceptDialog/font_sizes/title_font_size = 32
 Button/font_sizes/font_size = 60
+[ext_resource type="Texture2D" uid="uid://boqjv0mj63juc" path="res://ui/sprites/checked.png" id="2_6mbem"]
+[ext_resource type="Texture2D" uid="uid://faev7n0saiul" path="res://ui/sprites/unchecked.png" id="3_yovyy"]
 
 [sub_resource type="Theme" id="Theme_4rgn2"]
 default_font_size = 48

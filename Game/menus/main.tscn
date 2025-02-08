@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" path="res://menus/menu.gd" id="1_slpt8"]
 [ext_resource type="Texture2D" uid="uid://dcparl8gbox7k" path="res://Whiteboard-Vector-PNG-Photos-3289639508.png" id="2_d40is"]
-[ext_resource type="Texture2D" uid="uid://bwgl64rinsl7o" path="res://ui/boardwalk2.png" id="3_j0xgp"]
-[ext_resource type="Texture2D" uid="uid://bp5lft3kbytc1" path="res://ui/startbutton.png" id="4_657yp"]
-[ext_resource type="Texture2D" uid="uid://cuw51e0e2gmen" path="res://ui/creditsbutton.png" id="5_dodli"]
-[ext_resource type="Texture2D" uid="uid://biui41qabk6dn" path="res://ui/OptionButton.png" id="5_gp7bj"]
-[ext_resource type="Texture2D" uid="uid://fj8ln0fb8t72" path="res://ui/exitbutton.png" id="6_lejtg"]
+[ext_resource type="Texture2D" uid="uid://bwgl64rinsl7o" path="res://ui/sprites/boardwalk2.png" id="3_j0xgp"]
+[ext_resource type="Texture2D" uid="uid://bp5lft3kbytc1" path="res://ui/sprites/startbutton.png" id="4_657yp"]
+[ext_resource type="Texture2D" uid="uid://cuw51e0e2gmen" path="res://ui/sprites/creditsbutton.png" id="5_dodli"]
+[ext_resource type="Texture2D" uid="uid://biui41qabk6dn" path="res://ui/sprites/OptionButton.png" id="5_gp7bj"]
+[ext_resource type="Texture2D" uid="uid://fj8ln0fb8t72" path="res://ui/sprites/exitbutton.png" id="6_lejtg"]
 [ext_resource type="PackedScene" uid="uid://blrjxml7nbhjp" path="res://options_window.tscn" id="7_bj4wj"]
 [ext_resource type="PackedScene" uid="uid://cpndyiijj6wj8" path="res://debug_widget.tscn" id="8_abw83"]
 
