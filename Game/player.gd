@@ -58,7 +58,7 @@ func _process(delta):
 	if Input.is_action_just_pressed("zoom"):
 		target_zoom = 1.5 if target_zoom == 1.0 else 1.0
 	camera.zoom = camera.zoom.move_toward(Vector2(target_zoom, target_zoom), \
-		maxf(abs(target_zoom - camera.zoom.x) / 2.0, 0.01))
+		maxf(abs(target_zoom - camera.zoom.x) / 2.0, 0.01) * delta * 20)
 
 var air_time := 0.0
 
