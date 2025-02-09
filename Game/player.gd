@@ -1,8 +1,5 @@
 class_name Player extends CharacterBody2D
 
-#maybe this could be an autoload instead but idrc rn
-static var target_zoom := 1.0
-
 @export var SPEED = 500.0
 @export var JUMP_VELOCITY = -400.0
 @export var acceleration = 1500
@@ -33,7 +30,6 @@ signal dashed
 signal died
 
 func _ready():
-	camera.zoom = Vector2(target_zoom, target_zoom)
 	animation_player.play("idle animation")
 	animation_player.seek(0.0, true)
 	initial_position = position
@@ -55,10 +51,6 @@ func equip_hat(hat: PackedScene):
 func _process(delta):
 	RenderingServer.global_shader_parameter_set("player_position", position)
 	hat_pivot.scale.x = get_direction()
-	if Input.is_action_just_pressed("zoom"):
-		target_zoom = 1.5 if target_zoom == 1.0 else 1.0
-	camera.zoom = camera.zoom.move_toward(Vector2(target_zoom, target_zoom), \
-		maxf(abs(target_zoom - camera.zoom.x) / 2.0, 0.01) * delta * 20)
 
 var air_time := 0.0
 
