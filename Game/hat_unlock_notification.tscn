@@ -1,9 +1,9 @@
 [gd_scene load_steps=15 format=3 uid="uid://cy84ptparrj5m"]
 
-[ext_resource type="Texture2D" uid="uid://dkkfdpbljgnl8" path="res://ui/notification_background.png" id="1_jncer"]
+[ext_resource type="Texture2D" uid="uid://dkkfdpbljgnl8" path="res://ui/sprites/notification_background.png" id="1_jncer"]
 [ext_resource type="Script" path="res://hat_unlock_notification.gd" id="2_imwe1"]
-[ext_resource type="Texture2D" uid="uid://bdoc676kb83xj" path="res://ui/hat_preview_frame.png" id="2_t43fb"]
-[ext_resource type="Texture2D" uid="uid://cd785m3w51p6m" path="res://ui/hat_preview_frame_filled.png" id="3_oyqfh"]
+[ext_resource type="Texture2D" uid="uid://bdoc676kb83xj" path="res://ui/sprites/hat_preview_frame.png" id="2_t43fb"]
+[ext_resource type="Texture2D" uid="uid://cd785m3w51p6m" path="res://ui/sprites/hat_preview_frame_filled.png" id="3_oyqfh"]
 [ext_resource type="AudioStream" uid="uid://cf32gi07r35ic" path="res://audio/sfx/unlock_get.ogg" id="5_wf22k"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_75a7c"]
