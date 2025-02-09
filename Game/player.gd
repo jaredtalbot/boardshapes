@@ -51,6 +51,7 @@ func equip_hat(hat: PackedScene):
 func _process(delta):
 	RenderingServer.global_shader_parameter_set("player_position", position)
 	hat_pivot.scale.x = get_direction()
+	after_image_emitter.auto_emit = not $dash_timer.is_stopped() or touched_green
 
 var air_time := 0.0
 
@@ -61,6 +62,8 @@ func _death():
 	died.emit()
 	velocity.x = 0
 	velocity.y = 0
+	$dash_timer.stop()
+	touched_green = false
 	#make the explosion not blue in dark mode
 	#probably a better way to do this
 	if Preferences.dark_mode:
@@ -146,8 +149,6 @@ func _physics_process(delta):
 				animation_player.play("running")
 		else:
 			velocity.x = move_toward(velocity.x, 0, acceleration * delta)
-	
-	after_image_emitter.auto_emit = is_dashing
 	
 	move_and_slide()
 	
