@@ -122,7 +122,7 @@ func add_player() -> Player:
 	
 
 func _set_player_start():
-	player.initial_position = get_viewport().get_mouse_position()
+	player.initial_position = player.get_global_mouse_position()
 	player.position = player.initial_position
 	player.show()
 	$StartEndSelection/StartSelect.disabled = true
@@ -132,7 +132,7 @@ func _set_player_start():
 
 func _set_goal_position():
 	var goal = $Goal
-	goal.position = get_viewport().get_mouse_position()
+	goal.position = player.get_global_mouse_position()
 	$StartEndSelection/EndSelect.disabled = true
 	$StartEndSelection/EndSelect.hide()
 	$Goal.show()
