@@ -1,0 +1,44 @@
+[gd_scene load_steps=4 format=3 uid="uid://c3eico84vhva0"]
+
+[ext_resource type="Theme" uid="uid://jlbjqa36f4rf" path="res://ui/resources/ui_dark.tres" id="1_ehfay"]
+[ext_resource type="PackedScene" uid="uid://cy8xgukxtd5ts" path="res://ui/components/options.tscn" id="2_mvsrw"]
+[ext_resource type="Script" path="res://pause_menu.gd" id="2_pamrk"]
+
+[node name="PauseMenu" type="Window"]
+process_mode = 2
+transparent_bg = true
+initial_position = 1
+size = Vector2i(1500, 1200)
+visible = false
+borderless = true
+transparent = true
+content_scale_mode = 1
+theme = ExtResource("1_ehfay")
+script = ExtResource("2_pamrk")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -649.5
+offset_top = -546.0
+offset_right = 649.5
+offset_bottom = 546.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Options" parent="PanelContainer" instance=ExtResource("2_mvsrw")]
+layout_mode = 2
+
+[node name="ResumeButton" type="Button" parent="PanelContainer/Options"]
+layout_mode = 2
+text = "Resume"
+
+[node name="QuitButton" type="Button" parent="PanelContainer/Options"]
+layout_mode = 2
+text = "Quit"
+
+[connection signal="pressed" from="PanelContainer/Options/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="PanelContainer/Options/QuitButton" to="." method="_on_quit_button_pressed"]

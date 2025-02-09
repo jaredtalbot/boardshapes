@@ -8,7 +8,7 @@
 scale = Vector2(7.813, 7.813)
 script = ExtResource("1_16kqf")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." groups=["DarkModeInvertColors"]]
 scale = Vector2(0.128, 0.128)
 sprite_frames = ExtResource("2_xpam0")
 animation = &"idle animation"

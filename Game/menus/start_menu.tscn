@@ -34,11 +34,11 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 64
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
+[node name="PlayFrame" type="TextureRect" parent="VBoxContainer" groups=["DarkModeInvertColors"]]
 layout_mode = 2
 texture = ExtResource("3_i6oh8")
 
-[node name="PlayContainer" type="MarginContainer" parent="VBoxContainer/TextureRect"]
+[node name="PlayContainer" type="MarginContainer" parent="VBoxContainer/PlayFrame"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -47,13 +47,13 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_bottom = 32
 
-[node name="PlayButtonRow" type="HBoxContainer" parent="VBoxContainer/TextureRect/PlayContainer"]
+[node name="PlayButtonRow" type="HBoxContainer" parent="VBoxContainer/PlayFrame/PlayContainer"]
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_constants/separation = 16
 alignment = 1
 
-[node name="CampaginButton" type="TextureButton" parent="VBoxContainer/TextureRect/PlayContainer/PlayButtonRow"]
+[node name="CampaginButton" type="TextureButton" parent="VBoxContainer/PlayFrame/PlayContainer/PlayButtonRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
@@ -61,7 +61,7 @@ focus_neighbor_top = NodePath("../UploadImageButton")
 focus_previous = NodePath("../LoadLevelButton")
 texture_normal = ExtResource("4_d3m4d")
 
-[node name="UploadImageButton" type="TextureButton" parent="VBoxContainer/TextureRect/PlayContainer/PlayButtonRow"]
+[node name="UploadImageButton" type="TextureButton" parent="VBoxContainer/PlayFrame/PlayContainer/PlayButtonRow"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_neighbor_right = NodePath("../LoadLevelButton")
@@ -69,7 +69,7 @@ focus_neighbor_bottom = NodePath("../../../../OtherButtonRow/BackButton")
 focus_next = NodePath("../LoadLevelButton")
 texture_normal = ExtResource("5_ljjqm")
 
-[node name="LoadLevelButton" type="TextureButton" parent="VBoxContainer/TextureRect/PlayContainer/PlayButtonRow"]
+[node name="LoadLevelButton" type="TextureButton" parent="VBoxContainer/PlayFrame/PlayContainer/PlayButtonRow"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_neighbor_left = NodePath("../UploadImageButton")
@@ -81,16 +81,16 @@ texture_normal = ExtResource("6_pedtt")
 [node name="OtherButtonRow" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
-[node name="BackButton" type="TextureButton" parent="VBoxContainer/OtherButtonRow"]
+[node name="BackButton" type="TextureButton" parent="VBoxContainer/OtherButtonRow" groups=["DarkModeInvertColors"]]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 4
-focus_neighbor_top = NodePath("../../TextureRect/PlayContainer/PlayButtonRow/UploadImageButton")
-focus_previous = NodePath("../../TextureRect/PlayContainer/PlayButtonRow/LoadLevelButton")
+focus_neighbor_top = NodePath("../../PlayFrame/PlayContainer/PlayButtonRow/UploadImageButton")
+focus_previous = NodePath("../../PlayFrame/PlayContainer/PlayButtonRow/LoadLevelButton")
 texture_normal = ExtResource("4_lf6m8")
 
-[node name="CustomizeButton" type="TextureButton" parent="VBoxContainer/OtherButtonRow"]
+[node name="CustomizeButton" type="TextureButton" parent="VBoxContainer/OtherButtonRow" groups=["DarkModeInvertColors"]]
 layout_mode = 2
 size_flags_horizontal = 10
 texture_normal = ExtResource("8_bmbfk")
@@ -103,14 +103,15 @@ script = ExtResource("2_v3sgg")
 accept = [".boardwalk"]
 
 [node name="ImageConfirmation" parent="." instance=ExtResource("3_iojqf")]
+visible = false
 
 [node name="PickImageFileDialog" parent="." instance=ExtResource("5_lnlgg")]
 
 [node name="PickBoardwalkFileDialog" parent="." instance=ExtResource("9_tljks")]
 
-[connection signal="pressed" from="VBoxContainer/TextureRect/PlayContainer/PlayButtonRow/CampaginButton" to="." method="_on_campaign_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/TextureRect/PlayContainer/PlayButtonRow/UploadImageButton" to="." method="_on_upload_image_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/TextureRect/PlayContainer/PlayButtonRow/LoadLevelButton" to="." method="_on_load_level_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/PlayFrame/PlayContainer/PlayButtonRow/CampaginButton" to="." method="_on_campaign_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/PlayFrame/PlayContainer/PlayButtonRow/UploadImageButton" to="." method="_on_upload_image_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/PlayFrame/PlayContainer/PlayButtonRow/LoadLevelButton" to="." method="_on_load_level_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/OtherButtonRow/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/OtherButtonRow/CustomizeButton" to="." method="_on_customize_button_pressed"]
 [connection signal="file_loaded" from="WebPickImageFile" to="." method="_on_web_pick_image_file_file_loaded"]

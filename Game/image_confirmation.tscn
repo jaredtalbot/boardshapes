@@ -1,11 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://64bqxwu4em4s"]
 
+[ext_resource type="Theme" uid="uid://jlbjqa36f4rf" path="res://ui/resources/ui_dark.tres" id="1_6wiw4"]
 [ext_resource type="Script" path="res://image_confirmation.gd" id="1_q2vt0"]
-
-[sub_resource type="Theme" id="Theme_j0qsh"]
-AcceptDialog/constants/buttons_min_width = 200
-AcceptDialog/font_sizes/title_font_size = 32
-Button/font_sizes/font_size = 60
 [ext_resource type="Texture2D" uid="uid://boqjv0mj63juc" path="res://ui/sprites/checked.png" id="2_6mbem"]
 [ext_resource type="Texture2D" uid="uid://faev7n0saiul" path="res://ui/sprites/unchecked.png" id="3_yovyy"]
 
@@ -21,18 +17,22 @@ CheckBox/icons/unchecked_disabled = ExtResource("3_yovyy")
 font_size = 60
 
 [node name="ImageConfirmation" type="ConfirmationDialog"]
+transparent_bg = true
 initial_position = 1
-size = Vector2i(1600, 1000)
-theme = SubResource("Theme_j0qsh")
+size = Vector2i(1774, 1000)
+visible = true
+borderless = true
+transparent = true
+theme = ExtResource("1_6wiw4")
 ok_button_text = "Yes"
 cancel_button_text = "No"
 script = ExtResource("1_q2vt0")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 1592.0
-offset_bottom = 891.0
+offset_left = 120.0
+offset_top = 110.0
+offset_right = 1654.0
+offset_bottom = 697.0
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
 layout_mode = 2

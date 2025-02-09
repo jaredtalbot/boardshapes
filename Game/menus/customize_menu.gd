@@ -6,7 +6,6 @@ const HAT_PREVIEW = preload("res://hats/hat_preview.tscn")
 @onready var cosmetic_preview = $PreviewAnchor/CosmeticPreview
 @onready var hat_select = %HatSelect
 @onready var multiplayer_name_field = %MultiplayerNameField
-@onready var save_timer: Timer = %SaveTimer
 
 func _ready():
 	Music.stop_all_layers()
@@ -21,11 +20,12 @@ func _ready():
 		hat_select.add_child(hat_preview)
 		hat_preview.pressed.connect(set_hat_from_preview.bind(hat_preview))
 		hat_preview.focus_entered.connect(set_hat_info_display.bind(hat_preview.hat_name, hat_preview.hat_description, hat_preview.hat_unlock_hint))
+	AccessibilityShaderManager.apply_shaders()
 
 func set_hat_from_preview(hat_preview: HatPreview):
 	if hat_preview.unlocked:
 		Preferences.hat_scene = hat_preview.hat_scene
-		save_timer.start()
+		Preferences.save_when_ready()
 
 func set_hat_info_display(hat_name: String, hat_description: String, hat_unlock_hint: String):
 	$HatInfoDisplay/HatNameLabel.text = hat_name
@@ -44,10 +44,4 @@ func _on_back_button_pressed() -> void:
 
 func _on_multiplayer_name_field_text_changed(new_text):
 	Preferences.player_name = new_text
-	save_timer.start()
-
-func _on_save_timer_timeout() -> void:
-	Preferences.save_preferences()
-
-func _on_save_timer_tree_exited() -> void:
-	Preferences.save_preferences()
+	Preferences.save_when_ready()

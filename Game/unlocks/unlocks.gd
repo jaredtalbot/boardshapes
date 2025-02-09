@@ -3,6 +3,7 @@ extends Node
 const HAT_LIST = preload("res://hats/hat_list.json")
 
 signal updated
+signal saved
 
 var unlocked_hat_ids := PackedStringArray()
 
@@ -51,6 +52,7 @@ func save_unlocks() -> Error:
 	file.store_string(JSON.stringify({
 		"hats": unlocked_hat_ids
 	}))
+	saved.emit()
 	return OK
 
 func clear_unlocks() -> Error:
