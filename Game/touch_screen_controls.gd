@@ -16,3 +16,5 @@ func update_layout(new_scale: float):
 	$BottomRight/BottomRightControlRow/DashButtonControl.custom_minimum_size = Vector2(BUTTON_SIZE*new_scale, BUTTON_SIZE*new_scale)
 	$BottomRight/BottomRightControlRow/JumpButtonControl/JumpButton.scale = Vector2(new_scale, new_scale)
 	$BottomRight/BottomRightControlRow/DashButtonControl/DashButton.scale = Vector2(new_scale, new_scale)
+	$TopLeft/ZoomButtonControl.custom_minimum_size = Vector2(BUTTON_SIZE*new_scale, BUTTON_SIZE*new_scale)
+	$TopLeft/ZoomButtonControl/ZoomButton.scale = Vector2(new_scale, new_scale)
