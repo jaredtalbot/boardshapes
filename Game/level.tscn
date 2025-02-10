@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://level_generator.gd" id="1_rygds"]
 [ext_resource type="PackedScene" uid="uid://ca40sxi6lp5lx" path="res://touch_screen_controls.tscn" id="2_1knc0"]
 [ext_resource type="PackedScene" uid="uid://blw1ecr3vvp3q" path="res://loading_indicator.tscn" id="2_07l0p"]
-[ext_resource type="PackedScene" uid="uid://c3eico84vhva0" path="res://pause_menu.tscn" id="5_eqw5b"]
+[ext_resource type="PackedScene" uid="uid://dssoorsi70ddi" path="res://pause_menu.tscn" id="5_eqw5b"]
 [ext_resource type="Texture2D" uid="uid://biui41qabk6dn" path="res://ui/sprites/OptionButton.png" id="6_507j4"]
 [ext_resource type="PackedScene" uid="uid://3poplqifejqw" path="res://goal.tscn" id="7_h3hxs"]
 [ext_resource type="Script" path="res://multiplayer_controller.gd" id="8_w82i2"]
@@ -195,11 +195,13 @@ grow_horizontal = 0
 alignment = 2
 
 [node name="MPIndicator" parent="LevelUI/HBoxContainer" instance=ExtResource("9_ww6yl")]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="PauseButton" type="TextureButton" parent="LevelUI/HBoxContainer" groups=["DarkModeInvertColors"]]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(74, 0)
+custom_minimum_size = Vector2(148, 80)
 layout_mode = 2
 texture_normal = ExtResource("6_507j4")
 ignore_texture_size = true

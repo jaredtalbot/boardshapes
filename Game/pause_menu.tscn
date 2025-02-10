@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://c3eico84vhva0"]
+[gd_scene load_steps=4 format=3 uid="uid://dssoorsi70ddi"]
 
 [ext_resource type="Theme" uid="uid://jlbjqa36f4rf" path="res://ui/resources/ui_dark.tres" id="1_ehfay"]
 [ext_resource type="PackedScene" uid="uid://cy8xgukxtd5ts" path="res://ui/components/options.tscn" id="2_mvsrw"]
