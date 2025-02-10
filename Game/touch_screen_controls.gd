@@ -3,10 +3,10 @@ extends CanvasLayer
 const BUTTON_SIZE = 64
 
 func _ready():
-	_update_layout(Preferences.touchscreen_button_scale)
-	Preferences.touchscreen_button_scale_changed.connect(_update_layout)
+	update_layout(Preferences.touchscreen_button_scale)
+	Preferences.touchscreen_button_scale_changed.connect(update_layout)
 
-func _update_layout(new_scale: float):
+func update_layout(new_scale: float):
 	$BottomLeft/BottomLeftControlRow/LeftButtonControl.custom_minimum_size = Vector2(BUTTON_SIZE*new_scale, BUTTON_SIZE*new_scale)
 	$BottomLeft/BottomLeftControlRow/RightButtonControl.custom_minimum_size = Vector2(BUTTON_SIZE*new_scale, BUTTON_SIZE*new_scale)
 	$BottomLeft/BottomLeftControlRow/LeftButtonControl/LeftButton.scale = Vector2(new_scale, new_scale)
