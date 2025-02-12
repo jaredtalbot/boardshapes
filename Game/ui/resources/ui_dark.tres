@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=35 format=3 uid="uid://jlbjqa36f4rf"]
+[gd_resource type="Theme" load_steps=34 format=3 uid="uid://jlbjqa36f4rf"]
 
 [ext_resource type="Texture2D" uid="uid://64habawjg4eb" path="res://ui/sprites/panel.png" id="1_shswi"]
 [ext_resource type="Texture2D" uid="uid://depwq5gy2tcup" path="res://ui/sprites/button_bg.png" id="2_5064r"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://bmc1xvwyvk0lv" path="res://ui/sprites/switchoff.png" id="5_1yrgi"]
 [ext_resource type="Texture2D" uid="uid://8pdb44bexb0a" path="res://ui/sprites/grabber.png" id="6_7voel"]
 [ext_resource type="Texture2D" uid="uid://b0fiih0diggeq" path="res://ui/sprites/stripebg.png" id="7_6b3ju"]
+[ext_resource type="Texture2D" uid="uid://c4ub654mfwidf" path="res://ui/sprites/grabber_highlight.png" id="8_78f0h"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2qc7q"]
 texture = ExtResource("1_shswi")
@@ -147,16 +148,6 @@ content_margin_top = 4.0
 content_margin_right = 6.0
 content_margin_bottom = 4.0
 
-[sub_resource type="Gradient" id="Gradient_bkw8i"]
-offsets = PackedFloat32Array(0, 0.95, 1)
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_sg2nh"]
-gradient = SubResource("Gradient_bkw8i")
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(1, 0.5)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_71jmp"]
 bg_color = Color(0.827451, 0.827451, 0.827451, 1)
 corner_radius_top_left = 1024
@@ -164,9 +155,11 @@ corner_radius_top_right = 1024
 corner_radius_bottom_right = 1024
 corner_radius_bottom_left = 1024
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r6rk4"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_13v3k"]
 bg_color = Color(0.827451, 0.827451, 0.827451, 1)
 corner_radius_top_left = 1024
+corner_radius_top_right = 1024
+corner_radius_bottom_right = 1024
 corner_radius_bottom_left = 1024
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_rogq1"]
@@ -207,6 +200,11 @@ font_names = PackedStringArray("Comic Sans MS", "Cursive")
 [resource]
 default_font = SubResource("SystemFont_jrp3a")
 AcceptDialog/styles/panel = SubResource("StyleBoxTexture_2qc7q")
+Button/colors/font_color = Color(0.827451, 0.827451, 0.827451, 1)
+Button/colors/font_focus_color = Color(0.827451, 0.827451, 0.827451, 1)
+Button/colors/font_hover_color = Color(0.827451, 0.827451, 0.827451, 1)
+Button/colors/font_hover_pressed_color = Color(0.827451, 0.827451, 0.827451, 1)
+Button/colors/font_pressed_color = Color(0.827451, 0.827451, 0.827451, 1)
 Button/font_sizes/font_size = 60
 Button/styles/disabled = SubResource("StyleBoxTexture_vvjuu")
 Button/styles/focus = SubResource("StyleBoxTexture_ceyt3")
@@ -214,6 +212,10 @@ Button/styles/hover = SubResource("StyleBoxTexture_hhk6l")
 Button/styles/normal = SubResource("StyleBoxTexture_3unlq")
 Button/styles/pressed = SubResource("StyleBoxTexture_0vgc3")
 CheckBox/colors/font_color = Color(0.827451, 0.827451, 0.827451, 1)
+CheckBox/colors/font_focus_color = Color(0.827451, 0.827451, 0.827451, 1)
+CheckBox/colors/font_hover_color = Color(0.827451, 0.827451, 0.827451, 1)
+CheckBox/colors/font_hover_pressed_color = Color(0.827451, 0.827451, 0.827451, 1)
+CheckBox/colors/font_pressed_color = Color(0.827451, 0.827451, 0.827451, 1)
 CheckBox/icons/checked = ExtResource("2_fw2c2")
 CheckBox/icons/unchecked = ExtResource("3_hxquy")
 CheckBox/styles/disabled = SubResource("StyleBoxEmpty_mqxmt")
@@ -223,6 +225,10 @@ CheckBox/styles/hover_pressed = SubResource("StyleBoxEmpty_c2ta5")
 CheckBox/styles/normal = SubResource("StyleBoxEmpty_7pfev")
 CheckBox/styles/pressed = SubResource("StyleBoxEmpty_gogex")
 CheckButton/colors/font_color = Color(0.827451, 0.827451, 0.827451, 1)
+CheckButton/colors/font_focus_color = Color(0.827451, 0.827451, 0.827451, 1)
+CheckButton/colors/font_hover_color = Color(0.827451, 0.827451, 0.827451, 1)
+CheckButton/colors/font_hover_pressed_color = Color(0.827451, 0.827451, 0.827451, 1)
+CheckButton/colors/font_pressed_color = Color(0.827451, 0.827451, 0.827451, 1)
 CheckButton/icons/checked = ExtResource("4_0jj83")
 CheckButton/icons/unchecked = ExtResource("5_1yrgi")
 CheckButton/styles/disabled = SubResource("StyleBoxEmpty_4vofi")
@@ -232,9 +238,9 @@ CheckButton/styles/hover_pressed = SubResource("StyleBoxEmpty_lqgdw")
 CheckButton/styles/normal = SubResource("StyleBoxEmpty_urhoy")
 CheckButton/styles/pressed = SubResource("StyleBoxEmpty_2e3pw")
 HSlider/icons/grabber = ExtResource("6_7voel")
-HSlider/icons/grabber_highlight = SubResource("GradientTexture2D_sg2nh")
+HSlider/icons/grabber_highlight = ExtResource("8_78f0h")
 HSlider/styles/grabber_area = SubResource("StyleBoxFlat_71jmp")
-HSlider/styles/grabber_area_highlight = SubResource("StyleBoxFlat_r6rk4")
+HSlider/styles/grabber_area_highlight = SubResource("StyleBoxFlat_13v3k")
 HSlider/styles/slider = SubResource("StyleBoxTexture_rogq1")
 Label/colors/font_color = Color(0.827451, 0.827451, 0.827451, 1)
 Label/font_sizes/font_size = 60
