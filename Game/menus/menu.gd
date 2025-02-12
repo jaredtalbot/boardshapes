@@ -7,11 +7,6 @@ func _ready():
 			ResourceLoader.load(hat_path)
 		
 	Music.stop_all_layers()
-	if OS.has_feature("web"):
-		$MarginContainer/VBoxContainer/Exit.hide()
-	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
-		$OptionsWindow/VBoxContainer/DarkMode.set_pressed_no_signal(true)
-	$OptionsWindow/VBoxContainer/ColorblindMode.set_pressed_no_signal(ProjectSettings.get_setting("rendering/environment/defaults/color_blind_mode"))
 	$MarginContainer/VBoxContainer/Start.call_deferred("grab_focus")
 	
 func _on_start_pressed():
@@ -19,7 +14,10 @@ func _on_start_pressed():
 
 
 func _on_exit_pressed():
-	get_tree().quit()
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("window.location = \"/\"");
+	else:
+		get_tree().quit()
 
 func _on_options_pressed():
 	$OptionsWindow.show()

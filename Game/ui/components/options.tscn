@@ -1,0 +1,61 @@
+[gd_scene load_steps=3 format=3 uid="uid://cy8xgukxtd5ts"]
+
+[ext_resource type="Theme" uid="uid://jlbjqa36f4rf" path="res://ui/resources/ui_dark.tres" id="1_t3jtk"]
+[ext_resource type="Script" path="res://ui/components/options.gd" id="2_33exr"]
+
+[node name="Options" type="VBoxContainer"]
+offset_left = 120.0
+offset_top = 110.0
+offset_right = 1179.0
+offset_bottom = 608.0
+theme = ExtResource("1_t3jtk")
+script = ExtResource("2_33exr")
+
+[node name="VolumeField" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 100
+
+[node name="Label" type="Label" parent="VolumeField"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Volume"
+
+[node name="Slider" type="HSlider" parent="VolumeField"]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+value = 50.0
+
+[node name="TouchscreenButtonScaleField" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 100
+
+[node name="Label" type="Label" parent="TouchscreenButtonScaleField"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Button Scale"
+
+[node name="Slider" type="HSlider" parent="TouchscreenButtonScaleField"]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+min_value = 1.0
+max_value = 7.0
+value = 5.0
+
+[node name="DarkModeCheck" type="CheckButton" parent="."]
+layout_mode = 2
+text = "Dark Mode"
+
+[node name="ColorblindModeCheck" type="CheckButton" parent="."]
+layout_mode = 2
+text = "Colorblind Mode"
+
+[connection signal="value_changed" from="VolumeField/Slider" to="." method="_on_volume_slider_value_changed"]
+[connection signal="value_changed" from="TouchscreenButtonScaleField/Slider" to="." method="_on_touchscreen_button_scale_slider_value_changed"]
+[connection signal="toggled" from="DarkModeCheck" to="." method="_on_dark_mode_toggled"]
+[connection signal="toggled" from="ColorblindModeCheck" to="." method="_on_colorblind_mode_toggled"]

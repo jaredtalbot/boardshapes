@@ -1,44 +1,44 @@
-[gd_scene load_steps=3 format=3 uid="uid://blrjxml7nbhjp"]
+[gd_scene load_steps=4 format=3 uid="uid://blrjxml7nbhjp"]
 
-[ext_resource type="Script" path="res://options.gd" id="1_f4alx"]
-[ext_resource type="Texture2D" uid="uid://da3478q4alln2" path="res://red_cb.png" id="2_fpf60"]
+[ext_resource type="PackedScene" uid="uid://cy8xgukxtd5ts" path="res://ui/components/options.tscn" id="1_8ws10"]
+[ext_resource type="Theme" uid="uid://jlbjqa36f4rf" path="res://ui/resources/ui_dark.tres" id="1_rbajn"]
+[ext_resource type="Script" path="res://ui/scenes/options_window.gd" id="2_rf17e"]
 
 [node name="OptionsWindow" type="Window"]
 auto_translate_mode = 1
 transparent_bg = true
 title = "Options"
 initial_position = 1
-size = Vector2i(400, 250)
+size = Vector2i(1500, 1200)
+borderless = true
 transparent = true
-content_scale_mode = 1
-content_scale_factor = 2.33
-theme_override_font_sizes/title_font_size = 32
-script = ExtResource("1_f4alx")
+theme = ExtResource("1_rbajn")
+script = ExtResource("2_rf17e")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="PanelContainer" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -649.5
+offset_top = -359.0
+offset_right = 649.5
+offset_bottom = 359.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_vertical = 4
-alignment = 1
 
-[node name="DarkMode" type="CheckBox" parent="VBoxContainer"]
+[node name="Options" parent="PanelContainer" instance=ExtResource("1_8ws10")]
 layout_mode = 2
-size_flags_vertical = 4
-text = "Dark Mode"
 
-[node name="ColorblindMode" type="CheckBox" parent="VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 4
-text = "Colorblind Mode"
-
-[node name="DeleteSaveDataButton" type="Button" parent="VBoxContainer"]
+[node name="DeleteSaveDataButton" type="Button" parent="PanelContainer/Options"]
 layout_mode = 2
 text = "Delete Save Data"
-icon = ExtResource("2_fpf60")
 
-[connection signal="toggled" from="VBoxContainer/DarkMode" to="." method="_on_dark_mode_toggled"]
-[connection signal="toggled" from="VBoxContainer/ColorblindMode" to="." method="_on_colorblind_mode_toggled"]
-[connection signal="pressed" from="VBoxContainer/DeleteSaveDataButton" to="." method="_on_delete_save_data_button_pressed"]
+[node name="CloseButton" type="Button" parent="PanelContainer/Options"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Close"
+
+[connection signal="pressed" from="PanelContainer/Options/DeleteSaveDataButton" to="." method="_on_delete_save_data_button_pressed"]
+[connection signal="pressed" from="PanelContainer/Options/CloseButton" to="." method="_on_close_button_pressed"]

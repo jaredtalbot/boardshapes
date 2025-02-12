@@ -1,9 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://b4ilk2527ato8"]
+[gd_scene load_steps=12 format=3 uid="uid://b4ilk2527ato8"]
 
 [ext_resource type="PackedScene" uid="uid://d11d7pielydy8" path="res://cosmetic_preview.tscn" id="1_jeni7"]
 [ext_resource type="Script" path="res://menus/customize_menu.gd" id="1_pv3cl"]
-[ext_resource type="Texture2D" uid="uid://bc08to1p712p0" path="res://ui/ShortTextField.png" id="3_7b2fc"]
-[ext_resource type="Texture2D" uid="uid://bsi82n0dq31aj" path="res://ui/BackButton.png" id="3_q28ko"]
+[ext_resource type="Texture2D" uid="uid://bc08to1p712p0" path="res://ui/sprites/ShortTextField.png" id="3_7b2fc"]
+[ext_resource type="Texture2D" uid="uid://bsi82n0dq31aj" path="res://ui/sprites/BackButton.png" id="3_q28ko"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_o3nji"]
 font_size = 64
@@ -12,6 +12,8 @@ font_color = Color(0, 0, 0, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_bkaet"]
 font_size = 32
 font_color = Color(0.4, 0.4, 0.4, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fjj0i"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_fxxvy"]
 font_size = 32
@@ -73,7 +75,7 @@ vertical_scroll_mode = 0
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HatInfoDisplay" type="VBoxContainer" parent="."]
+[node name="HatInfoDisplay" type="VBoxContainer" parent="." groups=["DarkModeInvertColors"]]
 anchors_preset = -1
 anchor_left = 0.667
 anchor_top = 0.5
@@ -82,31 +84,32 @@ anchor_bottom = 1.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="HatNameLabel" type="Label" parent="HatInfoDisplay"]
+[node name="HatNameLabel" type="Label" parent="HatInfoDisplay" groups=["DarkModeInvertColors"]]
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 text = "Hat Name"
 label_settings = SubResource("LabelSettings_o3nji")
 autowrap_mode = 3
 
-[node name="HatDescriptionLabel" type="Label" parent="HatInfoDisplay"]
+[node name="HatDescriptionLabel" type="Label" parent="HatInfoDisplay" groups=["DarkModeInvertColors"]]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "Hat Description"
 label_settings = SubResource("LabelSettings_bkaet")
 autowrap_mode = 3
 
-[node name="UnlockHintSeparator" type="HSeparator" parent="HatInfoDisplay"]
+[node name="UnlockHintSeparator" type="HSeparator" parent="HatInfoDisplay" groups=["DarkModeInvertColors"]]
 layout_mode = 2
 
-[node name="HatUnlockHintLabel" type="Label" parent="HatInfoDisplay"]
+[node name="HatUnlockHintLabel" type="Label" parent="HatInfoDisplay" groups=["DarkModeInvertColors"]]
+material = SubResource("ShaderMaterial_fjj0i")
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "Unlock Hint"
 label_settings = SubResource("LabelSettings_fxxvy")
 autowrap_mode = 3
 
-[node name="BottomLeftControls" type="VBoxContainer" parent="."]
+[node name="BottomLeftControls" type="VBoxContainer" parent="." groups=["DarkModeInvertColors"]]
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -116,18 +119,18 @@ offset_right = 547.0
 offset_bottom = -32.0
 grow_vertical = 0
 
-[node name="MultiplayerNameFieldLabel" type="Label" parent="BottomLeftControls"]
+[node name="MultiplayerNameFieldLabel" type="Label" parent="BottomLeftControls" groups=["DarkModeInvertColors"]]
 layout_mode = 2
 text = "Multiplayer Name"
 label_settings = SubResource("LabelSettings_3qflv")
 horizontal_alignment = 1
 
-[node name="FieldTexture" type="TextureRect" parent="BottomLeftControls"]
+[node name="FieldTexture" type="TextureRect" parent="BottomLeftControls" groups=["DarkModeInvertColors"]]
 layout_mode = 2
 texture = ExtResource("3_7b2fc")
 stretch_mode = 4
 
-[node name="MultiplayerNameField" type="LineEdit" parent="BottomLeftControls/FieldTexture"]
+[node name="MultiplayerNameField" type="LineEdit" parent="BottomLeftControls/FieldTexture" groups=["DarkModeInvertColors"]]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -143,7 +146,7 @@ clear_button_enabled = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 
-[node name="BackButton" type="TextureButton" parent="BottomLeftControls"]
+[node name="BackButton" type="TextureButton" parent="BottomLeftControls" groups=["DarkModeInvertColors"]]
 layout_mode = 2
 texture_normal = ExtResource("3_q28ko")
 

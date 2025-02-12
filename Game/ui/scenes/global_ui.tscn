@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://3gw8w3mw1jqf"]
+
+[ext_resource type="PackedScene" uid="uid://e85ih66x861y" path="res://ui/scenes/save_icon.tscn" id="1_h0swy"]
+
+[node name="GlobalUI" type="CanvasLayer"]
+process_mode = 3
+layer = 7
+
+[node name="SaveIcon" parent="." instance=ExtResource("1_h0swy")]

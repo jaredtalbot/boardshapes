@@ -15,16 +15,10 @@ var player: Player
 
 var current_campaign_level: String = ""
 
-func _ready():
-	$QuitMenu/QuitWindow/VolumeSlider.set_value_no_signal(Music.volume*100.0)
-	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
-		$QuitMenu/QuitWindow/DarkCheck.set_pressed_no_signal(true)
-	$QuitMenu/QuitWindow/ColorCheck.set_pressed_no_signal(ProjectSettings.get_setting("rendering/environment/defaults/color_blind_mode"))
-
 func create_level(img: Image, options: Dictionary):
 	loading_indicator.show()
 	loading_indicator.set_text("Uploading Level...")
-	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
+	if Preferences.dark_mode:
 		loading_indicator.set_text_color(Color(1, 1, 1, 1))
 	var buffer = img.save_png_to_buffer()
 	var request = FileUploader.upload_buffer(base_url + "/api/build-level", buffer, "image.png", HTTPClient.METHOD_POST, "image", options)
@@ -69,12 +63,10 @@ func _on_response_received(result: int, response_code: int, headers: PackedStrin
 	initialize_game(str(hash(level_data)))
 
 func initialize_game(multiplayer_id: String, start_pos: Vector2 = Vector2.ZERO, end_pos: Vector2 = Vector2.ZERO):
-	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
-		$QuitButton.material = ShaderMaterial.new()
-		$QuitButton.material.shader = load("res://color_invert.gdshader")
 	player = add_player()
 	multiplayer_controller.try_connect(multiplayer_id)
 	loading_indicator.hide()
+	AccessibilityShaderManager.apply_shaders()
 	loaded.emit()
 	if not Music.playing:
 		Music.play_all_layers()
@@ -125,29 +117,12 @@ func show_error(body: Variant, error_code: int = 0):
 
 func add_player() -> Player:
 	var player = preload("res://player.tscn").instantiate()
-	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
-		player.get_node("AnimatedSprite2D").material = ShaderMaterial.new()
-		player.get_node("AnimatedSprite2D").material.shader = load("res://color_invert.gdshader")
 	add_child(player)
 	return player
 	
-func _on_quit_button_pressed():
-	get_node("./QuitMenu/QuitWindow").show()
-	get_tree().paused = true
-
-func _on_back_button_pressed():
-	get_tree().paused = false
-	go_back()
-
-func go_back():
-	get_tree().change_scene_to_file("res://menus/start_menu.tscn")
-
-func _on_exit_to_main_menu_button_pressed():
-	get_tree().change_scene_to_file("res://menus/main.tscn")
-	
 
 func _set_player_start():
-	player.initial_position = get_viewport().get_mouse_position()
+	player.initial_position = player.get_global_mouse_position()
 	player.position = player.initial_position
 	player.show()
 	$StartEndSelection/StartSelect.disabled = true
@@ -157,7 +132,7 @@ func _set_player_start():
 
 func _set_goal_position():
 	var goal = $Goal
-	goal.position = get_viewport().get_mouse_position()
+	goal.position = player.get_global_mouse_position()
 	$StartEndSelection/EndSelect.disabled = true
 	$StartEndSelection/EndSelect.hide()
 	$Goal.show()
@@ -208,63 +183,37 @@ func _on_multiplayer_timer_timeout():
 				hatId = "nohat"
 		$MultiplayerController.send_player_info(Preferences.player_name, sprite.animation, sprite.frame, player.position, hatId, hatPos.position, hatPos.rotation, sprite.flip_h)
 
-func _on_quit_window_close_requested():
+func _input(event):
+	if event.is_action_pressed("pause"):
+		pause()
+		get_viewport().set_input_as_handled()
+
+func _on_pause_menu_close_requested():
+	unpause()
+
+func _on_resume_button_pressed():
+	unpause()
+
+func unpause():
 	get_tree().paused = false
-	$QuitMenu/QuitWindow.hide()
+	%PauseMenu.hide()
+	
+func pause():
+	get_tree().paused = true
+	$PauseMenu.show()
 
-func _on_volumeslider_value_changed(value: float):
-	Music.set_volume(value / 100.0)
+func _on_pause_button_pressed():
+	pause()
 
-func _on_color_check_toggled(toggled: bool):
-	var level = get_node("GeneratedLevel")
-	ProjectSettings.set_setting("rendering/environment/defaults/color_blind_mode", toggled)
-	if toggled:
-		for child in level.get_children():
-			if child.get_node("Collider").is_in_group("Red"):
-				child.get_node("Sprite").material = ShaderMaterial.new()
-				child.get_node("Sprite").material.shader = load("res://colorblind_red.gdshader")
-				child.get_node("Sprite").material.set("shader_parameter/tile_size", 1)
-				child.get_node("Sprite").material.set("shader_parameter/pattern", load("res://red_cb.png"))
-			if child.get_node("Collider").is_in_group("Green"):
-				child.get_node("Sprite").material = ShaderMaterial.new()
-				child.get_node("Sprite").material.shader = load("res://colorblind_green.gdshader")
-				child.get_node("Sprite").material.set("shader_parameter/tile_size", 1)
-				child.get_node("Sprite").material.set("shader_parameter/pattern", load("res://green_cb.png"))
-			if child.get_node("Collider").is_in_group("Blue"):
-				child.get_node("Sprite").material = ShaderMaterial.new()
-				child.get_node("Sprite").material.shader = load("res://colorblind_blue.gdshader")
-				child.get_node("Sprite").material.set("shader_parameter/tile_size", 1)
-				child.get_node("Sprite").material.set("shader_parameter/pattern", load("res://blue_cb.png"))
-	else:
-		for child in level.get_children():
-			if child.get_node("Collider").is_in_group("Red"):
-				child.get_node("Sprite").set_material(null)
-			if child.get_node("Collider").is_in_group("Green"):
-				child.get_node("Sprite").set_material(null)
-			if child.get_node("Collider").is_in_group("Blue"):
-				child.get_node("Sprite").set_material(null)
+func _on_back_button_pressed():
+	get_tree().paused = false
+	go_back()
 
+func go_back():
+	get_tree().change_scene_to_file("res://menus/start_menu.tscn")
 
-func _on_dark_check_toggled(toggled: bool):
-	if toggled:
-		RenderingServer.set_default_clear_color(Color(0, 0, 0, 1))
-		player.get_node("AnimatedSprite2D").material = ShaderMaterial.new()
-		player.get_node("AnimatedSprite2D").material.shader = load("res://color_invert.gdshader")
-		$QuitButton.material = ShaderMaterial.new()
-		$QuitButton.material.shader = load("res://color_invert.gdshader")
-		var level = get_node("GeneratedLevel")
-		for child in level.get_children():
-			if child.get_node("Collider").is_in_group("Black"):
-				child.get_node("Sprite").material = ShaderMaterial.new()
-				child.get_node("Sprite").material.shader = load("res://color_invert.gdshader")
-	else:
-		RenderingServer.set_default_clear_color(Color(1, 1, 1, 1))
-		player.get_node("AnimatedSprite2D").set_material(null)
-		$QuitButton.set_material(null)
-		var level = get_node("GeneratedLevel")
-		for child in level.get_children():
-			if child.get_node("Collider").is_in_group("Black"):
-				child.get_node("Sprite").set_material(null)
+func _on_exit_to_main_menu_button_pressed():
+	get_tree().change_scene_to_file("res://menus/main.tscn")
 
 func save_level():
 	var goal = $Goal as Area2D
@@ -282,8 +231,3 @@ func save_level():
 		file.store_string(json)
 		file.close()
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path("user://level.boardwalk"))
-	
-
-func _on_resume_button_pressed():
-	get_tree().paused = false
-	$QuitMenu/QuitWindow.hide()

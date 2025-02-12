@@ -6,7 +6,7 @@ var color: Color
 func _ready():
 	z_index = -1
 	material = ShaderMaterial.new()
-	material.shader = preload("res://afterimage.gdshader")
+	material.shader = preload("res://shaders/silhouette.gdshader")
 	material.set_shader_parameter("color", color)
 	var tween := create_tween()
 	modulate = Color(1, 1, 1, 0.5)

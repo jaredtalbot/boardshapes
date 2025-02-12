@@ -13,13 +13,7 @@ extends Control
 
 func _ready():
 	Music.stop_all_layers()
-	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
-		upload_image_button.material = ShaderMaterial.new()
-		upload_image_button.material.shader = load("res://color_invert.gdshader")
-		load_level_button.material = ShaderMaterial.new()
-		load_level_button.material.shader = load("res://color_invert.gdshader")
-		back_button.material = ShaderMaterial.new()
-		back_button.material.shader = load("res://color_invert.gdshader")
+	AccessibilityShaderManager.apply_shaders()
 	upload_image_button.call_deferred("grab_focus")
 
 func _on_upload_image_button_pressed():

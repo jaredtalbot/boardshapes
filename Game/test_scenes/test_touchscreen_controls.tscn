@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://cfyd2l7xx7e18"]
+
+[ext_resource type="PackedScene" uid="uid://ca40sxi6lp5lx" path="res://touch_screen_controls.tscn" id="1_nelcd"]
+
+[sub_resource type="GDScript" id="GDScript_7rjfn"]
+resource_name = "TestTouchscreenControls"
+script/source = "extends Node
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	var buttons = find_children(\"*\", \"TouchScreenButton\")
+	for button in buttons:
+		(button as TouchScreenButton).visibility_mode = TouchScreenButton.VISIBILITY_ALWAYS
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	$TouchScreenControls.update_layout(pingpong(Time.get_ticks_msec()/500.0, 5.0) + 1.0)
+"
+
+[node name="TestTouchscreenControls" type="Node"]
+script = SubResource("GDScript_7rjfn")
+
+[node name="TouchScreenControls" parent="." instance=ExtResource("1_nelcd")]

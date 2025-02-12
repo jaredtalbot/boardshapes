@@ -16,6 +16,7 @@ var can_jump = false
 @onready var hat_pivot: Node2D = $HatPivot
 @onready var hat_pos = $HatPivot/HatPos
 @onready var after_image_emitter = %AfterImageEmitter
+@onready var camera = $Camera2D
 
 var initial_position : Vector2
 var last_position_was_floor: bool
@@ -50,6 +51,7 @@ func equip_hat(hat: PackedScene):
 func _process(delta):
 	RenderingServer.global_shader_parameter_set("player_position", position)
 	hat_pivot.scale.x = get_direction()
+	after_image_emitter.auto_emit = not $dash_timer.is_stopped() or touched_green
 
 var air_time := 0.0
 
@@ -60,9 +62,11 @@ func _death():
 	died.emit()
 	velocity.x = 0
 	velocity.y = 0
+	$dash_timer.stop()
+	touched_green = false
 	#make the explosion not blue in dark mode
 	#probably a better way to do this
-	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
+	if Preferences.dark_mode:
 		animated_sprite.set_material(null)
 	animation_player.play("death")
 	set_physics_process(false)
@@ -71,9 +75,9 @@ func _death():
 	set_physics_process(true)
 	position = initial_position
 	#reapply shader, probably better way to do this
-	if RenderingServer.get_default_clear_color() == Color(0, 0, 0, 1):
+	if Preferences.dark_mode:
 		animated_sprite.material = ShaderMaterial.new()
-		animated_sprite.material.shader = load("res://color_invert.gdshader")
+		animated_sprite.material.shader = load("res://shaders/color_invert.gdshader")
 
 func _physics_process(delta):
 	if velocity.x > 0:
@@ -145,8 +149,6 @@ func _physics_process(delta):
 				animation_player.play("running")
 		else:
 			velocity.x = move_toward(velocity.x, 0, acceleration * delta)
-	
-	after_image_emitter.auto_emit = is_dashing
 	
 	move_and_slide()
 	

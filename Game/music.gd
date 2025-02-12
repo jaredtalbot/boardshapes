@@ -8,11 +8,16 @@ var volume = 0.5
 @onready var drum_layer: AudioStreamPlayer = $DrumLayer
 @onready var sample_layer: AudioStreamPlayer = $SampleLayer
 
+func _ready():
+	volume = Preferences.volume
+
 static func set_layer_volume(new_volume: float, layer: AudioStreamPlayer):
 	layer.volume_db = linear_to_db(new_volume)
 
 func set_volume(new_volume: float, update_layers: bool = true) -> void:
 	volume = new_volume
+	Preferences.volume = new_volume
+	Preferences.save_when_ready()
 	if update_layers:
 		restore_layers_volume()
 

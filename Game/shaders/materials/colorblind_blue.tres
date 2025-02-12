@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://barrwifs6l0q2"]
+
+[ext_resource type="Shader" path="res://shaders/colorblind_blue.gdshader" id="1_sqah4"]
+[ext_resource type="Texture2D" uid="uid://ckxtv6gm5n88t" path="res://blue_cb.png" id="2_xbtld"]
+
+[resource]
+shader = ExtResource("1_sqah4")
+shader_parameter/tile_size = 1.0
+shader_parameter/pattern = ExtResource("2_xbtld")
