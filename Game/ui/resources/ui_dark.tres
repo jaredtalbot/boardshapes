@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=34 format=3 uid="uid://jlbjqa36f4rf"]
+[gd_resource type="Theme" load_steps=33 format=3 uid="uid://jlbjqa36f4rf"]
 
 [ext_resource type="Texture2D" uid="uid://64habawjg4eb" path="res://ui/sprites/panel.png" id="1_shswi"]
 [ext_resource type="Texture2D" uid="uid://depwq5gy2tcup" path="res://ui/sprites/button_bg.png" id="2_5064r"]
@@ -8,7 +8,6 @@
 [ext_resource type="Texture2D" uid="uid://bmc1xvwyvk0lv" path="res://ui/sprites/switchoff.png" id="5_1yrgi"]
 [ext_resource type="Texture2D" uid="uid://8pdb44bexb0a" path="res://ui/sprites/grabber.png" id="6_7voel"]
 [ext_resource type="Texture2D" uid="uid://b0fiih0diggeq" path="res://ui/sprites/stripebg.png" id="7_6b3ju"]
-[ext_resource type="Texture2D" uid="uid://c4ub654mfwidf" path="res://ui/sprites/grabber_highlight.png" id="8_78f0h"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2qc7q"]
 texture = ExtResource("1_shswi")
@@ -238,7 +237,7 @@ CheckButton/styles/hover_pressed = SubResource("StyleBoxEmpty_lqgdw")
 CheckButton/styles/normal = SubResource("StyleBoxEmpty_urhoy")
 CheckButton/styles/pressed = SubResource("StyleBoxEmpty_2e3pw")
 HSlider/icons/grabber = ExtResource("6_7voel")
-HSlider/icons/grabber_highlight = ExtResource("8_78f0h")
+HSlider/icons/grabber_highlight = null
 HSlider/styles/grabber_area = SubResource("StyleBoxFlat_71jmp")
 HSlider/styles/grabber_area_highlight = SubResource("StyleBoxFlat_13v3k")
 HSlider/styles/slider = SubResource("StyleBoxTexture_rogq1")

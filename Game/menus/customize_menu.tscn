@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://b4ilk2527ato8"]
+[gd_scene load_steps=13 format=3 uid="uid://b4ilk2527ato8"]
 
 [ext_resource type="PackedScene" uid="uid://d11d7pielydy8" path="res://cosmetic_preview.tscn" id="1_jeni7"]
 [ext_resource type="Script" path="res://menus/customize_menu.gd" id="1_pv3cl"]
 [ext_resource type="Texture2D" uid="uid://bc08to1p712p0" path="res://ui/sprites/ShortTextField.png" id="3_7b2fc"]
 [ext_resource type="Texture2D" uid="uid://bsi82n0dq31aj" path="res://ui/sprites/BackButton.png" id="3_q28ko"]
+[ext_resource type="AudioStream" uid="uid://b73pyday5tp5t" path="res://audio/music/boardwalkcustomize.ogg" id="5_qawha"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_o3nji"]
 font_size = 64
@@ -149,6 +150,9 @@ layout_mode = 2
 [node name="BackButton" type="TextureButton" parent="BottomLeftControls" groups=["DarkModeInvertColors"]]
 layout_mode = 2
 texture_normal = ExtResource("3_q28ko")
+
+[node name="CustomizeMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_qawha")
 
 [connection signal="text_changed" from="BottomLeftControls/FieldTexture/MultiplayerNameField" to="." method="_on_multiplayer_name_field_text_changed"]
 [connection signal="pressed" from="BottomLeftControls/BackButton" to="." method="_on_back_button_pressed"]

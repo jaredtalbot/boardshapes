@@ -9,6 +9,8 @@ const HAT_PREVIEW = preload("res://hats/hat_preview.tscn")
 
 func _ready():
 	Music.stop_all_layers()
+	$CustomizeMusic.play()
+	$CustomizeMusic.volume_db = linear_to_db(Music.volume)
 	multiplayer_name_field.text = Preferences.player_name
 	$HatInfoDisplay.hide()
 	cosmetic_preview.equip_hat(Preferences.hat_scene)
