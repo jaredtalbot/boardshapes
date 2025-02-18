@@ -153,7 +153,6 @@ texture_normal = ExtResource("3_q28ko")
 
 [node name="CustomizeMusic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_qawha")
-parameters/looping = false
 
 [connection signal="text_changed" from="BottomLeftControls/FieldTexture/MultiplayerNameField" to="." method="_on_multiplayer_name_field_text_changed"]
 [connection signal="pressed" from="BottomLeftControls/BackButton" to="." method="_on_back_button_pressed"]
