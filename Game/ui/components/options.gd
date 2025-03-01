@@ -21,7 +21,7 @@ func _ready():
 	touchscreen_button_scale_slider.set_value_no_signal(Preferences.touchscreen_button_scale)
 	dark_mode_check.set_pressed_no_signal(Preferences.dark_mode)
 	colorblind_mode_check.set_pressed_no_signal(Preferences.colorblind_mode)
-	if button_scale_mobile_only and not OS.has_feature("mobile"):
+	if button_scale_mobile_only and not (OS.has_feature("web_android") or OS.has_feature("web_ios")):
 		$TouchscreenButtonScaleField.hide()
 
 func _on_dark_mode_toggled(toggled):
