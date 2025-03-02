@@ -113,7 +113,7 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Vector2(15, -14)]
+"values": [Vector2(15.1639, -14.1436)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -125,7 +125,7 @@ tracks/4/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [0.081957]
+"values": [-0.00673018]
 }
 
 [sub_resource type="Animation" id="Animation_bkbl4"]
@@ -208,7 +208,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
-"values": [Vector2(1, -20), Vector2(2, -18), Vector2(5, -17), Vector2(2, -18)]
+"values": [Vector2(1.03508, -19.9649), Vector2(2.13929, -18.0079), Vector2(5.3303, -17.1762), Vector2(2.13691, -17.9939)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -220,7 +220,7 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
-"values": [0.0460794, 0.199997, 0.252262, 0.149176]
+"values": [-0.0068142, 0.00101518, 0.00686989, -0.00131825]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -282,10 +282,10 @@ tracks/3/path = NodePath("HatPivot/HatPos:position")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.0555556, 0.111111, 0.166667, 0.222222, 0.277778, 0.333333, 0.388889, 0.444444, 0.5, 0.555556),
+"times": PackedFloat32Array(0, 0.0555556, 0.111111, 0.166667, 0.222222, 0.277778, 0.333334, 0.388889, 0.444445, 0.5, 0.555556),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [Vector2(8, -1), Vector2(11, -7), Vector2(5, -19), Vector2(2, -21), Vector2(3, -21), Vector2(2, -21), Vector2(2, -21), Vector2(2, -20), Vector2(7, -17), Vector2(2, -16), Vector2(2, -15)]
+"values": [Vector2(8.0268, -2.9019), Vector2(12.0503, -8.65318), Vector2(5.52621, -21.0165), Vector2(1.12619, -22.3382), Vector2(1.60065, -22.2876), Vector2(1.0848, -22.3802), Vector2(0.826584, -22.7376), Vector2(2.18671, -21.5633), Vector2(7.36559, -18.0535), Vector2(2.04257, -17.251), Vector2(2.04068, -16.2291)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -294,10 +294,10 @@ tracks/4/path = NodePath("HatPivot/HatPos:rotation")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.0555556, 0.111111, 0.166667, 0.222222, 0.277778, 0.333333, 0.388889, 0.444444, 0.5, 0.555556),
+"times": PackedFloat32Array(0, 0.0555556, 0.111111, 0.166667, 0.222222, 0.277778, 0.333334, 0.388889, 0.444445, 0.5, 0.555556),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [0.617076, 0.878127, 0.210216, -0.750704, -0.632922, -0.771426, -0.824544, 0.296325, 0.601728, 0.258787, 0.369896]
+"values": [0.552662, 1.06691, 0.570285, -0.10707, -0.0987632, -0.11052, -0.0896275, 0.338424, 1.22657, 0.871863, 1.0331]
 }
 
 [sub_resource type="Animation" id="Animation_a534s"]
@@ -348,10 +348,10 @@ tracks/3/path = NodePath("HatPivot/HatPos:position")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.0416667, 0.0833333, 0.125, 0.166667, 0.208333, 0.25, 0.291667, 0.333333, 0.375, 0.416667, 0.458333, 0.5, 0.541667, 0.583333, 0.625),
+"times": PackedFloat32Array(0, 0.0416667, 0.0833334, 0.125, 0.166667, 0.208334, 0.25, 0.291667, 0.333334, 0.375, 0.416667, 0.458334, 0.5, 0.541667, 0.583334, 0.625001),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [Vector2(15, -9), Vector2(13, -9), Vector2(13, -8), Vector2(16, -8), Vector2(15, -9), Vector2(13, -9), Vector2(15, -9), Vector2(15, -8), Vector2(12, -8), Vector2(12, -9), Vector2(14, -9), Vector2(15, -9), Vector2(12, -9), Vector2(14, -9), Vector2(12, -9), Vector2(15, -9)]
+"values": [Vector2(15.2927, -10.0916), Vector2(13.085, -9.915), Vector2(12.8652, -9.01498), Vector2(15.5812, -8.78802), Vector2(15.5214, -9.48842), Vector2(13.1228, -9.47801), Vector2(15.5248, -9.56978), Vector2(15.5797, -8.78626), Vector2(12.8135, -8.99292), Vector2(13.0841, -9.91787), Vector2(15.2666, -10.0802), Vector2(15.2771, -9.74365), Vector2(12.4383, -9.52223), Vector2(14.6539, -9.16901), Vector2(12.44, -9.54628), Vector2(15.2493, -9.75243)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -360,10 +360,10 @@ tracks/4/path = NodePath("HatPivot/HatPos:rotation")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.0416667, 0.0833333, 0.125, 0.166667, 0.208333, 0.25, 0.291667, 0.333333, 0.375, 0.416667, 0.458333, 0.5, 0.541667, 0.583333, 0.625),
+"times": PackedFloat32Array(0, 0.0416667, 0.0833334, 0.125, 0.166667, 0.208334, 0.25, 0.291667, 0.333334, 0.375, 0.416667, 0.458334, 0.5, 0.541667, 0.583334, 0.625001),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [0.276759, 0.276759, 0.276759, 0.199521, 0.119644, 0.0945092, 0.247666, 0.16786, 0.0912502, 0.140901, 0.16183, 0.16183, 0.0752914, 0.227592, 0.108729, 0.149914]
+"values": [0.0176313, 0.0122173, 0.0135748, 0.00304013, 0.00292766, 0.00556928, 0.0123262, 0.00418369, 0.00530585, -0.0102927, -0.00659475, -0.00410521, 0.00839773, -0.000524011, -0.00602536, -0.00529687]
 }
 
 [sub_resource type="Animation" id="Animation_nf1x3"]
@@ -416,7 +416,7 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Vector2(-6, -19)]
+"values": [Vector2(-6.16746, -19.6218)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -428,7 +428,7 @@ tracks/4/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [-0.730454]
+"values": [-0.542899]
 }
 
 [resource]
