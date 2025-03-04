@@ -2,8 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://cxwipu2au2wps" path="res://hats/crown/crown.png" id="1_fcio1"]
 [ext_resource type="Texture2D" uid="uid://h6bqipsh478h" path="res://hats/crown/sparkle.png" id="2_08xq1"]
-[ext_resource type="Script" path="res://hats/crown/crown.gd" id="2_eg4ae"]
-[ext_resource type="Script" path="res://owned_after_image_emitter.gd" id="4_jhh3v"]
+[ext_resource type="Script" uid="uid://bb5kd05o85t1q" path="res://hats/crown/crown.gd" id="2_eg4ae"]
+[ext_resource type="Script" uid="uid://3uy0eyo1x3sc" path="res://owned_after_image_emitter.gd" id="4_jhh3v"]
 
 [sub_resource type="Curve" id="Curve_3h0on"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]

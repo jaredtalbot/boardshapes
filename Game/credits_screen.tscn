@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cvhe4sfymf7g3"]
 
 [ext_resource type="Texture2D" uid="uid://cwi2dhjuj3n35" path="res://ui/sprites/credsforboardwalkreal.png" id="1_gft1c"]
-[ext_resource type="Script" path="res://credits_screen.gd" id="1_qnkqg"]
+[ext_resource type="Script" uid="uid://bdnwoye0v7cyt" path="res://credits_screen.gd" id="1_qnkqg"]
 [ext_resource type="Texture2D" uid="uid://bsi82n0dq31aj" path="res://ui/sprites/BackButton.png" id="2_2iulf"]
 
 [node name="CreditsScreen" type="Node"]

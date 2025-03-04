@@ -433,11 +433,11 @@ tracks/4/keys = {
 
 [resource]
 _data = {
-"RESET": SubResource("Animation_ajg7s"),
-"dash": SubResource("Animation_4kcp8"),
-"death": SubResource("Animation_bkbl4"),
-"idle animation": SubResource("Animation_dlp2x"),
-"jumping": SubResource("Animation_bkh06"),
-"running": SubResource("Animation_a534s"),
-"sliding": SubResource("Animation_nf1x3")
+&"RESET": SubResource("Animation_ajg7s"),
+&"dash": SubResource("Animation_4kcp8"),
+&"death": SubResource("Animation_bkbl4"),
+&"idle animation": SubResource("Animation_dlp2x"),
+&"jumping": SubResource("Animation_bkh06"),
+&"running": SubResource("Animation_a534s"),
+&"sliding": SubResource("Animation_nf1x3")
 }
