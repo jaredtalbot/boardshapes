@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bqv45dcfidrki" path="res://hats/jester/jester.png" id="1_a47p5"]
 [ext_resource type="PackedScene" uid="uid://dmfx4obhuqonr" path="res://hats/jester/jester_bell.tscn" id="2_7h86j"]
-[ext_resource type="Script" path="res://owned_after_image_emitter.gd" id="2_q6dhf"]
+[ext_resource type="Script" uid="uid://3uy0eyo1x3sc" path="res://owned_after_image_emitter.gd" id="2_q6dhf"]
 
 [node name="JesterHat" type="Sprite2D"]
 position = Vector2(-0.5, -12)

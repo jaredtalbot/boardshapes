@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cpndyiijj6wj8"]
 
-[ext_resource type="Script" path="res://debug_widget.gd" id="1_b7lx7"]
+[ext_resource type="Script" uid="uid://d1rio6va2lb3t" path="res://debug_widget.gd" id="1_b7lx7"]
 
 [sub_resource type="Theme" id="Theme_18ixd"]
 CheckBox/constants/icon_max_width = 16

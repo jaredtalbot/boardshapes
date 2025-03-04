@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://cy8xgukxtd5ts" path="res://ui/components/options.tscn" id="1_8ws10"]
 [ext_resource type="Theme" uid="uid://jlbjqa36f4rf" path="res://ui/resources/ui_dark.tres" id="1_rbajn"]
-[ext_resource type="Script" path="res://ui/scenes/options_window.gd" id="2_rf17e"]
+[ext_resource type="Script" uid="uid://diub3ctobpspg" path="res://ui/scenes/options_window.gd" id="2_rf17e"]
 
 [node name="OptionsWindow" type="Window"]
 auto_translate_mode = 1

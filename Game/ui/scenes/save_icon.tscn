@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://e85ih66x861y"]
 
 [ext_resource type="Texture2D" uid="uid://cjnj02qcbklt3" path="res://ui/sprites/save_icon.png" id="1_6i4hr"]
-[ext_resource type="Script" path="res://ui/scenes/save_icon.gd" id="2_j0kc6"]
+[ext_resource type="Script" uid="uid://d4geanmbjrjas" path="res://ui/scenes/save_icon.gd" id="2_j0kc6"]
 
 [node name="SaveIcon" type="TextureRect"]
 modulate = Color(1, 1, 1, 0)

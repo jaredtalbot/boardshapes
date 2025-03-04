@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://drqgdl5k4ooe6"]
 
 [ext_resource type="Texture2D" uid="uid://bdoc676kb83xj" path="res://ui/sprites/hat_preview_frame.png" id="1_hjf3o"]
-[ext_resource type="Script" path="res://hats/hat_preview.gd" id="1_k07am"]
+[ext_resource type="Script" uid="uid://c6c223p2j77dq" path="res://hats/hat_preview.gd" id="1_k07am"]
 [ext_resource type="Texture2D" uid="uid://dmnrgxds0npah" path="res://ui/sprites/locked_hat_background.png" id="3_40jlt"]
 [ext_resource type="Texture2D" uid="uid://cd785m3w51p6m" path="res://ui/sprites/hat_preview_frame_filled.png" id="3_r28mj"]
 [ext_resource type="Texture2D" uid="uid://dq8616lwv6v3x" path="res://ui/sprites/lock.png" id="4_5pk8u"]

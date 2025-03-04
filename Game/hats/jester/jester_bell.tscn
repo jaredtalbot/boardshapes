@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dmfx4obhuqonr"]
 
-[ext_resource type="Script" path="res://hats/jester/jester_bell.gd" id="1_24nei"]
-[ext_resource type="Script" path="res://owned_after_image_emitter.gd" id="2_24wpt"]
+[ext_resource type="Script" uid="uid://nsi4ea6g7oyj" path="res://hats/jester/jester_bell.gd" id="1_24nei"]
+[ext_resource type="Script" uid="uid://3uy0eyo1x3sc" path="res://owned_after_image_emitter.gd" id="2_24wpt"]
 [ext_resource type="Texture2D" uid="uid://dbv6juy35526t" path="res://hats/jester/jesterbell.png" id="2_yd5fj"]
 
 [node name="JesterBell" type="Node2D"]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cy8xgukxtd5ts"]
 
 [ext_resource type="Theme" uid="uid://jlbjqa36f4rf" path="res://ui/resources/ui_dark.tres" id="1_t3jtk"]
-[ext_resource type="Script" path="res://ui/components/options.gd" id="2_33exr"]
+[ext_resource type="Script" uid="uid://dfoitgniy07ue" path="res://ui/components/options.gd" id="2_33exr"]
 
 [node name="Options" type="VBoxContainer"]
 offset_left = 120.0

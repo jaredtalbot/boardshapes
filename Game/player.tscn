@@ -1,10 +1,10 @@
 [gd_scene load_steps=20 format=3 uid="uid://crgwrl3y2s3g6"]
 
-[ext_resource type="Script" path="res://player.gd" id="1_4byla"]
+[ext_resource type="Script" uid="uid://62cace6mhfi3" path="res://player.gd" id="1_4byla"]
 [ext_resource type="SpriteFrames" uid="uid://1j6nbm2fptgq" path="res://player_animated_sprite.tres" id="2_3nyo8"]
 [ext_resource type="AnimationLibrary" uid="uid://dwg71cg4e3my1" path="res://player_animation_library.tres" id="2_javw0"]
-[ext_resource type="Script" path="res://player_camera.gd" id="5_vcmtb"]
-[ext_resource type="Script" path="res://after_image_emitter.gd" id="8_0rr0r"]
+[ext_resource type="Script" uid="uid://cp70sxtvpwry7" path="res://player_camera.gd" id="5_vcmtb"]
+[ext_resource type="Script" uid="uid://bjwvw2kkixq0h" path="res://after_image_emitter.gd" id="8_0rr0r"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3fiya"]
 size = Vector2(48, 94)
@@ -75,7 +75,7 @@ metadata/_edit_lock_ = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": ExtResource("2_javw0")
+&"": ExtResource("2_javw0")
 }
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -130,10 +130,10 @@ metadata/_edit_lock_ = true
 position = Vector2(0, 30)
 emitting = false
 amount = 65
-process_material = SubResource("ParticleProcessMaterial_t32rs")
 lifetime = 0.33
 one_shot = true
 explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_t32rs")
 metadata/_edit_lock_ = true
 
 [node name="HatPivot" type="Node2D" parent="."]

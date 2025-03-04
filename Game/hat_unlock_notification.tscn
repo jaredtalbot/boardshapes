@@ -1,7 +1,7 @@
 [gd_scene load_steps=15 format=3 uid="uid://cy84ptparrj5m"]
 
 [ext_resource type="Texture2D" uid="uid://dkkfdpbljgnl8" path="res://ui/sprites/notification_background.png" id="1_jncer"]
-[ext_resource type="Script" path="res://hat_unlock_notification.gd" id="2_imwe1"]
+[ext_resource type="Script" uid="uid://dkqiwlu0wxw4u" path="res://hat_unlock_notification.gd" id="2_imwe1"]
 [ext_resource type="Texture2D" uid="uid://bdoc676kb83xj" path="res://ui/sprites/hat_preview_frame.png" id="2_t43fb"]
 [ext_resource type="Texture2D" uid="uid://cd785m3w51p6m" path="res://ui/sprites/hat_preview_frame_filled.png" id="3_oyqfh"]
 [ext_resource type="AudioStream" uid="uid://cf32gi07r35ic" path="res://audio/sfx/unlock_get.ogg" id="5_wf22k"]
@@ -19,6 +19,15 @@ font_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_o40ij"]
 font_color = Color(0.4, 0.4, 0.4, 1)
+
+[sub_resource type="Gradient" id="Gradient_xtbwl"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_60bfc"]
+gradient = SubResource("Gradient_xtbwl")
+width = 24
+height = 8
+fill_from = Vector2(0, 1)
 
 [sub_resource type="Gradient" id="Gradient_qs28s"]
 interpolation_mode = 1
@@ -44,15 +53,6 @@ angular_velocity_min = -1000.0
 angular_velocity_max = 1000.0
 gravity = Vector3(0, 980, 0)
 color_initial_ramp = SubResource("GradientTexture1D_wrtuv")
-
-[sub_resource type="Gradient" id="Gradient_xtbwl"]
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_60bfc"]
-gradient = SubResource("Gradient_xtbwl")
-width = 24
-height = 8
-fill_from = Vector2(0, 1)
 
 [node name="HatUnlockNotification" type="TextureRect"]
 anchors_preset = 6
@@ -168,8 +168,8 @@ grow_vertical = 2
 unique_name_in_owner = true
 emitting = false
 amount = 32
-process_material = SubResource("ParticleProcessMaterial_sh8ms")
 texture = SubResource("GradientTexture2D_60bfc")
 lifetime = 4.0
 one_shot = true
 explosiveness = 0.95
+process_material = SubResource("ParticleProcessMaterial_sh8ms")
