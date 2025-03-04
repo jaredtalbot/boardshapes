@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://v6iu60brt15h"]
 
 [ext_resource type="SpriteFrames" uid="uid://1j6nbm2fptgq" path="res://player_animated_sprite.tres" id="1_isp3k"]
-[ext_resource type="Script" path="res://ghost_player.gd" id="2_xggka"]
+[ext_resource type="Script" uid="uid://caa67x1x628eg" path="res://ghost_player.gd" id="2_xggka"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_w2eoj"]
 font_size = 72

@@ -1,13 +1,13 @@
 [gd_scene load_steps=11 format=3 uid="uid://xklntftxk1rp"]
 
-[ext_resource type="Script" path="res://level.gd" id="1_rfdv8"]
-[ext_resource type="Script" path="res://level_generator.gd" id="1_rygds"]
+[ext_resource type="Script" uid="uid://b417m8wnsghov" path="res://level.gd" id="1_rfdv8"]
+[ext_resource type="Script" uid="uid://bp2q1m2h8cd6i" path="res://level_generator.gd" id="1_rygds"]
 [ext_resource type="PackedScene" uid="uid://ca40sxi6lp5lx" path="res://touch_screen_controls.tscn" id="2_1knc0"]
 [ext_resource type="PackedScene" uid="uid://blw1ecr3vvp3q" path="res://loading_indicator.tscn" id="2_07l0p"]
 [ext_resource type="PackedScene" uid="uid://dssoorsi70ddi" path="res://pause_menu.tscn" id="5_eqw5b"]
 [ext_resource type="Texture2D" uid="uid://biui41qabk6dn" path="res://ui/sprites/OptionButton.png" id="6_507j4"]
 [ext_resource type="PackedScene" uid="uid://3poplqifejqw" path="res://goal.tscn" id="7_h3hxs"]
-[ext_resource type="Script" path="res://multiplayer_controller.gd" id="8_w82i2"]
+[ext_resource type="Script" uid="uid://cod7wr0j3kp3w" path="res://multiplayer_controller.gd" id="8_w82i2"]
 [ext_resource type="PackedScene" uid="uid://bc8yj1ak2pgnc" path="res://mp_indicator.tscn" id="9_ww6yl"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_n0tpc"]

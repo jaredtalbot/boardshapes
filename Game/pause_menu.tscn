@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://jlbjqa36f4rf" path="res://ui/resources/ui_dark.tres" id="1_ehfay"]
 [ext_resource type="PackedScene" uid="uid://cy8xgukxtd5ts" path="res://ui/components/options.tscn" id="2_mvsrw"]
-[ext_resource type="Script" path="res://pause_menu.gd" id="2_pamrk"]
+[ext_resource type="Script" uid="uid://beomqlpdo72dp" path="res://pause_menu.gd" id="2_pamrk"]
 
 [node name="PauseMenu" type="Window"]
 process_mode = 2

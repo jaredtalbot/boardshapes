@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://0ac5pxtb1j1l"]
 
 [ext_resource type="AudioStream" uid="uid://drbt7ka5wnorl" path="res://audio/music/Boardwalk_drums_only.ogg" id="1_1410g"]
-[ext_resource type="Script" path="res://music.gd" id="1_vjfb4"]
+[ext_resource type="Script" uid="uid://kbsoxt3gcl6s" path="res://music.gd" id="1_vjfb4"]
 [ext_resource type="AudioStream" uid="uid://cd8wvou0qo1vk" path="res://audio/music/Boardwalk_sample_only.ogg" id="2_4xewt"]
 
 [node name="Music" type="Node"]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://lkro5v3e31yc"]
 
 [ext_resource type="Texture2D" uid="uid://bnjug642ct6el" path="res://hats/goggles/boardgoggle.png" id="1_4rsot"]
-[ext_resource type="Script" path="res://owned_after_image_emitter.gd" id="2_knkn3"]
+[ext_resource type="Script" uid="uid://3uy0eyo1x3sc" path="res://owned_after_image_emitter.gd" id="2_knkn3"]
 
 [node name="Goggles" type="Sprite2D" groups=["Hats"]]
 position = Vector2(-0.84, -4.195)
