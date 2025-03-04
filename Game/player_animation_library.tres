@@ -220,7 +220,7 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
-"values": [-0.0068142, 0.00101518, 0.00686989, -0.00131825]
+"values": [-0.0068142, 0.127807, 0.235362, 0.139882]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -294,10 +294,10 @@ tracks/4/path = NodePath("HatPivot/HatPos:rotation")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.0555556, 0.111111, 0.166667, 0.222222, 0.277778, 0.333334, 0.388889, 0.444445, 0.5, 0.555556),
+"times": PackedFloat32Array(0, 0.0555556, 0.111111, 0.166667, 0.222222, 0.277778, 0.333333, 0.388889, 0.444444, 0.5, 0.555556),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [0.552662, 1.06691, 0.570285, -0.10707, -0.0987632, -0.11052, -0.0896275, 0.338424, 1.22657, 0.871863, 1.0331]
+"values": [0.552662, 1.06691, 0.246764, -0.422726, -0.600832, -0.490431, -0.203649, 0.172881, 0.530763, 0.45667, 1.01456]
 }
 
 [sub_resource type="Animation" id="Animation_a534s"]
