@@ -18,6 +18,6 @@ To run a Go project:
   go run .
   ```
 
-# Boardwalk
+# Boardwalk/Boardbox
 
-To run Boardwalk, run it on [Godot Engine v4.3](https://godotengine.org/download) on desktop, [or play it online on boardmesh.app!](https://boardmesh.app)
+To run Boardwalk/Boardbox, run it on [Godot Engine v4.4](https://godotengine.org/download) on desktop, [or play it online on boardmesh.app!](https://boardmesh.app)
