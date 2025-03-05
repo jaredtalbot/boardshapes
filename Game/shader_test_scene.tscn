@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://b8wrsm5wnf6rc"]
+
+[ext_resource type="Shader" uid="uid://db4pjb8buspo1" path="res://shaders/wipe.gdshader" id="1_s5o8t"]
+[ext_resource type="Texture2D" uid="uid://bpr2lo5muq254" path="res://icon.svg" id="2_bl0t3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c4swy"]
+shader = ExtResource("1_s5o8t")
+shader_parameter/edge = 0.0
+shader_parameter/steps = 10
+
+[node name="ShaderTestScene" type="Sprite2D"]
+material = SubResource("ShaderMaterial_c4swy")
+position = Vector2(640, 640)
+scale = Vector2(10, 10)
+texture = ExtResource("2_bl0t3")
