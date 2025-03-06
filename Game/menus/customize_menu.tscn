@@ -1,78 +1,11 @@
-[gd_scene load_steps=27 format=3 uid="uid://b4ilk2527ato8"]
+[gd_scene load_steps=14 format=3 uid="uid://b4ilk2527ato8"]
 
 [ext_resource type="PackedScene" uid="uid://d11d7pielydy8" path="res://cosmetic_preview.tscn" id="1_jeni7"]
 [ext_resource type="Script" uid="uid://cpiw7n5wdansv" path="res://menus/customize_menu.gd" id="1_pv3cl"]
-[ext_resource type="Texture2D" uid="uid://dd0yw8f70mtt7" path="res://hats/tophat/tophat.png" id="2_u5wf4"]
 [ext_resource type="Texture2D" uid="uid://bc08to1p712p0" path="res://ui/sprites/ShortTextField.png" id="3_7b2fc"]
-[ext_resource type="Texture2D" uid="uid://cxwipu2au2wps" path="res://hats/crown/crown.png" id="3_dxcb4"]
 [ext_resource type="Texture2D" uid="uid://bsi82n0dq31aj" path="res://ui/sprites/BackButton.png" id="3_q28ko"]
-[ext_resource type="Texture2D" uid="uid://bqv45dcfidrki" path="res://hats/jester/jester.png" id="4_qwv1b"]
-[ext_resource type="Texture2D" uid="uid://bnjug642ct6el" path="res://hats/goggles/boardgoggle.png" id="5_f2aie"]
 [ext_resource type="AudioStream" uid="uid://b73pyday5tp5t" path="res://audio/music/boardwalkcustomize.ogg" id="5_qawha"]
-
-[sub_resource type="Curve" id="Curve_spvss"]
-_limits = [-360.0, 360.0, 0.0, 1.0]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="CurveTexture" id="CurveTexture_lmr3l"]
-curve = SubResource("Curve_spvss")
-
-[sub_resource type="Curve" id="Curve_lmr3l"]
-_limits = [-200.0, 200.0, 0.0, 1.0]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="CurveTexture" id="CurveTexture_d42b3"]
-curve = SubResource("Curve_lmr3l")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_u5wf4"]
-particle_flag_disable_z = true
-emission_shape = 3
-emission_box_extents = Vector3(1, 110, 1)
-direction = Vector3(-1, 0, 0)
-spread = 0.0
-initial_velocity_min = 15.0
-initial_velocity_max = 15.0
-angular_velocity_min = 9.99998
-angular_velocity_max = 9.99998
-angular_velocity_curve = SubResource("CurveTexture_lmr3l")
-gravity = Vector3(0, 0, 0)
-radial_accel_curve = SubResource("CurveTexture_d42b3")
-scale_min = 0.45
-scale_max = 0.45
-
-[sub_resource type="Curve" id="Curve_nk2cw"]
-_limits = [-360.0, 360.0, 0.0, 1.0]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="CurveTexture" id="CurveTexture_cbso2"]
-curve = SubResource("Curve_nk2cw")
-
-[sub_resource type="Curve" id="Curve_msibs"]
-_limits = [-200.0, 200.0, 0.0, 1.0]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="CurveTexture" id="CurveTexture_eamqh"]
-curve = SubResource("Curve_msibs")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_mf0qn"]
-particle_flag_disable_z = true
-emission_shape = 3
-emission_box_extents = Vector3(1, 110, 1)
-direction = Vector3(-1, 0, 0)
-spread = 0.0
-initial_velocity_min = 15.0
-initial_velocity_max = 15.0
-angular_velocity_min = 9.99998
-angular_velocity_max = 9.99998
-angular_velocity_curve = SubResource("CurveTexture_cbso2")
-gravity = Vector3(0, 0, 0)
-radial_accel_curve = SubResource("CurveTexture_eamqh")
-scale_min = 0.21
-scale_max = 0.25
+[ext_resource type="PackedScene" uid="uid://y4gr8aafyd7i" path="res://hat_emitter.tscn" id="6_spvss"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_o3nji"]
 font_size = 64
@@ -111,57 +44,7 @@ LineEdit/styles/normal = SubResource("StyleBoxEmpty_b34f7")
 [node name="CustomizeMenu" type="Node"]
 script = ExtResource("1_pv3cl")
 
-[node name="TopHatEmitter" type="GPUParticles2D" parent="."]
-modulate = Color(1, 1, 1, 0.368627)
-show_behind_parent = true
-light_mask = 2
-visibility_layer = 2
-position = Vector2(2410, 543)
-scale = Vector2(5, 5)
-amount = 2
-texture = ExtResource("2_u5wf4")
-lifetime = 40.0
-preprocess = 20.0
-process_material = SubResource("ParticleProcessMaterial_u5wf4")
-
-[node name="CrownEmitter" type="GPUParticles2D" parent="."]
-modulate = Color(1, 1, 1, 0.396078)
-show_behind_parent = true
-light_mask = 2
-visibility_layer = 2
-position = Vector2(2410, 543)
-scale = Vector2(5, 5)
-amount = 2
-texture = ExtResource("3_dxcb4")
-lifetime = 40.0
-preprocess = 13.0
-process_material = SubResource("ParticleProcessMaterial_u5wf4")
-
-[node name="JesterEmitter" type="GPUParticles2D" parent="."]
-modulate = Color(1, 1, 1, 0.368627)
-show_behind_parent = true
-light_mask = 2
-visibility_layer = 2
-position = Vector2(2410, 543)
-scale = Vector2(5, 5)
-amount = 2
-texture = ExtResource("4_qwv1b")
-lifetime = 40.0
-preprocess = 18.0
-process_material = SubResource("ParticleProcessMaterial_u5wf4")
-
-[node name="GogglesEmitter" type="GPUParticles2D" parent="."]
-modulate = Color(1, 1, 1, 0.368627)
-show_behind_parent = true
-light_mask = 2
-visibility_layer = 2
-position = Vector2(2410, 543)
-scale = Vector2(5, 5)
-amount = 2
-texture = ExtResource("5_f2aie")
-lifetime = 40.0
-preprocess = 15.0
-process_material = SubResource("ParticleProcessMaterial_mf0qn")
+[node name="HatEmitter" parent="." instance=ExtResource("6_spvss")]
 
 [node name="PreviewAnchor" type="Control" parent="."]
 layout_mode = 3
