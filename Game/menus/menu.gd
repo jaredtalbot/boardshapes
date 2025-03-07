@@ -10,7 +10,7 @@ func _ready():
 	$MarginContainer/VBoxContainer/Start.call_deferred("grab_focus")
 	
 func _on_start_pressed():
-	get_tree().change_scene_to_file("res://menus/start_menu.tscn")
+	ScreenTransitioner.change_scene_to_file("res://menus/start_menu.tscn")
 
 
 func _on_exit_pressed():
@@ -26,7 +26,7 @@ func _on_options_close_pressed():
 	$OptionsWindow.hide()
 
 func _on_credits_pressed():
-	get_tree().change_scene_to_file("res://credits_screen.tscn")
+	ScreenTransitioner.change_scene_to_file("res://credits_screen.tscn")
 
 
 func _on_back_pressed() -> void:

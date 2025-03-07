@@ -36,10 +36,10 @@ metadata/hatId = "crown"
 
 [node name="SparkleParticles" type="GPUParticles2D" parent="."]
 amount = 3
-process_material = SubResource("ParticleProcessMaterial_r7oyr")
 texture = ExtResource("2_08xq1")
 lifetime = 2.0
 randomness = 1.0
+process_material = SubResource("ParticleProcessMaterial_r7oyr")
 metadata/_edit_lock_ = true
 
 [node name="OwnedAfterImageEmitter" type="Node2D" parent="." node_paths=PackedStringArray("sprite")]

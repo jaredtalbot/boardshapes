@@ -210,10 +210,10 @@ func _on_back_button_pressed():
 	go_back()
 
 func go_back():
-	get_tree().change_scene_to_file("res://menus/start_menu.tscn")
+	ScreenTransitioner.change_scene_to_file("res://menus/start_menu.tscn")
 
 func _on_exit_to_main_menu_button_pressed():
-	get_tree().change_scene_to_file("res://menus/main.tscn")
+	ScreenTransitioner.change_scene_to_file("res://menus/main.tscn")
 
 func save_level():
 	var goal = $Goal as Area2D
