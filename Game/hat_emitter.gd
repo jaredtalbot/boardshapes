@@ -48,5 +48,6 @@ func create_particles(viewport: SubViewport):
 	var new_particles = particles_scene.instantiate()
 	new_particles.texture = viewport.get_texture()
 	new_particles.preprocess = randf_range(0, 10)
+	#new_particles.process_material.gravity.x = randf_range(-25, -10)
 	add_child(new_particles)
 	return new_particles
