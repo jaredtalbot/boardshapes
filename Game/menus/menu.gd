@@ -15,7 +15,7 @@ func _on_start_pressed():
 
 func _on_exit_pressed():
 	if OS.has_feature("web"):
-		JavaScriptBridge.eval("window.location = \"/\"");
+		JavaScriptBridge.eval("window.close()");
 	else:
 		get_tree().quit()
 
