@@ -148,7 +148,9 @@ func _goal_reached(player: Node2D):
 			$VictoryScreen.show()
 			%Restart.call_deferred("grab_focus")
 		else:
+			player.set_physics_process(false)
 			var nextlevel = CampaignLevels.levels.data[currlevel + 1].path
+			var transition = ScreenTransitioner.custom_transition()
 			var next_level_node = preload("res://level.tscn").instantiate()
 			next_level_node.current_campaign_level = nextlevel
 			add_sibling(next_level_node)

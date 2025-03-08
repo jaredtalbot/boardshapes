@@ -5,6 +5,31 @@ extends Node
 var screen_transitioning := false
 var next_scene_path: String
 
+func custom_transition() -> CustomScreenTransition:
+	if screen_transitioning:
+		return null
+	var transition = CustomScreenTransition.new()
+	
+	var mat = (white_screen.material as ShaderMaterial)
+	mat.set_shader_parameter("reverse", false)
+	mat.set_shader_parameter("edge", 0.0)
+	
+	var tween = create_tween()
+	screen_transitioning = true
+	tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_callback(transition.transition_started.emit)
+	tween.tween_method(func(x): mat.set_shader_parameter("edge", x), 0.0, 1.0, 1.0)
+	tween.tween_callback(transition.mid_transition.emit)
+	tween.tween_callback(mat.set_shader_parameter.bind("reverse", true))
+	tween.tween_method(func(x): mat.set_shader_parameter("edge", x), 1.0, 0.0, 1.0)
+	tween.tween_callback(transition.transition_ended.emit)
+	tween.tween_callback(white_screen.hide)
+	tween.tween_callback(set.bind("screen_transitioning", false))
+	tween.tween_callback(transition.free)
+	
+	return transition
+	
+
 func change_scene_to_file(path: String):
 	next_scene_path = path
 	if not screen_transitioning:
@@ -54,3 +79,8 @@ func _perform_scene_change():
 	tween.tween_method(func(x): mat.set_shader_parameter("edge", x), 1.0, 0.0, 1.0)
 	tween.tween_callback(white_screen.hide)
 	tween.tween_callback(set.bind("screen_transitioning", false))
+
+class CustomScreenTransition extends Object:
+	signal transition_started
+	signal mid_transition
+	signal transition_ended
