@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://doqb8dfld3j7k"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_h8n16"]
+particle_flag_disable_z = true
+emission_shape_scale = Vector3(1, 115, 1)
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+direction = Vector3(-10, 0, 0)
+spread = 0.0
+initial_velocity_min = 10.0
+initial_velocity_max = 50.0
+angular_velocity_min = 4.99998
+angular_velocity_max = 35.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.5
+scale_max = 1.5
+
+[node name="SampleEmitter" type="GPUParticles2D"]
+position = Vector2(2411, 536)
+scale = Vector2(5, 5)
+amount = 4
+lifetime = 40.0
+preprocess = 10.0
+randomness = 0.25
+trail_lifetime = 0.6
+process_material = SubResource("ParticleProcessMaterial_h8n16")

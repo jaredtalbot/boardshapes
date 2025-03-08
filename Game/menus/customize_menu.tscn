@@ -1,10 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://b4ilk2527ato8"]
+[gd_scene load_steps=14 format=3 uid="uid://b4ilk2527ato8"]
 
 [ext_resource type="PackedScene" uid="uid://d11d7pielydy8" path="res://cosmetic_preview.tscn" id="1_jeni7"]
 [ext_resource type="Script" uid="uid://cpiw7n5wdansv" path="res://menus/customize_menu.gd" id="1_pv3cl"]
 [ext_resource type="Texture2D" uid="uid://bc08to1p712p0" path="res://ui/sprites/ShortTextField.png" id="3_7b2fc"]
 [ext_resource type="Texture2D" uid="uid://bsi82n0dq31aj" path="res://ui/sprites/BackButton.png" id="3_q28ko"]
 [ext_resource type="AudioStream" uid="uid://b73pyday5tp5t" path="res://audio/music/boardwalkcustomize.ogg" id="5_qawha"]
+[ext_resource type="PackedScene" uid="uid://y4gr8aafyd7i" path="res://hat_emitter.tscn" id="6_spvss"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_o3nji"]
 font_size = 64
@@ -42,6 +43,8 @@ LineEdit/styles/normal = SubResource("StyleBoxEmpty_b34f7")
 
 [node name="CustomizeMenu" type="Node"]
 script = ExtResource("1_pv3cl")
+
+[node name="HatEmitter" parent="." instance=ExtResource("6_spvss")]
 
 [node name="PreviewAnchor" type="Control" parent="."]
 layout_mode = 3

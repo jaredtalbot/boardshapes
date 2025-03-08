@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://d0138cle4d0xg"]
 
-[ext_resource type="Script" path="res://mouse_bumper.gd" id="1_pmq2w"]
+[ext_resource type="Script" uid="uid://c1i237ng4u6qd" path="res://mouse_bumper.gd" id="1_pmq2w"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_edf5w"]
 
