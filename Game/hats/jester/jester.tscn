@@ -5,8 +5,8 @@
 [ext_resource type="Script" uid="uid://3uy0eyo1x3sc" path="res://owned_after_image_emitter.gd" id="2_q6dhf"]
 
 [node name="JesterHat" type="Sprite2D"]
-position = Vector2(-0.5, -12)
-scale = Vector2(0.065, 0.065)
+position = Vector2(-0.5, -11)
+scale = Vector2(0.06, 0.06)
 texture = ExtResource("1_a47p5")
 metadata/hatId = "jester"
 
