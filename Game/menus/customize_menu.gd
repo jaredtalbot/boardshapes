@@ -40,7 +40,7 @@ func set_hat_info_display(hat_name: String, hat_description: String, hat_unlock_
 		$HatInfoDisplay/UnlockHintSeparator.show()
 		$HatInfoDisplay/HatUnlockHintLabel.show()
 	$HatInfoDisplay.show()
-
+	
 func _on_back_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://menus/start_menu.tscn")
 
