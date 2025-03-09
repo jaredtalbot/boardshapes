@@ -2,7 +2,6 @@ class_name Level extends Node
 
 var base_url = ProjectSettings.get_setting("application/boardwalk/web_server_url")
 
-@onready var level_generator = $LevelGenerator
 @onready var loading_indicator = $LoadingIndicator
 @onready var multiplayer_timer = $MultiplayerTimer
 @onready var multiplayer_controller = $MultiplayerController
@@ -13,6 +12,7 @@ signal completed
 
 var player: Player
 
+var level_meta := {}
 var current_campaign_level: String = ""
 
 func create_level(img: Image, options: Dictionary):
@@ -39,15 +39,18 @@ func load_level(level_data: Variant):
 		show_error("Could not load level.")
 		return
 	
-	var generated_level = level_generator.generate_nodes(json["regions"])
+	var generated_level = LevelGenerator.generate_nodes(json["regions"])
 	if generated_level == null:
 		show_error("Could not load level.")
 		return
 	
-	add_child(generated_level)
+	call_thread_safe("add_child", generated_level)
 	var start_pos = json["startPos"]
 	var end_pos = json["endPos"]
-	initialize_game(str(hash(level_data)), Vector2(start_pos["x"], start_pos["y"]), Vector2(end_pos["x"], end_pos["y"]))
+	
+	level_meta["hash"] = str(hash(level_data))
+	level_meta["start_pos"] = Vector2(start_pos["x"], start_pos["y"])
+	level_meta["end_pos"] = Vector2(end_pos["x"], end_pos["y"])
 
 func _on_response_received(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray):
 	if response_code != HTTPClient.RESPONSE_OK:
@@ -55,23 +58,29 @@ func _on_response_received(result: int, response_code: int, headers: PackedStrin
 		return
 	
 	var level_data = body.get_string_from_utf8()
-	var generated_level = level_generator.generate_nodes(level_data)
+	var generated_level = LevelGenerator.generate_nodes(level_data)
 	if generated_level == null:
 		show_error("Could not generate level with server response.")
 		return
 	add_child(generated_level)
-	initialize_game(str(hash(level_data)))
+	level_meta["hash"] = str(hash(level_data))
+	initialize_game()
 
-func initialize_game(multiplayer_id: String, start_pos: Vector2 = Vector2.ZERO, end_pos: Vector2 = Vector2.ZERO):
+func initialize_game():
 	player = add_player()
-	multiplayer_controller.try_connect(multiplayer_id)
+	var multiplayer_id = level_meta.get("hash")
+	if multiplayer_id:
+		multiplayer_controller.try_connect(multiplayer_id)
 	loading_indicator.hide()
 	AccessibilityShaderManager.apply_shaders()
 	loaded.emit()
 	if not Music.playing:
 		Music.play_all_layers()
+		
+	var start_pos = level_meta.get("start_pos")
+	var end_pos = level_meta.get("end_pos")
 	
-	if start_pos == Vector2.ZERO and end_pos == Vector2.ZERO:
+	if not start_pos and not end_pos:
 		get_tree().paused = true
 		player.hide()
 		$StartEndSelection/StartSelect.disabled = false
@@ -80,7 +89,7 @@ func initialize_game(multiplayer_id: String, start_pos: Vector2 = Vector2.ZERO, 
 		Music.drum_layer.pitch_scale = 0.7
 		Music.sample_layer.volume_db = linear_to_db(0.0)
 		Music.sample_layer.pitch_scale = 0.7
-	elif start_pos != Vector2.ZERO and end_pos != Vector2.ZERO:
+	elif start_pos and end_pos:
 		player.initial_position = start_pos
 		player.position = player.initial_position
 		var goal = $Goal
@@ -150,13 +159,22 @@ func _goal_reached(player: Node2D):
 		else:
 			player.set_physics_process(false)
 			var nextlevel = CampaignLevels.levels.data[currlevel + 1].path
+			
 			var transition = ScreenTransitioner.custom_transition()
 			var next_level_node = preload("res://level.tscn").instantiate()
 			next_level_node.current_campaign_level = nextlevel
-			add_sibling(next_level_node)
-			next_level_node.load_level(FileAccess.get_file_as_string(nextlevel))
-			get_tree().set_deferred("current_scene", next_level_node)
-			queue_free()
+			var task_id = WorkerThreadPool.add_task(func():
+				var level_data = FileAccess.get_file_as_string(nextlevel)
+				next_level_node.load_level(level_data)
+			)
+			transition.transition_midway.connect(func():
+				WorkerThreadPool.wait_for_task_completion(task_id)
+				add_sibling(next_level_node)
+				get_tree().set_deferred("current_scene", next_level_node)
+				next_level_node.call_deferred("initialize_game")
+				queue_free()
+			)
+			transition.transition_canceled.connect(next_level_node.queue_free)
 	else:
 		player.set_physics_process(false)
 		$VictoryScreen.show()

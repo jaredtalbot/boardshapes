@@ -73,10 +73,16 @@ func _on_pick_boardwalk_file_dialog_file_selected(path):
 
 func load_level_from_data(level_data):
 	var level = level_scene.instantiate()
-	add_sibling(level)
-	level.load_level(level_data)
-	get_tree().set_deferred("current_scene", level)
-	queue_free()
+	var transition = ScreenTransitioner.custom_transition()
+	var task_id = WorkerThreadPool.add_task(level.load_level.bind(level_data))
+	transition.transition_midway.connect(func():
+		WorkerThreadPool.wait_for_task_completion(task_id)
+		add_sibling(level)
+		get_tree().set_deferred("current_scene", level)
+		level.call_deferred("initialize_game")
+		queue_free()
+	)
+	transition.transition_canceled.connect(level.queue_free)
 	return level
 
 func _on_campaign_button_pressed():

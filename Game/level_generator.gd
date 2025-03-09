@@ -1,7 +1,7 @@
 @icon("res://icons/hammericon.png")
 class_name LevelGenerator extends Node
 
-func generate_nodes(json: Variant) -> Node:
+static func generate_nodes(json: Variant) -> Node:
 	if json is String:
 		json = JSON.parse_string(json)
 	if json is not Array:
@@ -47,7 +47,7 @@ func generate_nodes(json: Variant) -> Node:
 		level.add_child(region)
 	return level
 
-func checkItem(item: Variant) -> bool:
+static func checkItem(item: Variant) -> bool:
 	return item is Dictionary and item.get("regionImage") is String and item.get("mesh") is Array \
 		and item["mesh"].all(func(m): return m is Dictionary and m.has_all(["x", "y"])) and item.has_all(["cornerX", "cornerY"])
 
