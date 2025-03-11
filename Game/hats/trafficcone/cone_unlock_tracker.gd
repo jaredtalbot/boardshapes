@@ -12,7 +12,7 @@ func _died():
 	_check_unlock()
 
 func _check_unlock():
-	if death_count >= 10:
+	if death_count >= 100:
 		Unlocks.unlock_hat(get_hat_id())
 
 func _connect_level_signals(level: Level):
