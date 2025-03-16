@@ -1,7 +1,7 @@
-import boardwalkLogo from "../img/boardwalk.svg";
-import boardmeshLogo from "../img/boardmesh.svg";
-import githubLogo from "../img/github.svg";
-import boardboxLogo from "../img/BoardBox.svg";
+import boardwalkLogo from "../img/boardwalk.png";
+import boardshapesLogo from "../img/boardshapes.png";
+import githubLogo from "../img/github.png";
+import boardboxLogo from "../img/boardbox.png";
 import Headroom from "react-headroom";
 
 export default function TopBar() {
@@ -13,7 +13,11 @@ export default function TopBar() {
             <img src={boardwalkLogo} className="logo" alt="Boardwalk logo" />
           </a>
           <a href="/manual/" target="_blank" title="User Manual">
-            <img src={boardmeshLogo} className="logo" alt="Boardmesh logo" />
+            <img
+              src={boardshapesLogo}
+              className="logo"
+              alt="Boardshapes logo"
+            />
           </a>
           <a href="/boardbox/" target="_blank" title="Boardbox">
             <img src={boardboxLogo} className="logo" alt="Boardbox logo" />

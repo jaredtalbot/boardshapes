@@ -33,7 +33,7 @@ func giveReadableMessage(c *gin.Context) {
 	c.Header("Content-Type", "text/html")
 	c.String(200, "<p>This is the multiplayer server for Boardwalk.</p>"+
 		"<p>In order to enjoy Boardwalk's multiplayer features, please go to "+
-		"<a href=\"https://www.boardmesh.app/boardwalk\">https://www.boardmesh.app/boardwalk</a>.</p>")
+		"<a href=\"https://www.boardshapes.com/boardwalk\">https://www.boardshapes.com/boardwalk</a>.</p>")
 }
 
 func checkAvailable(c *gin.Context) {
@@ -195,6 +195,6 @@ func main() {
 	if port == "" {
 		port = "443"
 	}
-	router.RunTLS(":"+port, "multiplayer.boardmesh.app-crt.pem", "multiplayer.boardmesh.app-key.pem")
+	router.RunTLS(":"+port, "multiplayer.boardshapes.com-crt.pem", "multiplayer.boardshapes.com-key.pem")
 
 }

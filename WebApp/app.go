@@ -336,7 +336,7 @@ func main() {
 	})
 
 	logged.StaticFile("/", "./homepage/board-site/dist/index.html")
-	logged.StaticFile("/board.svg", "./homepage/board-site/dist/board.svg")
+	logged.StaticFile("/board.png", "./homepage/board-site/dist/board.png")
 	logged.Static("/assets", "./homepage/board-site/dist/assets")
 	games.Static("/boardwalk", "./exported-game")
 	logged.StaticFile("/manual", "./exported-manual/User Manual.pdf")
