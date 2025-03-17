@@ -1,4 +1,4 @@
-import boardmeshLogo from "../img/boardmesh.svg";
+import boardshapesLogo from "../img/boardshapes.png";
 import "./root.css";
 import { Outlet, Link } from "react-router-dom";
 
@@ -6,21 +6,23 @@ function Root() {
   return (
     <>
       <div className="body1">
-        <img src={boardmeshLogo} className="logoMain" alt="Boardwalk logo" />
-        <div className="boardmesh-text-container">
+        <img src={boardshapesLogo} className="logoMain" alt="Boardwalk logo" />
+        <div className="boardshapes-text-container">
           <p>
-            Boardmesh is a free and open-source API that can be used to create
-            suitable, color-corrected, collidable shapes for physics simulators
-            and simplify an image into a restricted color palette consisting of
-            black, white, red, green, and blue.
+            Boardshapes (formerly "Boardmesh") is a free and open-source API
+            that can be used to create suitable, color-corrected, collidable
+            shapes for physics simulators and simplify an image into a
+            restricted color palette consisting of black, white, red, green, and
+            blue.
           </p>
           <p>
             Tapping "Boardwalk" will take you to our game implementation of the
-            Boardmesh API, Boardwalk. Boardwalk is a single-screen platformer
+            Boardshapes API, Boardwalk. Boardwalk is a single-screen platformer
             that allows the player to traverse their newly created meshes.
           </p>
           <p>
-            Tapping "Boardmesh" will take you to the User Manual for Boardwalk.
+            Tapping "Boardshapes" will take you to the User Manual for
+            Boardwalk.
           </p>
           <p>
             Tapping the third logo will take you to our Physics Sim, Boardbox.
