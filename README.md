@@ -1,4 +1,4 @@
-# Boardmesh
+# Boardshapes
 
 To run a Go project:
 
@@ -20,4 +20,4 @@ To run a Go project:
 
 # Boardwalk/Boardbox
 
-To run Boardwalk/Boardbox, run it on [Godot Engine v4.4](https://godotengine.org/download) on desktop, [or play it online on boardmesh.app!](https://boardmesh.app)
+To run Boardwalk/Boardbox, run it on [Godot Engine v4.4](https://godotengine.org/download) on desktop, [or play it online on boardshapes.com!](https://boardshapes.com)
