@@ -16,7 +16,6 @@ var can_jump = false
 @onready var hat_pivot: Node2D = $HatPivot
 @onready var hat_pos = $HatPivot/HatPos
 @onready var after_image_emitter = %AfterImageEmitter
-@onready var camera = $Camera2D
 
 var initial_position : Vector2
 var last_position_was_floor: bool
@@ -48,7 +47,7 @@ func equip_hat(hat: PackedScene):
 		if hat_pos.get_child_count() > 0:
 			hat_pos.get_child(0).queue_free()
 
-func _process(delta):
+func _process(_delta):
 	RenderingServer.global_shader_parameter_set("player_position", position)
 	hat_pivot.scale.x = get_direction()
 	after_image_emitter.auto_emit = not $dash_timer.is_stopped() or touched_green

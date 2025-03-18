@@ -26,7 +26,7 @@ func try_connect(lobby_id: String):
 	socket.connect_to_url(join_url + "?lobby=%s" % lobby_id)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	socket.poll()
 	var state = socket.get_ready_state()
 	

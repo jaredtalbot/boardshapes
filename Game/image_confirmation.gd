@@ -7,7 +7,7 @@ extends ConfirmationDialog
 
 
 func _ready():
-	texture_rect.texture = ImageTexture.create_from_image(Image.create_empty(0, 0, false, Image.FORMAT_RGBA8))
+	texture_rect.texture = null
 
 func set_image(image):
 	if image is Image:

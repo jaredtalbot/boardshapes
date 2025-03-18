@@ -54,7 +54,7 @@ func load_level(level_data: Variant):
 	level_meta["start_pos"] = Vector2(start_pos["x"], start_pos["y"])
 	level_meta["end_pos"] = Vector2(end_pos["x"], end_pos["y"])
 
-func _on_response_received(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray):
+func _on_response_received(_result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray):
 	if response_code != HTTPClient.RESPONSE_OK:
 		show_error(body, response_code)
 		return
@@ -152,7 +152,6 @@ func _set_goal_position():
 func _goal_reached(_node):
 	completed.emit()
 	if current_campaign_level != "":
-		var tree = get_tree()
 		var currlevel = CampaignLevels.levels.data.map(func(l): return l.path).find(current_campaign_level)
 		if currlevel + 1 == len(CampaignLevels.levels.data):
 			player.set_physics_process(false)
@@ -166,7 +165,7 @@ func _goal_reached(_node):
 		$VictoryScreen.show()
 		%Restart.call_deferred("grab_focus")
 
-func _process(delta):
+func _process(_delta):
 	if should_load_next_level:
 		go_to_next_campaign_level()
 		should_load_next_level = false

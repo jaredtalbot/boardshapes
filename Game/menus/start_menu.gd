@@ -62,7 +62,7 @@ func _on_image_confirmation_confirmed():
 	get_tree().set_deferred("current_scene", level)
 	queue_free()
 
-func _on_web_pick_boardwalk_file_file_loaded(content: PackedByteArray, filename: String):
+func _on_web_pick_boardwalk_file_file_loaded(content: PackedByteArray, _filename: String):
 	load_level_from_data(content)
 
 func _on_pick_boardwalk_file_dialog_file_selected(path):

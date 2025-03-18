@@ -4,7 +4,7 @@ class_name UnlockChecker extends Node
 func _ready() -> void:
 	UnlockCheckerManager.new_level_added.connect(_connect_level_signals)
 
-func _connect_level_signals(level: Level):
+func _connect_level_signals(_level: Level):
 	pass
 
 static func get_hat_id() -> String:

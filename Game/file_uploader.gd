@@ -51,7 +51,7 @@ func upload_buffer(url: String, buffer: PackedByteArray, filename: String, metho
   	]
 	add_child(request)
 	
-	request.request_completed.connect(func(): request.queue_free())
+	request.request_completed.connect(func(_a, _b, _c, _d): request.queue_free())
 	
 	request.request_raw(url, headers, method, body)
 	
