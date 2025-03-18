@@ -4,6 +4,9 @@ static func get_hat_id() -> String:
 	return "jester"
 
 func _ready():
+	if OS.is_debug_build():
+		Unlocks.unlock_hat(get_hat_id())
+		return
 	var valid = JavaScriptBridge.eval("""
 const url = new URL(window.location);
 

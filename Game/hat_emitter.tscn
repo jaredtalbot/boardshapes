@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://y4gr8aafyd7i"]
+
+[ext_resource type="Script" uid="uid://cvsgs2pve41q7" path="res://hat_emitter.gd" id="1_h8n16"]
+
+[node name="HatEmitter" type="Node"]
+script = ExtResource("1_h8n16")

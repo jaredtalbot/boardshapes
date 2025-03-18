@@ -32,5 +32,12 @@
 		"path": "res://hats/goggles/goggles.tscn",
 		"description": "Now you're seeing it my way!",
 		"unlock_hint": "Beat C's Level without jumping or dashing.",
+	},
+	{
+		"id": "trafficcone",
+		"name": "Safety Cone",
+		"path": "res://hats/trafficcone/TrafficCone.tscn",
+		"description": "But I don't wanna take a detour!",
+		"unlock_hint": "Maybe if we put one of these up you wouldn't have died so much.",
 	}
 ]

@@ -95,3 +95,9 @@ func _on_campaign_button_pressed():
 
 func _on_customize_button_pressed() -> void:
 	ScreenTransitioner.change_scene_to_file("res://menus/customize_menu.tscn")
+
+
+func _on_challenge_button_pressed() -> void:
+	var data := FileAccess.get_file_as_string("res://challenge/J'sChallenge.boardwalk")
+	var current_level = load_level_from_data(data)
+	current_level.current_campaign_level = ChallengeLevels.levels.data[0].path

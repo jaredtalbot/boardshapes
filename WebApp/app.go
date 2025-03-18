@@ -313,6 +313,15 @@ func connectListenerWebsocket(c *gin.Context) {
 	}
 }
 
+func containsAny(haystack string, needles ...string) bool {
+	for _, s := range needles {
+		if strings.Contains(haystack, s) {
+			return true
+		}
+	}
+	return false
+}
+
 func main() {
 	log.Printf("Running with %d CPUs\n", runtime.NumCPU())
 
@@ -336,7 +345,7 @@ func main() {
 	})
 
 	logged.StaticFile("/", "./homepage/board-site/dist/index.html")
-	logged.StaticFile("/board.svg", "./homepage/board-site/dist/board.svg")
+	logged.StaticFile("/board.png", "./homepage/board-site/dist/board.png")
 	logged.Static("/assets", "./homepage/board-site/dist/assets")
 	games.Static("/boardwalk", "./exported-game")
 	logged.StaticFile("/manual", "./exported-manual/User Manual.pdf")
@@ -344,14 +353,12 @@ func main() {
 	logged.POST("/api/simplify", simplifyImage)
 	logged.POST("/api/build-level", buildLevel)
 	router.GET("/api/ws", connectListenerWebsocket)
-	router.POST("/lol", func(ctx *gin.Context) {
-		log.Println("the button was pressed")
-	})
 
 	router.NoRoute(gin.Logger(), func(ctx *gin.Context) {
 		url := ctx.Request.URL.Path
-		if strings.Contains(url, "wp") || strings.Contains(url, "wordpress") || strings.Contains(url, "admin") || strings.Contains(url, "php") {
-			ctx.File("./other-pages/go-away.html")
+		if containsAny(url, "wp", "wordpress", "admin", "php") {
+			ctx.File("./misc-assets/teapot.txt")
+			ctx.Status(http.StatusTeapot)
 			return
 		}
 		ctx.File("./homepage/board-site/dist/index.html")

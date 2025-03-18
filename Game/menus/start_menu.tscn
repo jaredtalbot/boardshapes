@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bpgex31naxj1w"]
+[gd_scene load_steps=14 format=3 uid="uid://bpgex31naxj1w"]
 
 [ext_resource type="Script" uid="uid://elawbr1obqyx" path="res://menus/start_menu.gd" id="1_bp1fp"]
 [ext_resource type="Script" uid="uid://bopkfe6jjdy7q" path="res://web_pick_image_file.gd" id="2_v3sgg"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://m7t5hfoqwor6" path="res://ui/sprites/upload_green.png" id="5_ljjqm"]
 [ext_resource type="PackedScene" uid="uid://cbbx0v3mpscgm" path="res://pick_image_file.tscn" id="5_lnlgg"]
 [ext_resource type="Texture2D" uid="uid://c0y2sm6u8jfdi" path="res://ui/sprites/load_blue.png" id="6_pedtt"]
+[ext_resource type="Texture2D" uid="uid://d130l0dedhokl" path="res://ui/sprites/challengebutton.png" id="8_1w3p6"]
 [ext_resource type="Texture2D" uid="uid://dk37hwiweyiqw" path="res://ui/sprites/customize.png" id="8_bmbfk"]
 [ext_resource type="PackedScene" uid="uid://bvxbdyktcqgqx" path="res://pick_boardwalk_file_dialog.tscn" id="9_tljks"]
 
@@ -90,6 +91,11 @@ focus_neighbor_top = NodePath("../../PlayFrame/PlayContainer/PlayButtonRow/Uploa
 focus_previous = NodePath("../../PlayFrame/PlayContainer/PlayButtonRow/LoadLevelButton")
 texture_normal = ExtResource("4_lf6m8")
 
+[node name="ChallengeButton" type="TextureButton" parent="VBoxContainer/OtherButtonRow" groups=["DarkModeInvertColors"]]
+layout_mode = 2
+size_flags_horizontal = 10
+texture_normal = ExtResource("8_1w3p6")
+
 [node name="CustomizeButton" type="TextureButton" parent="VBoxContainer/OtherButtonRow" groups=["DarkModeInvertColors"]]
 layout_mode = 2
 size_flags_horizontal = 10
@@ -113,6 +119,7 @@ visible = false
 [connection signal="pressed" from="VBoxContainer/PlayFrame/PlayContainer/PlayButtonRow/UploadImageButton" to="." method="_on_upload_image_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/PlayFrame/PlayContainer/PlayButtonRow/LoadLevelButton" to="." method="_on_load_level_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/OtherButtonRow/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/OtherButtonRow/ChallengeButton" to="." method="_on_challenge_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/OtherButtonRow/CustomizeButton" to="." method="_on_customize_button_pressed"]
 [connection signal="file_loaded" from="WebPickImageFile" to="." method="_on_web_pick_image_file_file_loaded"]
 [connection signal="file_loaded" from="WebPickBoardwalkFile" to="." method="_on_web_pick_boardwalk_file_file_loaded"]
