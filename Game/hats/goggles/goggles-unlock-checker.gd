@@ -13,7 +13,7 @@ func _died():
 
 func _c_level_complete(level: Level):
 	if has_jumped_or_dashed == false and level.current_campaign_level == "res://campaign/c'slvl.boardwalk":
-		Unlocks.unlock_hat("goggles")
+		unlock_me()
 
 func _connect_level_signals(level: Level):
 	level.loaded.connect(func(): 

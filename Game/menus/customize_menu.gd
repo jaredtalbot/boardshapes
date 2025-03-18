@@ -1,7 +1,9 @@
-extends Node
+class_name CustomizeMenu extends Node
 
 const HAT_LIST = preload("res://hats/hat_list.json")
 const HAT_PREVIEW = preload("res://hats/hat_preview.tscn")
+
+signal meta_pressed(data: Variant)
 
 @onready var cosmetic_preview = $PreviewAnchor/CosmeticPreview
 @onready var hat_select = %HatSelect
@@ -31,8 +33,16 @@ func set_hat_from_preview(hat_preview: HatPreview):
 
 func set_hat_info_display(hat_name: String, hat_description: String, hat_unlock_hint: String):
 	$HatInfoDisplay/HatNameLabel.text = hat_name
-	$HatInfoDisplay/HatDescriptionLabel.text = hat_description
-	$HatInfoDisplay/HatUnlockHintLabel.text = hat_unlock_hint
+	$HatInfoDisplay/HatDescriptionLabel.clear()
+	$HatInfoDisplay/HatDescriptionLabel.push_font_size(32)
+	$HatInfoDisplay/HatDescriptionLabel.push_color(Color(0.6, 0.6, 0.6))
+	$HatInfoDisplay/HatDescriptionLabel.append_text(hat_description)
+	$HatInfoDisplay/HatDescriptionLabel.pop_all()
+	$HatInfoDisplay/HatUnlockHintLabel.clear()
+	$HatInfoDisplay/HatUnlockHintLabel.push_font_size(32)
+	$HatInfoDisplay/HatUnlockHintLabel.push_color(Color(0.4, 0.4, 0.4))
+	$HatInfoDisplay/HatUnlockHintLabel.append_text(hat_unlock_hint)
+	$HatInfoDisplay/HatUnlockHintLabel.pop_all()
 	if not hat_unlock_hint or hat_unlock_hint == "???":
 		$HatInfoDisplay/UnlockHintSeparator.hide()
 		$HatInfoDisplay/HatUnlockHintLabel.hide()
@@ -47,3 +57,8 @@ func _on_back_button_pressed() -> void:
 func _on_multiplayer_name_field_text_changed(new_text):
 	Preferences.player_name = new_text
 	Preferences.save_when_ready()
+
+func _on_hat_unlock_hint_label_meta_clicked(meta):
+	meta_pressed.emit(meta)
+	if meta is String and meta.begins_with("link:"):
+		OS.shell_open(meta.trim_prefix("link:"))

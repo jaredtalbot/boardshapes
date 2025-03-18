@@ -24,20 +24,27 @@
 		"name": "The Jolly Jester",
 		"path": "res://hats/jester/jester.tscn",
 		"description": "The badge of a royal comedian.",
-		"unlock_hint": "Follow the leader!",
+		"unlock_hint": "Follow the leader!"
 	},
 	{
 		"id": "goggles",
 		"name": "Swing-Specs",
 		"path": "res://hats/goggles/goggles.tscn",
 		"description": "Now you're seeing it my way!",
-		"unlock_hint": "Beat C's Level without jumping or dashing.",
+		"unlock_hint": "Beat C's Level without jumping or dashing."
 	},
 	{
 		"id": "trafficcone",
 		"name": "Safety Cone",
 		"path": "res://hats/trafficcone/TrafficCone.tscn",
 		"description": "But I don't wanna take a detour!",
-		"unlock_hint": "Maybe if we put one of these up you wouldn't have died so much.",
+		"unlock_hint": "Maybe if we put one of these up you wouldn't have died so much."
+	},
+	{
+		"id": "bunk",
+		"name": "Bunk's Helmet",
+		"path": "res://hats/bunk/bunk.tscn",
+		"description": "Earth's Mightiest Defender",
+		"unlock_hint": "[url=\"link:https://shenangelos.itch.io/bunk\"]https://shenangelos.itch.io/bunk[/url]"
 	}
 ]
