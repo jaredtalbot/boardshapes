@@ -5,7 +5,7 @@ static func get_hat_id() -> String:
 
 func _ready():
 	if OS.is_debug_build():
-		Unlocks.unlock_hat(get_hat_id())
+		unlock_me()
 		return
 	var valid = JavaScriptBridge.eval("""
 const url = new URL(window.location);
@@ -20,7 +20,7 @@ const todayHash = today.toISOString().split("").reduce((a, b) => {
 url.searchParams.get("unlock") === `${todayHash}`;
 """)
 	if valid:
-		Unlocks.unlock_hat(get_hat_id())
+		unlock_me()
 		JavaScriptBridge.eval("""
 const url = new URL(window.location);
 url.search = "";

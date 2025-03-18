@@ -34,6 +34,7 @@ Notifications="*res://notifications.gd"
 AccessibilityShaderManager="*res://accessibility_shader_manager.gd"
 GlobalUI="res://ui/scenes/global_ui.tscn"
 ScreenTransitioner="*res://screen_transitioner.tscn"
+GlobalSignals="*res://global_signals.gd"
 
 [display]
 
