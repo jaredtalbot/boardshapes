@@ -42,10 +42,9 @@
 	},
 	{
 		"id": "bunk",
-		"name": "Commander Bunk's Helm",
+		"name": "Bunk's Helmet",
 		"path": "res://hats/bunk/bunk.tscn",
 		"description": "Earth's Mightiest Defender",
-		"unlock_hint": "https://shenangelos.itch.io/bunk",
-		"always_unlocked": true
+		"unlock_hint": "[url=\"link:https://shenangelos.itch.io/bunk\"]https://shenangelos.itch.io/bunk[/url]",
 	}
 ]

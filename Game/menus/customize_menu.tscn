@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://b4ilk2527ato8"]
+[gd_scene load_steps=12 format=3 uid="uid://b4ilk2527ato8"]
 
 [ext_resource type="PackedScene" uid="uid://d11d7pielydy8" path="res://cosmetic_preview.tscn" id="1_jeni7"]
 [ext_resource type="Script" uid="uid://cpiw7n5wdansv" path="res://menus/customize_menu.gd" id="1_pv3cl"]
@@ -11,15 +11,7 @@
 font_size = 64
 font_color = Color(0, 0, 0, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_bkaet"]
-font_size = 32
-font_color = Color(0.4, 0.4, 0.4, 1)
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fjj0i"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_fxxvy"]
-font_size = 32
-font_color = Color(0.6, 0.6, 0.6, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_3qflv"]
 font_size = 40
@@ -95,23 +87,23 @@ text = "Hat Name"
 label_settings = SubResource("LabelSettings_o3nji")
 autowrap_mode = 3
 
-[node name="HatDescriptionLabel" type="Label" parent="HatInfoDisplay" groups=["DarkModeInvertColors"]]
+[node name="HatDescriptionLabel" type="RichTextLabel" parent="HatInfoDisplay" groups=["DarkModeInvertColors"]]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
+bbcode_enabled = true
 text = "Hat Description"
-label_settings = SubResource("LabelSettings_bkaet")
-autowrap_mode = 3
+fit_content = true
 
 [node name="UnlockHintSeparator" type="HSeparator" parent="HatInfoDisplay" groups=["DarkModeInvertColors"]]
 layout_mode = 2
 
-[node name="HatUnlockHintLabel" type="Label" parent="HatInfoDisplay" groups=["DarkModeInvertColors"]]
+[node name="HatUnlockHintLabel" type="RichTextLabel" parent="HatInfoDisplay" groups=["DarkModeInvertColors"]]
 material = SubResource("ShaderMaterial_fjj0i")
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
+bbcode_enabled = true
 text = "Unlock Hint"
-label_settings = SubResource("LabelSettings_fxxvy")
-autowrap_mode = 3
+fit_content = true
 
 [node name="BottomLeftControls" type="VBoxContainer" parent="." groups=["DarkModeInvertColors"]]
 anchors_preset = 2
@@ -157,5 +149,6 @@ texture_normal = ExtResource("3_q28ko")
 [node name="CustomizeMusic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_qawha")
 
+[connection signal="meta_clicked" from="HatInfoDisplay/HatUnlockHintLabel" to="." method="_on_hat_unlock_hint_label_meta_clicked"]
 [connection signal="text_changed" from="BottomLeftControls/FieldTexture/MultiplayerNameField" to="." method="_on_multiplayer_name_field_text_changed"]
 [connection signal="pressed" from="BottomLeftControls/BackButton" to="." method="_on_back_button_pressed"]
