@@ -74,7 +74,9 @@ func _on_pick_boardwalk_file_dialog_file_selected(path):
 func load_level_from_data(level_data):
 	var level = level_scene.instantiate()
 	var transition = ScreenTransitioner.custom_transition()
-	var task_id = WorkerThreadPool.add_task(level.load_level.bind(level_data))
+	var task_id = WorkerThreadPool.add_task(func():
+		level.load_level(level_data)
+	)
 	transition.transition_midway.connect(func():
 		WorkerThreadPool.wait_for_task_completion(task_id)
 		add_sibling(level)

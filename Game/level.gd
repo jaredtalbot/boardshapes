@@ -14,6 +14,8 @@ var player: Player
 
 var level_meta := {}
 var current_campaign_level: String = ""
+## workaround to https://github.com/godotengine/godot/issues/104004
+var should_load_next_level = false
 
 func create_level(img: Image, options: Dictionary):
 	loading_indicator.show()
@@ -44,7 +46,7 @@ func load_level(level_data: Variant):
 		show_error("Could not load level.")
 		return
 	
-	call_thread_safe("add_child", generated_level)
+	call_deferred("add_child", generated_level)
 	var start_pos = json["startPos"]
 	var end_pos = json["endPos"]
 	
@@ -147,7 +149,7 @@ func _set_goal_position():
 	$Goal.show()
 	start_game()
 	
-func _goal_reached(player: Node2D):
+func _goal_reached(_node):
 	completed.emit()
 	if current_campaign_level != "":
 		var tree = get_tree()
@@ -158,27 +160,36 @@ func _goal_reached(player: Node2D):
 			%Restart.call_deferred("grab_focus")
 		else:
 			player.set_physics_process(false)
-			var nextlevel = CampaignLevels.levels.data[currlevel + 1].path
-			
-			var transition = ScreenTransitioner.custom_transition()
-			var next_level_node = preload("res://level.tscn").instantiate()
-			next_level_node.current_campaign_level = nextlevel
-			var task_id = WorkerThreadPool.add_task(func():
-				var level_data = FileAccess.get_file_as_string(nextlevel)
-				next_level_node.load_level(level_data)
-			)
-			transition.transition_midway.connect(func():
-				WorkerThreadPool.wait_for_task_completion(task_id)
-				add_sibling(next_level_node)
-				get_tree().set_deferred("current_scene", next_level_node)
-				next_level_node.call_deferred("initialize_game")
-				queue_free()
-			)
-			transition.transition_canceled.connect(next_level_node.queue_free)
+			should_load_next_level = true
 	else:
 		player.set_physics_process(false)
 		$VictoryScreen.show()
 		%Restart.call_deferred("grab_focus")
+
+func _process(delta):
+	if should_load_next_level:
+		go_to_next_campaign_level()
+		should_load_next_level = false
+
+## workaround to https://github.com/godotengine/godot/issues/104004
+func go_to_next_campaign_level():
+	var currlevel = CampaignLevels.levels.data.map(func(l): return l.path).find(current_campaign_level)
+	var nextlevel = CampaignLevels.levels.data[currlevel + 1].path
+	var transition = ScreenTransitioner.custom_transition()
+	var next_level_node = preload("res://level.tscn").instantiate()
+	next_level_node.current_campaign_level = nextlevel
+	var task_id = WorkerThreadPool.add_task(func():
+		var level_data = FileAccess.get_file_as_string(nextlevel)
+		next_level_node.load_level(level_data)
+	)
+	transition.transition_midway.connect(func():
+		WorkerThreadPool.wait_for_task_completion(task_id)
+		add_sibling(next_level_node)
+		get_tree().set_deferred("current_scene", next_level_node)
+		next_level_node.call_deferred("initialize_game")
+		queue_free()
+	)
+	transition.transition_canceled.connect(next_level_node.queue_free)
 
 func _on_restart_button_pressed():
 	$VictoryScreen.hide()
