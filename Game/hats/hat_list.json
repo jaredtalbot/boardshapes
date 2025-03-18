@@ -39,5 +39,13 @@
 		"path": "res://hats/trafficcone/TrafficCone.tscn",
 		"description": "But I don't wanna take a detour!",
 		"unlock_hint": "Maybe if we put one of these up you wouldn't have died so much.",
+	},
+	{
+		"id": "bunk",
+		"name": "Commander Bunk's Helm",
+		"path": "res://hats/bunk/bunk.tscn",
+		"description": "Earth's Mightiest Defender",
+		"unlock_hint": "https://shenangelos.itch.io/bunk",
+		"always_unlocked": true
 	}
 ]
