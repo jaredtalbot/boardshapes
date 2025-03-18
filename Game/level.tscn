@@ -1,7 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://xklntftxk1rp"]
+[gd_scene load_steps=10 format=3 uid="uid://xklntftxk1rp"]
 
 [ext_resource type="Script" uid="uid://b417m8wnsghov" path="res://level.gd" id="1_rfdv8"]
-[ext_resource type="Script" uid="uid://bp2q1m2h8cd6i" path="res://level_generator.gd" id="1_rygds"]
 [ext_resource type="PackedScene" uid="uid://ca40sxi6lp5lx" path="res://touch_screen_controls.tscn" id="2_1knc0"]
 [ext_resource type="PackedScene" uid="uid://blw1ecr3vvp3q" path="res://loading_indicator.tscn" id="2_07l0p"]
 [ext_resource type="PackedScene" uid="uid://dssoorsi70ddi" path="res://pause_menu.tscn" id="5_eqw5b"]
@@ -17,9 +16,6 @@ font_size = 48
 script = ExtResource("1_rfdv8")
 
 [node name="TouchScreenControls" parent="." instance=ExtResource("2_1knc0")]
-
-[node name="LevelGenerator" type="Node" parent="."]
-script = ExtResource("1_rygds")
 
 [node name="LoadingIndicator" parent="." instance=ExtResource("2_07l0p")]
 visible = false
@@ -220,7 +216,6 @@ autostart = true
 [connection signal="resume_button_pressed" from="PauseMenu" to="." method="_on_resume_button_pressed"]
 [connection signal="pressed" from="StartEndSelection/StartSelect" to="." method="_set_player_start"]
 [connection signal="pressed" from="StartEndSelection/EndSelect" to="." method="_set_goal_position"]
-[connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/Restart" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/SaveLevel" to="." method="save_level"]
 [connection signal="pressed" from="VictoryScreen/Victory/MarginContainer/VBoxContainer/PlayAnotherLevel" to="." method="_on_back_button_pressed"]

@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=3 uid="uid://b8wrsm5wnf6rc"]
+
+[ext_resource type="Shader" uid="uid://db4pjb8buspo1" path="res://shaders/wipe.gdshader" id="1_0lslj"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c4swy"]
+shader = ExtResource("1_0lslj")
+shader_parameter/edge = 0.0
+shader_parameter/steps = 10
+shader_parameter/reverse = false
+
+[sub_resource type="Gradient" id="Gradient_rux23"]
+colors = PackedColorArray(1, 0, 0, 1, 1, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_0lslj"]
+gradient = SubResource("Gradient_rux23")
+width = 1920
+height = 1080
+
+[sub_resource type="GDScript" id="GDScript_0lslj"]
+script/source = "extends Sprite2D
+
+func _input(event):
+	if event.is_action_pressed(\"ui_accept\"):
+		var tween = create_tween()
+		var mat = (material as ShaderMaterial)
+		mat.set_shader_parameter(\"reverse\", false)
+		tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+		tween.tween_method(func(x): mat.set_shader_parameter(\"edge\", x), 0.0, 1.0, 3.0)
+		tween.tween_callback(func(): mat.set_shader_parameter(\"reverse\", true))
+		tween.tween_method(func(x): mat.set_shader_parameter(\"edge\", x), 1.0, 0.0, 3.0)
+"
+
+[node name="ShaderTestScene" type="Sprite2D"]
+material = SubResource("ShaderMaterial_c4swy")
+position = Vector2(960, 540)
+texture = SubResource("GradientTexture2D_0lslj")
+script = SubResource("GDScript_0lslj")

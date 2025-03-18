@@ -33,6 +33,7 @@ UnlockCheckerManager="*res://unlocks/unlock_checker_manager.gd"
 Notifications="*res://notifications.gd"
 AccessibilityShaderManager="*res://accessibility_shader_manager.gd"
 GlobalUI="res://ui/scenes/global_ui.tscn"
+ScreenTransitioner="*res://screen_transitioner.tscn"
 
 [display]
 

@@ -36,7 +36,7 @@ func _on_pick_image_file_dialog_file_selected(path):
 	image_confirmation.show()
 
 func _on_back_button_pressed():
-	get_tree().change_scene_to_file("res://menus/main.tscn")
+	ScreenTransitioner.change_scene_to_file("res://menus/main.tscn")
 
 func _on_web_pick_image_file_file_loaded(content: PackedByteArray, filename: String):
 	var image = Image.new()
@@ -62,7 +62,7 @@ func _on_image_confirmation_confirmed():
 	get_tree().set_deferred("current_scene", level)
 	queue_free()
 
-func _on_web_pick_boardwalk_file_file_loaded(content: PackedByteArray, filename: String):
+func _on_web_pick_boardwalk_file_file_loaded(content: PackedByteArray, _filename: String):
 	load_level_from_data(content)
 
 func _on_pick_boardwalk_file_dialog_file_selected(path):
@@ -73,10 +73,18 @@ func _on_pick_boardwalk_file_dialog_file_selected(path):
 
 func load_level_from_data(level_data):
 	var level = level_scene.instantiate()
-	add_sibling(level)
-	level.load_level(level_data)
-	get_tree().set_deferred("current_scene", level)
-	queue_free()
+	var transition = ScreenTransitioner.custom_transition()
+	var task_id = WorkerThreadPool.add_task(func():
+		level.load_level(level_data)
+	)
+	transition.transition_midway.connect(func():
+		WorkerThreadPool.wait_for_task_completion(task_id)
+		add_sibling(level)
+		get_tree().set_deferred("current_scene", level)
+		level.call_deferred("initialize_game")
+		queue_free()
+	)
+	transition.transition_canceled.connect(level.queue_free)
 	return level
 
 func _on_campaign_button_pressed():
@@ -86,7 +94,7 @@ func _on_campaign_button_pressed():
 
 
 func _on_customize_button_pressed() -> void:
-	get_tree().change_scene_to_file("res://menus/customize_menu.tscn")
+	ScreenTransitioner.change_scene_to_file("res://menus/customize_menu.tscn")
 
 
 func _on_challenge_button_pressed() -> void:

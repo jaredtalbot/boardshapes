@@ -52,7 +52,7 @@ document.getElementById('selectFiles{id}').onchange = async function() {
 func show():
 	JavaScriptBridge.eval("document.getElementById('selectFiles%s').click();" % str(id), true)
 	
-func _file_loaded_callback(args):
+func _file_loaded_callback(_args):
 	var content = JavaScriptBridge.eval("uploadedFile" + str(id), true)
 	var filename = JavaScriptBridge.eval("uploadedFileType" + str(id), true)
 	if content is PackedByteArray:

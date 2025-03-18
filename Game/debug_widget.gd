@@ -49,7 +49,7 @@ class WebServerOption extends CheckBox:
 		disabled = true
 		icon = preload("res://icons/pending.png")
 	
-	func _on_check_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray):
+	func _on_check_request_completed(result: int, response_code: int, _headers: PackedStringArray, _body: PackedByteArray):
 		var response_code_string = str(response_code)
 		if result != HTTPRequest.RESULT_SUCCESS \
 			or not (response_code_string.begins_with("2") or response_code_string.begins_with("3")):

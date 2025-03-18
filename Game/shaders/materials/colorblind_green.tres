@@ -1,9 +1,9 @@
 [gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://br3jac0sv6q28"]
 
-[ext_resource type="Shader" path="res://shaders/colorblind_green.gdshader" id="1_k1su8"]
+[ext_resource type="Shader" uid="uid://cobmql8l2qegn" path="res://shaders/colorblind_green.gdshader" id="1_k1su8"]
 [ext_resource type="Texture2D" uid="uid://b8qrlii5rmqi" path="res://green_cb.png" id="2_mg0ai"]
 
 [resource]
 shader = ExtResource("1_k1su8")
-shader_parameter/tile_size = 1.0
 shader_parameter/pattern = ExtResource("2_mg0ai")
+shader_parameter/tile_size = 1.0

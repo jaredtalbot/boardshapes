@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=3 uid="uid://byvj8kafaddfj"]
+
+[ext_resource type="Script" uid="uid://d0gtaybrrhjpy" path="res://screen_transitioner.gd" id="1_iot1q"]
+[ext_resource type="Shader" uid="uid://db4pjb8buspo1" path="res://shaders/wipe.gdshader" id="2_87a25"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_86qv6"]
+shader = ExtResource("2_87a25")
+shader_parameter/edge = 0.0
+shader_parameter/steps = 10
+shader_parameter/reverse = false
+
+[sub_resource type="Gradient" id="Gradient_6p8yk"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_0fet1"]
+gradient = SubResource("Gradient_6p8yk")
+width = 1
+height = 1
+
+[node name="ScreenTransitioner" type="Node"]
+process_mode = 3
+script = ExtResource("1_iot1q")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="WhiteScreen" type="TextureRect" parent="CanvasLayer"]
+unique_name_in_owner = true
+visible = false
+material = SubResource("ShaderMaterial_86qv6")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_0fet1")

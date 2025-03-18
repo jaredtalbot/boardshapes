@@ -11,7 +11,7 @@ var current_notification: Node
 func _ready():
 	layer = 3
 
-func _process(delta):
+func _process(_delta):
 	if len(notification_queue) and (
 			not current_notification
 			or not is_instance_valid(current_notification)
