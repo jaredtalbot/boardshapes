@@ -34,6 +34,13 @@
 		"unlock_hint": "Beat C's Level without jumping or dashing."
 	},
 	{
+		"id": "blockhead",
+		"name": "Blockhead",
+		"path": "res://hats/blockhead/blockhead.tscn",
+		"description": "Be there or be square.",
+		"unlock_hint": "Find the secret in J's level."
+	},
+	{
 		"id": "trafficcone",
 		"name": "Safety Cone",
 		"path": "res://hats/trafficcone/TrafficCone.tscn",

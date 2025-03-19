@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://bkd0o8cbnpgto"]
+
+[ext_resource type="Texture2D" uid="uid://cm1vaahrgj1dl" path="res://hats/blockhead/blockhead.png" id="1_fxxnt"]
+[ext_resource type="Script" uid="uid://3uy0eyo1x3sc" path="res://owned_after_image_emitter.gd" id="2_csbal"]
+
+[node name="BlockHead" type="Sprite2D" groups=["Hats"]]
+scale = Vector2(0.07, 0.07)
+texture = ExtResource("1_fxxnt")
+metadata/hatId = "blockhead"
+
+[node name="OwnedAfterImageEmitter" type="Node2D" parent="." node_paths=PackedStringArray("sprite")]
+script = ExtResource("2_csbal")
+sprite = NodePath("..")
+metadata/_custom_type_script = "uid://3uy0eyo1x3sc"
