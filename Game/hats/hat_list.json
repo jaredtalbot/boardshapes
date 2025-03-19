@@ -46,5 +46,12 @@
 		"path": "res://hats/bunk/bunk.tscn",
 		"description": "Earth's Mightiest Defender",
 		"unlock_hint": "[url=\"link:https://shenangelos.itch.io/bunk\"]https://shenangelos.itch.io/bunk[/url]"
+	},
+	{
+		"id": "colander",
+		"name": "Brain Drain",
+		"path": "res://hats/colander/colander.tscn",
+		"description": "The brim of a warrior.",
+		"unlock_hint": "Complete Challenge"
 	}
 ]

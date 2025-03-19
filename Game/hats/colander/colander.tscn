@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://v7p7hx0m23si"]
+
+[ext_resource type="Texture2D" uid="uid://cn2w1x62oxwo3" path="res://hats/colander/colander no lid.png" id="1_m8bow"]
+[ext_resource type="Texture2D" uid="uid://d01cherp1xv5s" path="res://hats/colander/lid no colander.png" id="2_xtwm7"]
+
+[node name="ColanderNoLid" type="Sprite2D"]
+position = Vector2(-1.22925, -4.94863)
+scale = Vector2(0.0532688, 0.0532688)
+texture = ExtResource("1_m8bow")
+metadata/hatId = "colander"
+
+[node name="LidNoColander" type="Sprite2D" parent="."]
+show_behind_parent = true
+z_index = -1
+position = Vector2(5, 35)
+texture = ExtResource("2_xtwm7")
+metadata/_edit_group_ = true
