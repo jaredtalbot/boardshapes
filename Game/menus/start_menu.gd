@@ -104,10 +104,3 @@ func _on_challenge_button_pressed() -> void:
 	var data := FileAccess.get_file_as_string("res://challenge/J'sChallenge.boardwalk")
 	var current_level = load_level_from_data(data)
 	current_level.current_challenge_level = ChallengeLevels.levels.data[0].path
-
-func _on_level_completed():
-	match current_level_type:
-		LevelType.CAMPAIGN:
-			ScreenTransitioner.change_scene_to_file("res://menus/campaign_menu.tscn")
-		LevelType.CHALLENGE:
-			ScreenTransitioner.change_scene_to_file("res://menus/challenge_menu.tscn")
