@@ -13,6 +13,7 @@ signal completed
 var player: Player
 
 var level_meta := {}
+var current_challenge_level: String = ""
 var current_campaign_level: String = ""
 ## workaround to https://github.com/godotengine/godot/issues/104004
 var should_load_next_level = false
