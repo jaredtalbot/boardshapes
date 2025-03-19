@@ -52,6 +52,6 @@
 		"name": "Brain Drain",
 		"path": "res://hats/colander/colander.tscn",
 		"description": "The brim of a warrior.",
-		"unlock_hint": "Complete Challenge"
+		"unlock_hint": "Complete the challenge campaign."
 	}
 ]
