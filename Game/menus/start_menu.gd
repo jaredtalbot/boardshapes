@@ -11,9 +11,6 @@ extends Control
 @onready var pick_boardwalk_file_dialog = $PickBoardwalkFileDialog
 @onready var image_confirmation = $ImageConfirmation
 
-enum LevelType { CAMPAIGN, CHALLENGE }
-var current_level_type: LevelType
-
 func _ready():
 	Music.stop_all_layers()
 	AccessibilityShaderManager.apply_shaders()
@@ -91,7 +88,6 @@ func load_level_from_data(level_data):
 	return level
 
 func _on_campaign_button_pressed():
-	current_level_type = LevelType.CAMPAIGN
 	var data := FileAccess.get_file_as_string("res://campaign/luke.boardwalk")
 	var current_level = load_level_from_data(data)
 	current_level.current_campaign_level = CampaignLevels.levels.data[0].path
@@ -100,7 +96,6 @@ func _on_customize_button_pressed() -> void:
 	ScreenTransitioner.change_scene_to_file("res://menus/customize_menu.tscn")
 
 func _on_challenge_button_pressed() -> void:
-	current_level_type = LevelType.CHALLENGE
 	var data := FileAccess.get_file_as_string("res://challenge/J'sChallenge.boardwalk")
 	var current_level = load_level_from_data(data)
 	current_level.current_challenge_level = ChallengeLevels.levels.data[0].path
