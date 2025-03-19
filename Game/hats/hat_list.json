@@ -13,6 +13,13 @@
 		"unlock_hint": "Beat a level."
 	},
 	{
+		"id": "pirate",
+		"name": "Sail-Setter",
+		"path": "res://hats/pirate/pirate.tscn",
+		"description": "Ahoy ye landlubbers!",
+		"unlock_hint": "Set the beginning and end of a level."
+	},
+	{
 		"id": "crown",
 		"name": "Crown",
 		"path": "res://hats/crown/crown.tscn",
