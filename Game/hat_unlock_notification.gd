@@ -6,7 +6,12 @@ extends Notification
 @onready var unlock_sound = $UnlockSound
 @onready var confetti = %Confetti
 
+signal meta_pressed(data: Variant)
+
 var hat_scene: PackedScene
+
+func _ready():
+	hat_unlock_hint_label.meta_clicked.connect(_on_hat_unlock_hint_label_meta_clicked)
 
 func load_hat_by_id(id: String) -> void:
 	var json: Dictionary
@@ -15,7 +20,10 @@ func load_hat_by_id(id: String) -> void:
 			json = v
 	hat_scene = load(json.path) if json.get("path") is String else null
 	hat_name_label.text = json.get("name", "Hat")
-	hat_unlock_hint_label.text = json.get("unlock_hint", "???")
+	hat_unlock_hint_label.clear()
+	hat_unlock_hint_label.push_color(Color(0.4, 0.4, 0.4))
+	hat_unlock_hint_label.append_text(json.get("unlock_hint", "???"))
+	hat_unlock_hint_label.pop_all()
 	
 	call_deferred("set_hat", hat_scene)
 
@@ -37,3 +45,8 @@ func set_hat(hat: PackedScene) -> void:
 	else:
 		if hat_holder.get_child_count() > 0:
 			hat_holder.get_child(0).queue_free()
+
+func _on_hat_unlock_hint_label_meta_clicked(meta):
+	meta_pressed.emit(meta)
+	if meta is String and meta.begins_with("link:"):
+		OS.shell_open(meta.trim_prefix("link:"))

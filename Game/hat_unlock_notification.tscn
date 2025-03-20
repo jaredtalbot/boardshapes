@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cy84ptparrj5m"]
+[gd_scene load_steps=14 format=3 uid="uid://cy84ptparrj5m"]
 
 [ext_resource type="Texture2D" uid="uid://dkkfdpbljgnl8" path="res://ui/sprites/notification_background.png" id="1_jncer"]
 [ext_resource type="Script" uid="uid://dkqiwlu0wxw4u" path="res://hat_unlock_notification.gd" id="2_imwe1"]
@@ -16,9 +16,6 @@ font_color = Color(0.4, 0.4, 0.4, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_jrma0"]
 font_size = 40
 font_color = Color(0, 0, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_o40ij"]
-font_color = Color(0.4, 0.4, 0.4, 1)
 
 [sub_resource type="Gradient" id="Gradient_xtbwl"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
@@ -105,15 +102,14 @@ text = "HAT NAME"
 label_settings = SubResource("LabelSettings_jrma0")
 uppercase = true
 
-[node name="HatUnlockHintLabel" type="Label" parent="MarginContainer/HBoxContainer/LabelContainer"]
+[node name="HatUnlockHintLabel" type="RichTextLabel" parent="MarginContainer/HBoxContainer/LabelContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 126)
 layout_mode = 2
 size_flags_vertical = 3
-text = "HAT UNLOCK HINT"
-label_settings = SubResource("LabelSettings_o40ij")
-autowrap_mode = 3
-max_lines_visible = 5
+bbcode_enabled = true
+text = "[color=666666]HAT UNLOCK HINT[/color]"
+fit_content = true
 
 [node name="SubViewport" type="SubViewport" parent="."]
 disable_3d = true
