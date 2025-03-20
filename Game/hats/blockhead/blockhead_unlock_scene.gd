@@ -19,7 +19,7 @@ func _process(delta):
 	if bound_player:
 		blockhead_collectable.global_position = blockhead_collectable.global_position.move_toward(
 			bound_player.global_position + Vector2(cos(t*PI) * 40, sin(t*PI) * 15), delta * 1000)
-		blockhead_collectable.z_index = 1 if t > 0.5 and t < 1.5 else -1
+		blockhead_collectable.z_index = -1 if t > 1 else 1
 	else:
 		blockhead_collectable.global_position = blockhead_collectable.global_position.move_toward(
 			collect_area.global_position, delta * 1000)
