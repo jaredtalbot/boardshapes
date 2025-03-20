@@ -44,7 +44,7 @@
 		"id": "blockhead",
 		"name": "Blockhead",
 		"path": "res://hats/blockhead/blockhead.tscn",
-		"description": "Be there or be square.",
+		"description": "Be there or be square.\n[i]Created by Wonda[/i]",
 		"unlock_hint": "Find the secret in J's level."
 	},
 	{
@@ -58,7 +58,7 @@
 		"id": "bunk",
 		"name": "Bunk's Helmet",
 		"path": "res://hats/bunk/bunk.tscn",
-		"description": "Earth's Mightiest Defender",
+		"description": "Earth's Mightiest Defender\n[i]Created by shenangelo[/i]",
 		"unlock_hint": "[url=\"link:https://shenangelos.itch.io/bunk\"]https://shenangelos.itch.io/bunk[/url]"
 	},
 	{
