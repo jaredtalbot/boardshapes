@@ -9,10 +9,12 @@ var base_url = ProjectSettings.get_setting("application/boardwalk/web_server_url
 signal loaded
 signal started
 signal completed
+signal pos_set
 
 var player: Player
 
 var level_meta := {}
+var current_challenge_level: String = ""
 var current_campaign_level: String = ""
 ## workaround to https://github.com/godotengine/godot/issues/104004
 var should_load_next_level = false
@@ -147,6 +149,7 @@ func _set_goal_position():
 	$StartEndSelection/EndSelect.disabled = true
 	$StartEndSelection/EndSelect.hide()
 	$Goal.show()
+	pos_set.emit()
 	start_game()
 	
 func _goal_reached(_node):

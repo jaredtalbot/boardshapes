@@ -13,6 +13,13 @@
 		"unlock_hint": "Beat a level."
 	},
 	{
+		"id": "pirate",
+		"name": "Sail-Setter",
+		"path": "res://hats/pirate/pirate.tscn",
+		"description": "Ahoy ye landlubbers!",
+		"unlock_hint": "Set the beginning and end of a level."
+	},
+	{
 		"id": "crown",
 		"name": "Crown",
 		"path": "res://hats/crown/crown.tscn",
@@ -53,5 +60,12 @@
 		"path": "res://hats/bunk/bunk.tscn",
 		"description": "Earth's Mightiest Defender",
 		"unlock_hint": "[url=\"link:https://shenangelos.itch.io/bunk\"]https://shenangelos.itch.io/bunk[/url]"
+	},
+	{
+		"id": "colander",
+		"name": "Brain Drain",
+		"path": "res://hats/colander/colander.tscn",
+		"description": "The brim of a warrior.",
+		"unlock_hint": "Complete the challenge campaign."
 	}
 ]

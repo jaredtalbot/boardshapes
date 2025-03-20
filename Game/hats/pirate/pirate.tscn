@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://1thhdfvk011j"]
+
+[ext_resource type="Texture2D" uid="uid://dy4p72kkq8jep" path="res://hats/pirate/pirate.png" id="1_1utpu"]
+[ext_resource type="Script" uid="uid://3uy0eyo1x3sc" path="res://owned_after_image_emitter.gd" id="2_o087r"]
+
+[node name="Pirate" type="Sprite2D" groups=["Hats"]]
+position = Vector2(-0.354, -6.835)
+scale = Vector2(0.042, 0.042)
+texture = ExtResource("1_1utpu")
+metadata/hatId = "pirate"
+
+[node name="OwnedAfterImageEmitter" type="Node2D" parent="." node_paths=PackedStringArray("sprite")]
+script = ExtResource("2_o087r")
+sprite = NodePath("..")
+metadata/_custom_type_script = "uid://3uy0eyo1x3sc"
