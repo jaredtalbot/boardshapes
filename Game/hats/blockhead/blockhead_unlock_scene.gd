@@ -28,7 +28,7 @@ func _process(delta):
 func bind_to_player(node: Node):
 	if node is Player:
 		bound_player = node
-		bound_player.died.connect(unbind_from_player)
+		bound_player.died.connect(unbind_from_player, CONNECT_ONE_SHOT)
 
 func unbind_from_player():
 	bound_player = null
