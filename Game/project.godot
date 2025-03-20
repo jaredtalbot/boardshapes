@@ -101,6 +101,10 @@ zoom={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_2="Player"
+
 [network]
 
 tls/certificate_bundle_override="res://trusted_certs/ca-certificates.crt"

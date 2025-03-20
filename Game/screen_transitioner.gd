@@ -6,6 +6,8 @@ var current_transition: ScreenTransition
 var transition_tween: Tween
 var next_scene_path: String
 
+signal transition_started(transition: ScreenTransition)
+
 func custom_transition() -> ScreenTransition:
 	if current_transition:
 		cancel_transition()
@@ -30,6 +32,7 @@ func custom_transition() -> ScreenTransition:
 	transition_tween.tween_callback(set.bind("screen_transitioning", false))
 	transition_tween.tween_callback(transition.free)
 	
+	transition_started.emit(transition)
 	return transition
 	
 
