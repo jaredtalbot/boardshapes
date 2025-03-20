@@ -18,8 +18,8 @@ scale_max = 1.5
 [node name="SampleEmitter" type="GPUParticles2D"]
 position = Vector2(2411, 536)
 scale = Vector2(5, 5)
-amount = 4
-lifetime = 40.0
+amount = 2
+lifetime = 60.0
 preprocess = 10.0
 randomness = 0.25
 trail_lifetime = 0.6

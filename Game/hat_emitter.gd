@@ -17,7 +17,7 @@ func load_hats():
 		if hat_scene:
 			var new_subviewport = create_subviewport()
 
-			set_hat_for_subviewport(new_subviewport, hat_scene)
+			set_hat_for_subviewport(new_subviewport, hat_scene, json.id)
 			
 			var new_particles = create_particles(new_subviewport)
 
@@ -36,12 +36,19 @@ func create_subviewport() -> SubViewport:
 
 	return viewport
 
-func set_hat_for_subviewport(viewport: SubViewport, hat: PackedScene):
+func set_hat_for_subviewport(viewport: SubViewport, hat: PackedScene, id: String):
 	var new_hat = hat.instantiate()
 	new_hat.scale *= 10
 	new_hat.position = Vector2(256,256)
-	new_hat.modulate = Color8(255, 255, 255, 125)
+	_update_modulation(new_hat, id)
+	Unlocks.updated.connect(func(): _update_modulation(new_hat, id))
 	viewport.add_child(new_hat)
+
+func _update_modulation(new_hat: Node2D, id: String):
+	if id in Unlocks.unlocked_hat_ids:
+		new_hat.modulate = Color8(255, 255, 255, 125)
+	else:
+		new_hat.modulate = Color8(0, 0, 0, 125)
 	
 func create_particles(viewport: SubViewport):
 	var particles_scene = preload("res://sample_emitter.tscn")
