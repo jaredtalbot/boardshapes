@@ -1,6 +1,8 @@
-extends RichTextLabel
+extends SubViewportContainer
 
 var LEVEL_TITLE_FONT = preload("res://The Brownies.otf")
+
+@onready var label: RichTextLabel = %Label
 
 var tween: Tween
 
@@ -29,28 +31,33 @@ func display_level_name(level_path: String, queue_free_after = true) -> bool:
 	for i in range(level_name_lines.size()):
 		level_name_lines[i] = " " + level_name_lines[i] + "\n"
 	
-	clear()
-	push_font(LEVEL_TITLE_FONT)
-	push_color(Color.WHITE)
-	push_outline_color(Color.BLACK)
-	push_outline_size(12)
-	push_font_size(64)
+	label.clear()
+	label.push_font(LEVEL_TITLE_FONT)
+	label.push_color(Color.WHITE)
+	label.push_outline_color(Color.BLACK)
+	label.push_outline_size(12)
+	label.push_font_size(64)
 	# title
-	add_text(level_name_lines[0])
-	pop()
-	push_font_size(20)
+	label.add_text(level_name_lines[0])
+	label.pop()
+	label.push_font_size(40)
 	for line in level_name_lines.slice(1):
-		add_text(line)
-	pop_all()
+		label.add_text(line)
+	label.pop_all()
 	
-	modulate = Color.TRANSPARENT
+	var mat = (material as ShaderMaterial)
+	mat.set_shader_parameter("edge", 0.0)
+	mat.set_shader_parameter("reverse", false)
 	
 	tween = create_tween()
-	tween.tween_property(self, "modulate", Color.WHITE, 1.0)
-	tween.tween_property(self, "modulate", Color.TRANSPARENT, 1.0).set_delay(3)
+	tween.tween_method(func(x): mat.set_shader_parameter("edge", x), 0.0, 1.0, 3.0).set_delay(0.5)
+	tween.tween_callback(mat.set_shader_parameter.bind("reverse", true)).set_delay(4.0)
+	tween.tween_method(func(x): mat.set_shader_parameter("edge", x), 1.0, 0.0, 3.0)
 	
 	if queue_free_after:
 		tween.tween_callback(queue_free)
+	else:
+		tween.tween_callback(hide)
 	
 	return true
 

@@ -1,9 +1,29 @@
-[gd_scene load_steps=2 format=3 uid="uid://db43b0ctmb8e1"]
+[gd_scene load_steps=4 format=3 uid="uid://db43b0ctmb8e1"]
 
+[ext_resource type="Shader" uid="uid://db4pjb8buspo1" path="res://shaders/wipe.gdshader" id="1_h5r5o"]
 [ext_resource type="Script" uid="uid://dkjhw4b3r2b1r" path="res://level_name_label.gd" id="1_xnu3o"]
 
-[node name="LevelNameLabel" type="RichTextLabel"]
-visible = false
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h5r5o"]
+shader = ExtResource("1_h5r5o")
+shader_parameter/edge = 0.0
+shader_parameter/steps = 10
+shader_parameter/reverse = false
+
+[node name="LevelNameLabel" type="SubViewportContainer"]
+material = SubResource("ShaderMaterial_h5r5o")
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+script = ExtResource("1_xnu3o")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(800, 800)
+render_target_update_mode = 4
+
+[node name="Label" type="RichTextLabel" parent="SubViewport"]
+unique_name_in_owner = true
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -14,4 +34,3 @@ grow_vertical = 2
 bbcode_enabled = true
 text = "[left][font_size={64}][font=res://The Brownies.otf][color=white][outline_color=black][outline_size=12] C 's Level[/outline_size][/outline_color][/color][/font][/font_size][/left]"
 fit_content = true
-script = ExtResource("1_xnu3o")
