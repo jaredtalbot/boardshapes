@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://db43b0ctmb8e1"]
+
+[ext_resource type="Script" uid="uid://dkjhw4b3r2b1r" path="res://level_name.gd" id="1_exmbr"]
+
+[node name="LevelName" type="RichTextLabel"]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 35.0
+offset_top = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+text = "[left][font_size={64}][font=res://The Brownies.otf][color=white][outline_color=black][outline_size=12] C 's Level[/outline_size][/outline_color][/color][/font][/font_size][/left]"
+fit_content = true
+script = ExtResource("1_exmbr")
