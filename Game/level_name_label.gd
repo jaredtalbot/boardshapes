@@ -38,11 +38,11 @@ func display_level_name(level_path: String, queue_free_after = true) -> bool:
 	label.push_outline_size(12)
 	label.push_font_size(64)
 	# title
-	label.add_text(level_name_lines[0])
+	label.append_text(level_name_lines[0])
 	label.pop()
 	label.push_font_size(40)
 	for line in level_name_lines.slice(1):
-		label.add_text(line)
+		label.append_text(line)
 	label.pop_all()
 	
 	var mat = (material as ShaderMaterial)
