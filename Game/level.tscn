@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://xklntftxk1rp"]
+[gd_scene load_steps=11 format=3 uid="uid://xklntftxk1rp"]
 
 [ext_resource type="Script" uid="uid://b417m8wnsghov" path="res://level.gd" id="1_rfdv8"]
 [ext_resource type="PackedScene" uid="uid://ca40sxi6lp5lx" path="res://touch_screen_controls.tscn" id="2_1knc0"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://biui41qabk6dn" path="res://ui/sprites/OptionButton.png" id="6_507j4"]
 [ext_resource type="PackedScene" uid="uid://3poplqifejqw" path="res://goal.tscn" id="7_h3hxs"]
 [ext_resource type="Script" uid="uid://cod7wr0j3kp3w" path="res://multiplayer_controller.gd" id="8_w82i2"]
+[ext_resource type="PackedScene" uid="uid://db43b0ctmb8e1" path="res://level_name_label.tscn" id="9_i2t4f"]
 [ext_resource type="PackedScene" uid="uid://bc8yj1ak2pgnc" path="res://mp_indicator.tscn" id="9_ww6yl"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_n0tpc"]
@@ -14,6 +15,11 @@ font_size = 48
 
 [node name="Level" type="Node" groups=["Levels"]]
 script = ExtResource("1_rfdv8")
+
+[node name="LevelNameLayer" type="CanvasLayer" parent="."]
+
+[node name="LevelNameLabel" parent="LevelNameLayer" instance=ExtResource("9_i2t4f")]
+unique_name_in_owner = true
 
 [node name="TouchScreenControls" parent="." instance=ExtResource("2_1knc0")]
 

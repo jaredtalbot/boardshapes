@@ -5,6 +5,7 @@ var base_url = ProjectSettings.get_setting("application/boardwalk/web_server_url
 @onready var loading_indicator = $LoadingIndicator
 @onready var multiplayer_timer = $MultiplayerTimer
 @onready var multiplayer_controller = $MultiplayerController
+@onready var level_name_label = %LevelNameLabel
 
 signal loaded
 signal started
@@ -80,7 +81,12 @@ func initialize_game():
 	loaded.emit()
 	if not Music.playing:
 		Music.play_all_layers()
-		
+	
+	if current_campaign_level:
+		level_name_label.display_level_name(current_campaign_level)
+	elif current_challenge_level:
+		level_name_label.display_level_name(current_challenge_level)
+	
 	var start_pos = level_meta.get("start_pos")
 	var end_pos = level_meta.get("end_pos")
 	
