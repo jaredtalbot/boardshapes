@@ -38,14 +38,14 @@
 		"name": "Swing-Specs",
 		"path": "res://hats/goggles/goggles.tscn",
 		"description": "Now you're seeing it my way!",
-		"unlock_hint": "Beat C's Level without jumping or dashing."
+		"unlock_hint": "Beat Elevation Station without jumping or dashing."
 	},
 	{
 		"id": "blockhead",
 		"name": "Blockhead",
 		"path": "res://hats/blockhead/blockhead.tscn",
 		"description": "Be there or be square.\n[i]Created by Wonda[/i]",
-		"unlock_hint": "Find the secret in J's level."
+		"unlock_hint": "Find the secret in Slippery Slope."
 	},
 	{
 		"id": "trafficcone",

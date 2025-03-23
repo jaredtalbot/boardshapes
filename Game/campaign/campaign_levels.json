@@ -1,14 +1,14 @@
 [
-  { "name": "insert name here", "path": "res://campaign/luke.boardwalk" },
-  { "name": "insert name here", "path": "res://campaign/z'slvl.boardwalk" },
-  { "name": "insert name here", "path": "res://campaign/level(1).boardwalk" },
-  { "name": "insert name here", "path": "res://campaign/cres.boardwalk" },
-  { "name": "insert name here", "path": "res://campaign/wonda.boardwalk" },
-  { "name": "insert name here", "path": "res://campaign/c'slvlbeta.boardwalk" },
-  { "name": "insert name here", "path": "res://campaign/jer'slvl.boardwalk" },
-  { "name": "C's Level", "path": "res://campaign/c'slvl.boardwalk" },
-  { "name": "insert name here", "path": "res://campaign/hibou.boardwalk" },
-  { "name": "insert name here", "path": "res://campaign/newshapesbyc.boardwalk" },
-  { "name": "insert name here", "path": "res://campaign/j'slvl.boardwalk" },
-  { "name": "insert name here", "path": "res://campaign/keroki.boardwalk" }
+  { "name": "Start It Off", "path": "res://campaign/luke.boardwalk" },
+  { "name": "Time To Learn Walljumps, Pal", "path": "res://campaign/z'slvl.boardwalk" },
+  { "name": "Granny Jumps", "path": "res://campaign/level(1).boardwalk" },
+  { "name": "Stunt Artist\nBy Cres", "path": "res://campaign/cres.boardwalk" },
+  { "name": "Cave of Faces\nBy Wonda", "path": "res://campaign/wonda.boardwalk" },
+  { "name": "[rainbow]Goa[/rainbow]", "path": "res://campaign/c'slvlbeta.boardwalk" },
+  { "name": "Wipeout", "path": "res://campaign/jer'slvl.boardwalk" },
+  { "name": "Elevation Station", "path": "res://campaign/c'slvl.boardwalk" },
+  { "name": "Stepping Stone\nBy Hibou", "path": "res://campaign/hibou.boardwalk" },
+  { "name": "Pacebreaker", "path": "res://campaign/newshapesbyc.boardwalk" },
+  { "name": "Slippery Slope", "path": "res://campaign/j'slvl.boardwalk" },
+  { "name": "Follow The Arrows", "path": "res://campaign/keroki.boardwalk" }
 ]
