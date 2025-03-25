@@ -192,6 +192,12 @@ func _physics_process(delta):
 		elif collider.is_in_group("Green") and collision.get_normal().dot(Vector2.UP) > 0.5 and not bonked_wall:
 			touched_green = true
 			dash_direction = get_direction()
+		elif collider.is_in_group("Green") and (collision.get_normal().dot(Vector2.RIGHT) > 0.5 or collision.get_normal().dot(Vector2.LEFT) > 0.5) and not bonked_wall:
+			velocity.y = JUMP_VELOCITY
+			if is_dashing == true:
+				velocity.x = get_wall_normal().x * dash_speed
+			if is_dashing == false:
+				velocity.x = get_wall_normal().x * SPEED
 		elif collider.is_in_group("Blue"):
 			velocity.y = -750
 	
