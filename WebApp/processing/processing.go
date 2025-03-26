@@ -94,12 +94,12 @@ func (r RegionPixel) IsInner() bool {
 }
 
 func (r RegionPixel) String() string {
-	return fmt.Sprintf("in region: %t; visited: %t; in mesh: %t", r.InRegion(), r.Visited(), r.IsOuter())
+	return fmt.Sprintf("in region: %t; visited: %t; in shape: %t", r.InRegion(), r.Visited(), r.IsOuter())
 }
 
-func (region *Region) CreateMesh() (mesh []Vertex, err error) {
+func (region *Region) CreateShape() (shape []Vertex, err error) {
 	if len(*region) == 0 {
-		return nil, errors.New("region-to-mesh: region is empty")
+		return nil, errors.New("region-to-shape: region is empty")
 	}
 	regionBounds := region.GetBounds()
 
@@ -133,7 +133,7 @@ func (region *Region) CreateMesh() (mesh []Vertex, err error) {
 		}
 	}
 
-	vertexMeshes := make([][]Vertex, 0, 1)
+	vertexShapees := make([][]Vertex, 0, 1)
 
 	// find inner pixels
 	for y := uint16(0); y < uint16(len(regionPixels[0])); y++ {
@@ -142,7 +142,7 @@ func (region *Region) CreateMesh() (mesh []Vertex, err error) {
 			// check if inner pixel
 			if !rp.Visited() && !rp.IsOuter() {
 				verticesToVisit := []Vertex{{x, y}}
-				newInnerMesh := make([]Vertex, 0, regionBounds.Dx()+regionBounds.Dy())
+				newInnerShape := make([]Vertex, 0, regionBounds.Dx()+regionBounds.Dy())
 				// visit inner pixels
 				for len(verticesToVisit) > 0 {
 					v := verticesToVisit[len(verticesToVisit)-1]
@@ -153,7 +153,7 @@ func (region *Region) CreateMesh() (mesh []Vertex, err error) {
 							if !regionPixels[x][y].Visited() && !regionPixels[x][y].IsInner() {
 								if regionPixels[x][y].IsOuter() {
 									regionPixels[x][y].MarkIsInner()
-									newInnerMesh = append(newInnerMesh, Vertex{x, y})
+									newInnerShape = append(newInnerShape, Vertex{x, y})
 								} else {
 									verticesToVisit = append(verticesToVisit, Vertex{x, y})
 								}
@@ -162,7 +162,7 @@ func (region *Region) CreateMesh() (mesh []Vertex, err error) {
 
 					}
 				}
-				vertexMeshes = append(vertexMeshes, newInnerMesh)
+				vertexShapees = append(vertexShapees, newInnerShape)
 			}
 		}
 	}
@@ -172,26 +172,26 @@ func (region *Region) CreateMesh() (mesh []Vertex, err error) {
 		vertexMatrix[i] = make([]bool, regionBounds.Dy())
 	}
 
-	if len(vertexMeshes) == 0 {
-		return nil, errors.New("region-to-mesh: region is too thin")
+	if len(vertexShapees) == 0 {
+		return nil, errors.New("region-to-shape: region is too thin")
 	}
 
-	vertexMesh := slices.MaxFunc(vertexMeshes, func(a, b []Vertex) int {
+	vertexShape := slices.MaxFunc(vertexShapees, func(a, b []Vertex) int {
 		return cmp.Compare(len(a), len(b))
 	})
 
 	// translate all vertices by (-1, -1)
 	// necessary because we added extra space for the region up above
-	for i, v := range vertexMesh {
-		vertexMesh[i].X--
-		vertexMesh[i].Y--
+	for i, v := range vertexShape {
+		vertexShape[i].X--
+		vertexShape[i].Y--
 		vertexMatrix[v.X-1][v.Y-1] = true
 	}
 
 	var previousVertex Vertex
 	var isPreviousVertexSet = false
-	var currentVertex Vertex = vertexMesh[0]
-	sortedOuterVertexMesh := make([]Vertex, 0, len(vertexMesh))
+	var currentVertex Vertex = vertexShape[0]
+	sortedOuterVertexShape := make([]Vertex, 0, len(vertexShape))
 
 	for {
 		adjacentVertices := make([]Vertex, 0, 8)
@@ -203,16 +203,16 @@ func (region *Region) CreateMesh() (mesh []Vertex, err error) {
 		})
 
 		if len(adjacentVertices) != 2 {
-			return nil, errors.New("region-to-mesh: mesh generation failed")
+			return nil, errors.New("region-to-shape: shape generation failed")
 		}
 
 		if !isPreviousVertexSet {
 			isPreviousVertexSet = true
 			previousVertex = adjacentVertices[0]
-			sortedOuterVertexMesh = append(sortedOuterVertexMesh, previousVertex)
+			sortedOuterVertexShape = append(sortedOuterVertexShape, previousVertex)
 		}
 
-		sortedOuterVertexMesh = append(sortedOuterVertexMesh, currentVertex)
+		sortedOuterVertexShape = append(sortedOuterVertexShape, currentVertex)
 
 		if adjacentVertices[0] == previousVertex {
 			previousVertex = currentVertex
@@ -222,12 +222,12 @@ func (region *Region) CreateMesh() (mesh []Vertex, err error) {
 			currentVertex = adjacentVertices[0]
 		}
 
-		if currentVertex == sortedOuterVertexMesh[0] {
-			return sortedOuterVertexMesh, nil
+		if currentVertex == sortedOuterVertexShape[0] {
+			return sortedOuterVertexShape, nil
 		}
 
-		if len(sortedOuterVertexMesh) >= len(vertexMesh) {
-			return nil, errors.New("region-to-mesh: could not close mesh")
+		if len(sortedOuterVertexShape) >= len(vertexShape) {
+			return nil, errors.New("region-to-shape: could not close shape")
 		}
 	}
 }
@@ -244,16 +244,16 @@ func (v1 Vertex) DirectionTo(v2 Vertex) (x, y float64) {
 	return (answerX / mag), (answerY / mag)
 }
 
-func StraightOpt(sortedVertexMesh []Vertex) []Vertex {
-	for i := 2; i < len(sortedVertexMesh); i++ {
-		x1, y1 := sortedVertexMesh[i-2].DirectionTo(sortedVertexMesh[i-1])
-		x2, y2 := sortedVertexMesh[i-1].DirectionTo(sortedVertexMesh[i])
+func StraightOpt(sortedVertexShape []Vertex) []Vertex {
+	for i := 2; i < len(sortedVertexShape); i++ {
+		x1, y1 := sortedVertexShape[i-2].DirectionTo(sortedVertexShape[i-1])
+		x2, y2 := sortedVertexShape[i-1].DirectionTo(sortedVertexShape[i])
 		if x1 == x2 && y1 == y2 {
-			sortedVertexMesh = append(sortedVertexMesh[:i-1], sortedVertexMesh[i:]...)
+			sortedVertexShape = append(sortedVertexShape[:i-1], sortedVertexShape[i:]...)
 			i--
 		}
 	}
-	return sortedVertexMesh
+	return sortedVertexShape
 }
 
 func PrintMatrix(matrix [][]bool) {

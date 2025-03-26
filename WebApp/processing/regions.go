@@ -6,7 +6,7 @@ import (
 	"slices"
 )
 
-func BuildRegionMap(img image.Image, options RegionMapOptions, predicate func(*Region) bool) *RegionMap {
+func BuildRegionMap(img image.Image, options RegionMapOptions, regionFilter func(*Region) bool) *RegionMap {
 	regionMap := RegionMap{make([]*Region, 0, 20), make(map[Pixel]*RegionIndex, (img.Bounds().Dx()*img.Bounds().Dy())/4), make([]*RegionIndex, 0), options}
 
 	bd := img.Bounds()
@@ -21,9 +21,9 @@ func BuildRegionMap(img image.Image, options RegionMapOptions, predicate func(*R
 		}
 	}
 
-	if predicate != nil {
+	if regionFilter != nil {
 		for i, region := range regionMap.regions {
-			if region != nil && !predicate(region) {
+			if region != nil && !regionFilter(region) {
 				regionMap.regions[i] = nil
 			}
 		}

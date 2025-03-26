@@ -187,12 +187,12 @@ func buildLevel(c *gin.Context) {
 		}
 		base64Region := base64.StdEncoding.EncodeToString(buf.Bytes())
 
-		mesh, err := region.CreateMesh()
+		shape, err := region.CreateShape()
 		if err != nil {
 			continue
 		}
-		optimizedMesh := processing.StraightOpt(mesh)
-		r := RegionData{i, regionColor, regionColorString, minX, minY, base64Region, optimizedMesh}
+		optimizedShape := processing.StraightOpt(shape)
+		r := RegionData{i, regionColor, regionColorString, minX, minY, base64Region, optimizedShape}
 		data = append(data, r)
 	}
 
