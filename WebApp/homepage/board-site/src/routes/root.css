@@ -17,8 +17,8 @@
 
 .body1 {
   margin: 0 auto;
-  padding-left: 4em;
-  padding-right: 4em;
+  padding-left: 2em;
+  padding-right: 2em;
   padding-bottom: 3em;
   text-align: center;
   font-size: large;
@@ -26,11 +26,33 @@
   overflow-wrap: break-word;
 }
 
+#paraJustify {
+  text-align: justify;
+}
+
+#bodylist {
+  text-align: justify;
+}
+
+.AboutGroup {
+  flex-direction: row;
+  align-items: center;
+  gap: 1em;
+}
+
+.AboutTitleAndDescription {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05em;
+}
+
 .AboutTitle {
   color: #000000;
   font-size: xx-large;
   font-weight: 600;
-  padding-top: 0;
+  text-align: left;
+  margin-top: 0;
+  margin-bottom: 0.05em;
 }
 
 a.AboutTitle {
@@ -46,7 +68,16 @@ a.AboutTitle:hover {
 .AboutDescription {
   color: #000000;
   font-size: large;
-  padding-bottom: 2em;
+  text-align: justify;
+  margin-top: 0.05em;
+}
+
+.hat {
+  opacity: 1;
+  height: 9rem;
+  align-items: center;
+  rotate: 315deg;
+  margin-top: 2em;
 }
 
 .boardshapes-text-container {
@@ -58,6 +89,19 @@ a.AboutTitle:hover {
 .logoMain {
   width: 100%;
   max-width: 960px;
+}
+
+.hatlink {
+  transition: all 300ms;
+}
+
+.hatlink:hover {
+  filter: drop-shadow(0 0 2em #27272baa);
+  transform: scale(1.2);
+}
+
+.hatlink.react:hover {
+  filter: drop-shadow(0 0 2em #27272baa);
 }
 
 .logo {
@@ -83,6 +127,7 @@ a.AboutTitle:hover {
 
 .read-the-docs {
   color: #000000;
+  margin-top: 4em;
 }
 
 .link:hover {
@@ -95,4 +140,25 @@ a.AboutTitle:hover {
 
 #error-page {
   min-height: 600px;
+}
+
+@media (width >= 780px) {
+  .body1 {
+    padding-left: 4em;
+    padding-right: 4em;
+  }
+
+  .AboutGroup {
+    display: flex;
+    padding-left: 2em;
+    padding-right: 2em;
+  }
+
+  .AboutTitle {
+    margin-top: 1em;
+  }
+
+  .hat {
+    margin-top: 0;
+  }
 }
