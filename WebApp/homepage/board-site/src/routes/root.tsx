@@ -20,7 +20,7 @@ function Root() {
               Tapping <strong>"Boardwalk"</strong> will take you to our game
               implementation of the Boardshapes API, Boardwalk. Boardwalk is a
               single-screen platformer that allows the player to traverse their
-              newly created meshes.
+              newly created shapes.
             </li>
             <li>
               Tapping <strong>"Boardshapes"</strong> will take you to the User
@@ -29,7 +29,7 @@ function Root() {
             <li>
               Tapping the third logo will take you to our Physics Sim,{" "}
               <strong>Boardbox</strong>. This allows you to interact with your
-              new meshes in a very direct manner.
+              new shapes in a very direct manner.
             </li>
             <li>
               Tapping the <strong>Github</strong> logo will take you to our
