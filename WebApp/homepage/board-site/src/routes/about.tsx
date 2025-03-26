@@ -88,7 +88,7 @@ function About() {
             <p className="AboutTitle">Zachary</p>
             <p className="AboutDescription">
               The main developer behind integrating our many systems together.
-              Zach built the most important parts of the web API for
+              Zachary built the most important parts of the web API for
               Boardshapes, allowing it to take any image and respond with the
               many shapes in the image that our algorithms have detected and
               identified. He then brought the power of Boardshapes to Boardwalk,
