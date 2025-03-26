@@ -76,7 +76,7 @@ a.AboutTitle:hover {
 
 .hat {
   opacity: 1;
-  height: 5em;
+  height: 9rem;
   align-items: center;
   rotate: 315deg;
   margin-top: 0;
@@ -91,6 +91,10 @@ a.AboutTitle:hover {
 .logoMain {
   width: 100%;
   max-width: 960px;
+}
+
+.hatlink {
+  transition: all 300ms;
 }
 
 .hatlink:hover {
