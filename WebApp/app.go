@@ -5,6 +5,7 @@ import (
 	"codejester27/cmps401fa2024/web-app/processing"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"strings"
 
 	"image"
@@ -31,6 +32,38 @@ var (
 	ListenerToken = os.Getenv(LISTENER_TOKEN_ENV)
 	Port          = os.Getenv(PORT_ENV)
 )
+
+var IMAGE_NO_SET_ERROR = errors.New("Cannot use an image that has no Set method in buildRegionMapForWebAPI")
+
+type SettableImage = interface {
+	image.Image
+	Set(x, y int, color color.Color)
+}
+
+func buildRegionMapForWebAPI(img image.Image, options processing.RegionMapOptions) (regionMap *processing.RegionMap) {
+	var removedColor color.Color
+	if options.AllowWhite {
+		removedColor = processing.Blank
+	} else {
+		removedColor = processing.White
+	}
+
+	regionMap = processing.BuildRegionMap(img, options, func(r *processing.Region) bool {
+		if len(*r) >= processing.MINIMUM_NUMBER_OF_PIXELS_FOR_VALID_REGION {
+			return true
+		}
+		if i, ok := img.(SettableImage); ok {
+			for _, pixel := range *r {
+				i.Set(int(pixel.X), int(pixel.Y), removedColor)
+			}
+		} else {
+			panic(IMAGE_NO_SET_ERROR)
+		}
+		return false
+	})
+
+	return regionMap
+}
 
 func simplifyImage(c *gin.Context) {
 	c.SetAccepted("multipart/form-data")
@@ -72,7 +105,9 @@ func simplifyImage(c *gin.Context) {
 		return
 	}
 
-	newImg, regionCount, _ := processing.SimplifyImage(img, processing.RegionMapOptions{NoColorSeparation: false, AllowWhite: false})
+	newImg := processing.SimplifyImage(img, processing.RegionMapOptions{NoColorSeparation: false, AllowWhite: false})
+
+	regionMap := buildRegionMapForWebAPI(newImg, processing.RegionMapOptions{})
 
 	buf := new(bytes.Buffer)
 	if err := png.Encode(buf, newImg); err != nil {
@@ -87,7 +122,7 @@ func simplifyImage(c *gin.Context) {
 				ContentType:   "image/png",
 				Base64Content: base64Img,
 				Meta: map[string]any{
-					"regionCount": regionCount,
+					"regionCount": len(regionMap.GetRegions()),
 				},
 			},
 		},
@@ -141,10 +176,14 @@ func buildLevel(c *gin.Context) {
 		return
 	}
 
-	newImg, _, regionMap := processing.SimplifyImage(img, processing.RegionMapOptions{
+	opts := processing.RegionMapOptions{
 		NoColorSeparation: noColorSeparation,
 		AllowWhite:        allowWhite,
-	})
+	}
+
+	newImg := processing.SimplifyImage(img, opts)
+
+	regionMap := buildRegionMapForWebAPI(newImg, opts)
 
 	numRegions := len(regionMap.GetRegions())
 	data := make([]RegionData, 0, numRegions)
@@ -222,7 +261,7 @@ type RegionData struct {
 	CornerX           int                 `json:"cornerX"`
 	CornerY           int                 `json:"cornerY"`
 	RegionImage       string              `json:"regionImage"`
-	Mesh              []processing.Vertex `json:"mesh"`
+	Shape             []processing.Vertex `json:"shape"`
 }
 
 type AttachedFile struct {

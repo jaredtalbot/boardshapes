@@ -50,8 +50,6 @@ func GetNRGBA(c color.Color) color.NRGBA {
 
 var ErrImageTooWide = errors.New("image is too wide")
 
-type RegionPixelStatus uint8
-
 type RegionPixel byte
 
 const (
@@ -302,7 +300,7 @@ func ResizeImage(img image.Image) (image.Image, error) {
 	return img, nil
 }
 
-func SimplifyImage(img image.Image, options RegionMapOptions) (result image.Image, regionCount int, regionMap *RegionMap) {
+func SimplifyImage(img image.Image, options RegionMapOptions) (result image.Image) {
 	bd := img.Bounds()
 	var newImg *image.Paletted
 	if options.AllowWhite {
@@ -343,26 +341,7 @@ func SimplifyImage(img image.Image, options RegionMapOptions) (result image.Imag
 		}
 	}
 
-	var removedColor color.Color
-	if options.AllowWhite {
-		removedColor = Blank
-	} else {
-		removedColor = White
-	}
-
-	regionMap = BuildRegionMap(newImg, options, func(r *Region) bool {
-		if len(*r) < MINIMUM_NUMBER_OF_PIXELS_FOR_VALID_REGION {
-			for _, pixel := range *r {
-				newImg.Set(int(pixel.X), int(pixel.Y), removedColor)
-			}
-			return false
-		} else {
-			regionCount++
-			return true
-		}
-	})
-
-	return newImg, regionCount, regionMap
+	return newImg
 }
 
 func forNonDiagonalAdjacents(x, y uint16, maxX, maxY int, function func(x, y uint16)) {
