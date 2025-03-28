@@ -26,7 +26,7 @@ func BenchmarkBuildRegionMap(b *testing.B) {
 	type args struct {
 		img          image.Image
 		options      RegionMapOptions
-		regionFilter func(*Region) bool
+		regionFilter func(Region) bool
 	}
 	benchmarks := []struct {
 		name string

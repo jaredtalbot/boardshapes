@@ -48,12 +48,12 @@ func buildRegionMapForWebAPI(img image.Image, options processing.RegionMapOption
 		removedColor = processing.White
 	}
 
-	regionMap = processing.BuildRegionMap(img, options, func(r *processing.Region) bool {
-		if len(*r) >= processing.MINIMUM_NUMBER_OF_PIXELS_FOR_VALID_REGION {
+	regionMap = processing.BuildRegionMap(img, options, func(r processing.Region) bool {
+		if len(r) >= processing.MINIMUM_NUMBER_OF_PIXELS_FOR_VALID_REGION {
 			return true
 		}
 		if i, ok := img.(SettableImage); ok {
-			for _, pixel := range *r {
+			for _, pixel := range r {
 				i.Set(int(pixel.X), int(pixel.Y), removedColor)
 			}
 		} else {
@@ -189,7 +189,7 @@ func buildLevel(c *gin.Context) {
 	data := make([]RegionData, 0, numRegions)
 
 	for i := 0; i < numRegions; i++ {
-		region := regionMap.GetRegion(processing.RegionIndex(i))
+		region := regionMap.GetRegion(processing.RegionId(i))
 
 		minX, minY := processing.FindRegionPosition(region)
 		regionColor := processing.GetColorOfRegion(region, newImg, noColorSeparation)
