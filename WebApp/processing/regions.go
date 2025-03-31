@@ -47,6 +47,11 @@ type Vertex struct {
 }
 
 type RegionId uint
+
+func (r RegionId) GetRegionIndex() int {
+	return int(r - 1)
+}
+
 type Region []Pixel
 
 type RegionMap struct {
@@ -67,7 +72,7 @@ func (rm *RegionMap) NewRegion(pixel Pixel) (region RegionId) {
 }
 
 func (rm *RegionMap) AddPixelToRegion(pixel Pixel, region RegionId) {
-	rm.regions[region-1] = append(rm.regions[region-1], pixel)
+	rm.regions[region.GetRegionIndex()] = append(rm.regions[region.GetRegionIndex()], pixel)
 	rm.pixels[pixel.Y][pixel.X] = region
 }
 
@@ -103,7 +108,7 @@ func (rm *RegionMap) GetRegionOfPixel(pixel Pixel) (regionId RegionId) {
 }
 
 func (rm *RegionMap) GetRegion(region RegionId) Region {
-	if rp := rm.regions[region]; rp != nil {
+	if rp := rm.regions[region.GetRegionIndex()]; rp != nil {
 		return rp
 	}
 	return nil

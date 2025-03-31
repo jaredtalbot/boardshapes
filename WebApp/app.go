@@ -188,7 +188,7 @@ func buildLevel(c *gin.Context) {
 	numRegions := len(regionMap.GetRegions())
 	data := make([]RegionData, 0, numRegions)
 
-	for i := 0; i < numRegions; i++ {
+	for i := 1; i < numRegions+1; i++ {
 		region := regionMap.GetRegion(processing.RegionId(i))
 
 		minX, minY := processing.FindRegionPosition(region)
