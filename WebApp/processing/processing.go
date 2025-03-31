@@ -131,7 +131,7 @@ func (region *Region) CreateShape() (shape []Vertex, err error) {
 		}
 	}
 
-	vertexShapees := make([][]Vertex, 0, 1)
+	vertexShapes := make([][]Vertex, 0, 1)
 
 	// find inner pixels
 	for y := uint16(0); y < uint16(len(regionPixels[0])); y++ {
@@ -160,7 +160,7 @@ func (region *Region) CreateShape() (shape []Vertex, err error) {
 
 					}
 				}
-				vertexShapees = append(vertexShapees, newInnerShape)
+				vertexShapes = append(vertexShapes, newInnerShape)
 			}
 		}
 	}
@@ -170,11 +170,11 @@ func (region *Region) CreateShape() (shape []Vertex, err error) {
 		vertexMatrix[i] = make([]bool, regionBounds.Dy())
 	}
 
-	if len(vertexShapees) == 0 {
+	if len(vertexShapes) == 0 {
 		return nil, errors.New("region-to-shape: region is too thin")
 	}
 
-	vertexShape := slices.MaxFunc(vertexShapees, func(a, b []Vertex) int {
+	vertexShape := slices.MaxFunc(vertexShapes, func(a, b []Vertex) int {
 		return cmp.Compare(len(a), len(b))
 	})
 
