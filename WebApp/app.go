@@ -185,11 +185,12 @@ func buildLevel(c *gin.Context) {
 
 	regionMap := buildRegionMapForWebAPI(newImg, opts)
 
-	numRegions := len(regionMap.GetRegions())
+	regions := regionMap.GetRegions()
+	numRegions := len(regions)
 	data := make([]RegionData, 0, numRegions)
 
-	for i := 1; i < numRegions+1; i++ {
-		region := regionMap.GetRegion(processing.RegionId(i))
+	for i := 0; i < numRegions; i++ {
+		region := regionMap.GetRegionByIndex(i)
 
 		minX, minY := processing.FindRegionPosition(region)
 		regionColor := processing.GetColorOfRegion(region, newImg, noColorSeparation)

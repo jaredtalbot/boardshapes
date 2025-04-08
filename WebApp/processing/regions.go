@@ -7,9 +7,9 @@ import (
 
 func BuildRegionMap(img image.Image, options RegionMapOptions, regionFilter func(Region) bool) *RegionMap {
 	dx, dy := img.Bounds().Dx(), img.Bounds().Dy()
-	regionMap := RegionMap{make([]Region, 0, 20), make([][]RegionId, dy), options}
+	regionMap := RegionMap{make([]Region, 0, 20), make([][]Region, dy), options}
 	for i := range regionMap.pixels {
-		regionMap.pixels[i] = make([]RegionId, dx)
+		regionMap.pixels[i] = make([]Region, dx)
 	}
 
 	bd := img.Bounds()
@@ -46,17 +46,11 @@ type Vertex struct {
 	Y uint16 `json:"y"`
 }
 
-type RegionId uint
-
-func (r RegionId) GetRegionIndex() int {
-	return int(r - 1)
-}
-
 type Region []Pixel
 
 type RegionMap struct {
 	regions []Region
-	pixels  [][]RegionId
+	pixels  [][]Region
 	options RegionMapOptions
 }
 
@@ -64,15 +58,15 @@ type RegionMapOptions struct {
 	NoColorSeparation, AllowWhite bool
 }
 
-func (rm *RegionMap) NewRegion(pixel Pixel) (region RegionId) {
-	region = RegionId(len(rm.regions) + 1)
-	rm.regions = append(rm.regions, Region{pixel})
+func (rm *RegionMap) NewRegion(pixel Pixel) (region Region) {
+	region = Region{pixel}
+	rm.regions = append(rm.regions, region)
 	rm.pixels[pixel.Y][pixel.X] = region
 	return
 }
 
-func (rm *RegionMap) AddPixelToRegion(pixel Pixel, region RegionId) {
-	rm.regions[region.GetRegionIndex()] = append(rm.regions[region.GetRegionIndex()], pixel)
+func (rm *RegionMap) AddPixelToRegion(pixel Pixel, region Region) {
+	region = append(region, pixel)
 	rm.pixels[pixel.Y][pixel.X] = region
 }
 
@@ -100,18 +94,15 @@ func (rm *RegionMap) AddPixelToRegionMap(pixel Pixel, img image.Image) {
 }
 
 func (rm *RegionMap) GetPixelHasRegion(pixel Pixel) (hasRegion bool) {
-	return rm.pixels[pixel.Y][pixel.X] != 0
+	return rm.pixels[pixel.Y][pixel.X] != nil
 }
 
-func (rm *RegionMap) GetRegionOfPixel(pixel Pixel) (regionId RegionId) {
+func (rm *RegionMap) GetRegionOfPixel(pixel Pixel) (region Region) {
 	return rm.pixels[pixel.Y][pixel.X]
 }
 
-func (rm *RegionMap) GetRegion(region RegionId) Region {
-	if rp := rm.regions[region.GetRegionIndex()]; rp != nil {
-		return rp
-	}
-	return nil
+func (rm *RegionMap) GetRegionByIndex(i int) Region {
+	return rm.regions[i]
 }
 
 func (rm *RegionMap) GetRegions() []Region {
