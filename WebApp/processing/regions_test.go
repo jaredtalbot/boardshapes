@@ -106,7 +106,15 @@ func TestBuildRegionMap(t *testing.T) {
 			stride := img.Bounds().Dx()
 
 			sortedRegions := slices.SortedFunc(slices.Values(rm.GetRegions()), func(a, b *Region) int {
-				return (a.GetBounds().Min.X + a.GetBounds().Min.Y*stride) - (b.GetBounds().Min.X + b.GetBounds().Min.Y*stride)
+				pixcomp := func(a, b Pixel) int {
+					if a.Y == b.Y {
+						return int(a.X) - int(b.X)
+					}
+					return int(a.Y) - int(b.Y)
+				}
+				minA := slices.MinFunc(*a, pixcomp)
+				minB := slices.MinFunc(*b, pixcomp)
+				return pixcomp(minA, minB)
 			})
 
 			for i, v := range sortedRegions {
