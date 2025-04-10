@@ -36,7 +36,7 @@ func loadImage(path string) image.Image {
 type regionTestArgs struct {
 	img          image.Image
 	options      RegionMapOptions
-	regionFilter func(Region) bool
+	regionFilter func(*Region) bool
 }
 
 type regionTest struct {
@@ -105,12 +105,12 @@ func TestBuildRegionMap(t *testing.T) {
 
 			stride := img.Bounds().Dx()
 
-			sortedRegions := slices.SortedFunc(slices.Values(rm.GetRegions()), func(a, b Region) int {
+			sortedRegions := slices.SortedFunc(slices.Values(rm.GetRegions()), func(a, b *Region) int {
 				return (a.GetBounds().Min.X + a.GetBounds().Min.Y*stride) - (b.GetBounds().Min.X + b.GetBounds().Min.Y*stride)
 			})
 
 			for i, v := range sortedRegions {
-				for _, p := range v {
+				for _, p := range *v {
 					currentRegionIds[int(p.X)+int(p.Y)*stride] = uint64(i + 1)
 				}
 			}
@@ -161,7 +161,9 @@ func TestBuildRegionMap(t *testing.T) {
 
 					for i, v := range currentRegionIds {
 						if byte(v) != targetRegionIdsBytes[i] {
-							t.Fatalf("Snapshot %s failed: current regionmap does not match snapshot", tt.name)
+							t.Logf("Snapshot %s failed: current regionmap does not match snapshot (at (%d, %d): %d != %d)",
+								tt.name, i%stride, i/stride, v, targetRegionIdsBytes[i])
+							t.Fail()
 						}
 					}
 
@@ -179,7 +181,9 @@ func TestBuildRegionMap(t *testing.T) {
 
 					for i, v := range currentRegionIds {
 						if uint16(v) != targetRegionIds[i] {
-							t.Fatalf("Snapshot %s failed: current regionmap does not match snapshot", tt.name)
+							t.Logf("Snapshot %s failed: current regionmap does not match snapshot (at (%d, %d): %d != %d)",
+								tt.name, i%stride, i/stride, v, targetRegionIds[i])
+							t.Fail()
 						}
 					}
 				case 32:
@@ -196,7 +200,9 @@ func TestBuildRegionMap(t *testing.T) {
 
 					for i, v := range currentRegionIds {
 						if uint32(v) != targetRegionIds[i] {
-							t.Fatalf("Snapshot %s failed: current regionmap does not match snapshot", tt.name)
+							t.Logf("Snapshot %s failed: current regionmap does not match snapshot (at (%d, %d): %d != %d)",
+								tt.name, i%stride, i/stride, v, targetRegionIds[i])
+							t.Fail()
 						}
 					}
 				case 64:
@@ -213,7 +219,9 @@ func TestBuildRegionMap(t *testing.T) {
 
 					for i, v := range currentRegionIds {
 						if v != targetRegionIds[i] {
-							t.Fatalf("Snapshot %s failed: current regionmap does not match snapshot", tt.name)
+							t.Logf("Snapshot %s failed: current regionmap does not match snapshot (at (%d, %d): %d != %d)",
+								tt.name, i%stride, i/stride, v, targetRegionIds[i])
+							t.Fail()
 						}
 					}
 				default:

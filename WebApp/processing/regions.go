@@ -5,11 +5,11 @@ import (
 	"image/color"
 )
 
-func BuildRegionMap(img image.Image, options RegionMapOptions, regionFilter func(Region) bool) *RegionMap {
+func BuildRegionMap(img image.Image, options RegionMapOptions, regionFilter func(*Region) bool) *RegionMap {
 	dx, dy := img.Bounds().Dx(), img.Bounds().Dy()
-	regionMap := RegionMap{make([]Region, 0, 20), make([][]Region, dy), options}
+	regionMap := RegionMap{make([]*Region, 0, 20), make([][]*Region, dy), options}
 	for i := range regionMap.pixels {
-		regionMap.pixels[i] = make([]Region, dx)
+		regionMap.pixels[i] = make([]*Region, dx)
 	}
 
 	bd := img.Bounds()
@@ -49,8 +49,8 @@ type Vertex struct {
 type Region []Pixel
 
 type RegionMap struct {
-	regions []Region
-	pixels  [][]Region
+	regions []*Region
+	pixels  [][]*Region
 	options RegionMapOptions
 }
 
@@ -58,15 +58,15 @@ type RegionMapOptions struct {
 	NoColorSeparation, AllowWhite bool
 }
 
-func (rm *RegionMap) NewRegion(pixel Pixel) (region Region) {
-	region = Region{pixel}
+func (rm *RegionMap) NewRegion(pixel Pixel) (region *Region) {
+	region = &Region{pixel}
 	rm.regions = append(rm.regions, region)
 	rm.pixels[pixel.Y][pixel.X] = region
 	return
 }
 
-func (rm *RegionMap) AddPixelToRegion(pixel Pixel, region Region) {
-	region = append(region, pixel)
+func (rm *RegionMap) AddPixelToRegion(pixel Pixel, region *Region) {
+	*region = append(*region, pixel)
 	rm.pixels[pixel.Y][pixel.X] = region
 }
 
@@ -97,15 +97,15 @@ func (rm *RegionMap) GetPixelHasRegion(pixel Pixel) (hasRegion bool) {
 	return rm.pixels[pixel.Y][pixel.X] != nil
 }
 
-func (rm *RegionMap) GetRegionOfPixel(pixel Pixel) (region Region) {
+func (rm *RegionMap) GetRegionOfPixel(pixel Pixel) (region *Region) {
 	return rm.pixels[pixel.Y][pixel.X]
 }
 
-func (rm *RegionMap) GetRegionByIndex(i int) Region {
+func (rm *RegionMap) GetRegionByIndex(i int) *Region {
 	return rm.regions[i]
 }
 
-func (rm *RegionMap) GetRegions() []Region {
+func (rm *RegionMap) GetRegions() []*Region {
 	return rm.regions
 }
 
@@ -132,25 +132,25 @@ func ColorRegionEquivalence(a color.Color, b color.Color) bool {
 	return a == b
 }
 
-func FindRegionPosition(region Region) (int, int) {
-	corner := region[0]
+func FindRegionPosition(region *Region) (int, int) {
+	corner := (*region)[0]
 
-	for i := 0; i < len(region); i++ {
-		if region[i].X < corner.X {
-			corner.X = region[i].X
+	for i := 0; i < len(*region); i++ {
+		if (*region)[i].X < corner.X {
+			corner.X = (*region)[i].X
 		}
-		if region[i].Y < corner.Y {
-			corner.Y = region[i].Y
+		if (*region)[i].Y < corner.Y {
+			corner.Y = (*region)[i].Y
 		}
 	}
 
 	return int(corner.X), int(corner.Y)
 }
 
-func GetColorOfRegion(region Region, img image.Image, checkAll bool) color.Color {
+func GetColorOfRegion(region *Region, img image.Image, checkAll bool) color.Color {
 	if checkAll {
 		colorCounts := make(map[color.Color]uint, 1)
-		for _, v := range region {
+		for _, v := range *region {
 			colorCounts[img.At(int(v.X), int(v.Y))]++
 		}
 		var mostCommonColor color.Color
@@ -163,7 +163,7 @@ func GetColorOfRegion(region Region, img image.Image, checkAll bool) color.Color
 		}
 		return mostCommonColor
 	} else {
-		regionColor := img.At(int(region[0].X), int(region[0].Y))
+		regionColor := img.At(int((*region)[0].X), int((*region)[0].Y))
 		return regionColor
 	}
 }

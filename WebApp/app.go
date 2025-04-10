@@ -212,12 +212,12 @@ func buildLevel(c *gin.Context) {
 		regionImage := image.NewNRGBA(region.GetBounds())
 
 		if preserveColor {
-			for j := 0; j < len(region); j++ {
-				regionImage.Set(int(region[j].X), int(region[j].Y), img.At(int(region[j].X), int(region[j].Y)))
+			for j := 0; j < len(*region); j++ {
+				regionImage.Set(int((*region)[j].X), int((*region)[j].Y), img.At(int((*region)[j].X), int((*region)[j].Y)))
 			}
 		} else {
-			for j := 0; j < len(region); j++ {
-				regionImage.Set(int(region[j].X), int(region[j].Y), regionColor)
+			for j := 0; j < len(*region); j++ {
+				regionImage.Set(int((*region)[j].X), int((*region)[j].Y), regionColor)
 			}
 		}
 
