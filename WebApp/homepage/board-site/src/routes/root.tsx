@@ -1,12 +1,23 @@
 import boardshapesLogo from "../img/boardshapes.png";
 import "./root.css";
 import { Outlet, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 function Root() {
-  const [simplifiedImage, setSimplifiedImage] = useState<string | null>(null);
+  const [regionData, setRegionData] = useState<RegionData[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  interface RegionData {
+    regionNumber: number;
+    regionColor: { R: number; G: number; B: number; A: number };
+    regionColorString: string;
+    cornerX: number;
+    cornerY: number;
+    regionImage: string;
+    mesh: { x: number; y: number }[];
+  }
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -24,13 +35,14 @@ function Root() {
 
     setIsLoading(true);
     setErrorMessage(null);
+    setRegionData(null);
 
     const formData = new FormData();
     formData.append("image", file);
 
     try {
-      const response = await fetch("/api/simplify", {
-        method: "POST", //kid named follows the manual
+      const response = await fetch("/api/build-level", {
+        method: "POST",
         body: formData,
       });
 
@@ -38,13 +50,12 @@ function Root() {
         const errorText = await response.text();
         console.error("Server response:", response.status, errorText);
         throw new Error(
-          `Failed to simplify image: ${response.status} - ${errorText}`
+          `Failed to process image: ${response.status} - ${errorText}`
         );
       }
 
-      const imageBlob = await response.blob();
-      const imageUrl = URL.createObjectURL(imageBlob);
-      setSimplifiedImage(imageUrl);
+      const data: RegionData[] = await response.json();
+      setRegionData(data);
     } catch (error) {
       console.error("Error details:", error);
       setErrorMessage(
@@ -54,6 +65,57 @@ function Root() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!regionData || !canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let maxX = 0;
+    let maxY = 0;
+    regionData.forEach((region) => {
+      region.mesh.forEach((vertex) => {
+        maxX = Math.max(maxX, vertex.x + region.cornerX);
+        maxY = Math.max(maxY, vertex.y + region.cornerY);
+      });
+    });
+
+    canvas.width = maxX + 20;
+    canvas.height = maxY + 20;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    regionData.forEach((region) => {
+      const img = new Image();
+      img.src = `data:image/png;base64,${region.regionImage}`;
+      img.onload = () => {
+        ctx.drawImage(img, region.cornerX, region.cornerY);
+
+        ctx.beginPath();
+        const vertices = region.mesh;
+        if (vertices.length > 0) {
+          ctx.moveTo(
+            vertices[0].x + region.cornerX,
+            vertices[0].y + region.cornerY
+          );
+          for (let i = 1; i < vertices.length; i++) {
+            ctx.lineTo(
+              vertices[i].x + region.cornerX,
+              vertices[i].y + region.cornerY
+            );
+          }
+          ctx.closePath();
+          ctx.fillStyle = "rgba(112, 112, 255, 0.46)";
+          ctx.fill();
+          ctx.strokeStyle = "rgb(112, 112, 255)";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+      };
+    });
+  }, [regionData]);
 
   return (
     <>
@@ -91,25 +153,19 @@ function Root() {
         </div>
 
         <div className="image-upload-section">
-          <h3>Try Image Simplification</h3>
+          <h3>Collision Shapes Visualization</h3>
           <input
             type="file"
             accept="image/png,image/jpeg"
             onChange={handleImageUpload}
             disabled={isLoading}
           />
-          {isLoading && <p>Processing image...</p>}
-          {errorMessage && (
-            <p style={{ color: "red", marginTop: "10px" }}>{errorMessage}</p>
-          )}
-          {simplifiedImage && (
+          {isLoading && <p className="loading">Processing image...</p>}
+          {errorMessage && <p className="error">{errorMessage}</p>}
+          {regionData && (
             <div className="simplified-image-container">
-              <h4>Simplified Image:</h4>
-              <img
-                src={simplifiedImage}
-                alt="Simplified version"
-                style={{ maxWidth: "100%", marginTop: "10px" }}
-              />
+              <h4>Collision Shapes:</h4>
+              <canvas ref={canvasRef} className="collision-canvas" />
             </div>
           )}
         </div>

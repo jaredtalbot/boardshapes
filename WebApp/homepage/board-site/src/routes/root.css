@@ -227,4 +227,13 @@ a.AboutTitle:hover {
   .image-upload-section input[type="file"] {
     max-width: 500px;
   }
+
+  .collision-canvas {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+  }
 }
