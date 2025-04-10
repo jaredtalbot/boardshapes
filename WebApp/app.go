@@ -33,7 +33,7 @@ var (
 	Port          = os.Getenv(PORT_ENV)
 )
 
-var IMAGE_NO_SET_ERROR = errors.New("Cannot use an image that has no Set method in buildRegionMapForWebAPI")
+var ErrImageNoSet = errors.New("cannot use an image that has no Set method in buildRegionMapForWebAPI")
 
 type SettableImage = interface {
 	image.Image
@@ -57,7 +57,7 @@ func buildRegionMapForWebAPI(img image.Image, options processing.RegionMapOption
 				i.Set(int(pixel.X), int(pixel.Y), removedColor)
 			}
 		} else {
-			panic(IMAGE_NO_SET_ERROR)
+			panic(ErrImageNoSet)
 		}
 		return false
 	})
