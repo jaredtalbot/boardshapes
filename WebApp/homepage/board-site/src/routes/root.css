@@ -200,6 +200,39 @@ a.AboutTitle:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.action-button {
+  padding: 8px;
+  margin: 0 4px;
+  border: none;
+  border-radius: 6px;
+}
+
+.action-button.green {
+  color: white;
+  background-color: #2ff14c;
+}
+
+.action-button.green:hover {
+  background-color: #53f16a;
+}
+
+.action-button.green:active {
+  background-color: #27c73f;
+}
+
+.action-button.blue {
+  color: white;
+  background-color: #2479e7;
+}
+
+.action-button.blue:hover {
+  background-color: #4286de;
+}
+
+.action-button.blue:active {
+  background-color: #1d64c2;
+}
+
 @media (width >= 780px) {
   .body1 {
     padding-left: 4em;

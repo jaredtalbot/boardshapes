@@ -7,6 +7,7 @@ function Root() {
   const [regionData, setRegionData] = useState<RegionData[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   interface RegionData {
@@ -16,7 +17,7 @@ function Root() {
     cornerX: number;
     cornerY: number;
     regionImage: string;
-    mesh: { x: number; y: number }[];
+    shape: number[];
   }
 
   const handleImageUpload = async (
@@ -41,7 +42,7 @@ function Root() {
     formData.append("image", file);
 
     try {
-      const response = await fetch("/api/build-level", {
+      const response = await fetch("/api/create-shapes", {
         method: "POST",
         body: formData,
       });
@@ -76,10 +77,10 @@ function Root() {
     let maxX = 0;
     let maxY = 0;
     regionData.forEach((region) => {
-      region.mesh.forEach((vertex) => {
-        maxX = Math.max(maxX, vertex.x + region.cornerX);
-        maxY = Math.max(maxY, vertex.y + region.cornerY);
-      });
+      for (let i = 0; i < region.shape.length; i += 2) {
+        maxX = Math.max(maxX, region.shape[i] + region.cornerX);
+        maxY = Math.max(maxY, region.shape[i + 1] + region.cornerY);
+      }
     });
 
     canvas.width = maxX + 20;
@@ -94,16 +95,16 @@ function Root() {
         ctx.drawImage(img, region.cornerX, region.cornerY);
 
         ctx.beginPath();
-        const vertices = region.mesh;
+        const vertices = region.shape;
         if (vertices.length > 0) {
           ctx.moveTo(
-            vertices[0].x + region.cornerX,
-            vertices[0].y + region.cornerY
+            vertices[0] + region.cornerX,
+            vertices[1] + region.cornerY
           );
-          for (let i = 1; i < vertices.length; i++) {
+          for (let i = 2; i < vertices.length; i += 2) {
             ctx.lineTo(
-              vertices[i].x + region.cornerX,
-              vertices[i].y + region.cornerY
+              vertices[i] + region.cornerX,
+              vertices[i + 1] + region.cornerY
             );
           }
           ctx.closePath();
@@ -117,6 +118,17 @@ function Root() {
     });
   }, [regionData]);
 
+  useEffect(() => {
+    const blob = new Blob([JSON.stringify(regionData)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    setDownloadUrl(url);
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [regionData]);
+
   return (
     <>
       <div className="body1">
@@ -125,9 +137,7 @@ function Root() {
           <p id="paraJustify">
             <strong>Boardshapes</strong> (formerly "Boardmesh") is a free and
             open-source API that can be used to create suitable,
-            color-corrected, collidable shapes for physics simulators and
-            simplify an image into a restricted color palette consisting of
-            black, white, red, green, and blue.
+            color-corrected, shapes for physics simulators, games, and more!
           </p>
           <ul id="bodylist">
             <li>
@@ -153,7 +163,7 @@ function Root() {
         </div>
 
         <div className="image-upload-section">
-          <h3>Collision Shapes Visualization</h3>
+          <h3>Shape Visualizer</h3>
           <input
             type="file"
             accept="image/png,image/jpeg"
@@ -164,8 +174,28 @@ function Root() {
           {errorMessage && <p className="error">{errorMessage}</p>}
           {regionData && (
             <div className="simplified-image-container">
-              <h4>Collision Shapes:</h4>
+              <h4>Generated Shapes:</h4>
               <canvas ref={canvasRef} className="collision-canvas" />
+              <div>
+                <button
+                  type="button"
+                  className="action-button green"
+                  onClick={() =>
+                    navigator.clipboard
+                      .writeText(JSON.stringify(regionData))
+                      .then(() => alert("Shape data copied to clipboard."))
+                  }
+                >
+                  Copy Shape Data
+                </button>
+                <a
+                  className="action-button blue"
+                  href={downloadUrl}
+                  download="shapes.json"
+                >
+                  Download Shape Data
+                </a>
+              </div>
             </div>
           )}
         </div>
