@@ -3,6 +3,7 @@ package processing
 import (
 	"image"
 	"image/color"
+	"slices"
 )
 
 func BuildRegionMap(img image.Image, options RegionMapOptions, regionFilter func(*Region) bool) *RegionMap {
@@ -32,6 +33,7 @@ func BuildRegionMap(img image.Image, options RegionMapOptions, regionFilter func
 				regionMap.regions[i] = nil
 			}
 		}
+		regionMap.regions = slices.DeleteFunc(regionMap.regions, func(r *Region) bool { return r == nil })
 	}
 
 	return &regionMap
