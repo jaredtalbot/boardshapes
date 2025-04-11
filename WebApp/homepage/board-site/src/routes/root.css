@@ -142,6 +142,97 @@ a.AboutTitle:hover {
   min-height: 600px;
 }
 
+.image-upload-section {
+  margin: 2em auto;
+  padding: 1.5em;
+  max-width: 800px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  text-align: left;
+}
+
+.image-upload-section h3 {
+  margin: 0 0 1em 0;
+  font-size: 1.5em;
+  color: #333;
+}
+
+.image-upload-section input[type="file"] {
+  display: block;
+  margin: 0 0 1em 0;
+  padding: 0.5em;
+  width: 100%;
+  max-width: 400px;
+}
+
+.image-upload-section p {
+  margin: 0.5em 0;
+  font-size: 1em;
+}
+
+.image-upload-section p.loading {
+  color: #666;
+  font-style: italic;
+}
+
+.image-upload-section p.error {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.simplified-image-container {
+  margin-top: 1.5em;
+  text-align: center;
+}
+
+.simplified-image-container h4 {
+  margin: 0 0 0.5em 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.simplified-image-container img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.action-button {
+  padding: 8px;
+  margin: 0 4px;
+  border: none;
+  border-radius: 6px;
+}
+
+.action-button.green {
+  color: white;
+  background-color: #2ff14c;
+}
+
+.action-button.green:hover {
+  background-color: #53f16a;
+}
+
+.action-button.green:active {
+  background-color: #27c73f;
+}
+
+.action-button.blue {
+  color: white;
+  background-color: #2479e7;
+}
+
+.action-button.blue:hover {
+  background-color: #4286de;
+}
+
+.action-button.blue:active {
+  background-color: #1d64c2;
+}
+
 @media (width >= 780px) {
   .body1 {
     padding-left: 4em;
@@ -160,5 +251,22 @@ a.AboutTitle:hover {
 
   .hat {
     margin-top: 0;
+  }
+
+  .image-upload-section {
+    padding: 2em;
+  }
+
+  .image-upload-section input[type="file"] {
+    max-width: 500px;
+  }
+
+  .collision-canvas {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
   }
 }
