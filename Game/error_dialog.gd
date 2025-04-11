@@ -5,6 +5,7 @@ func _init():
 	size = Vector2(500, 400)
 	initial_position = WINDOW_INITIAL_POSITION_CENTER_PRIMARY_SCREEN
 	popup_window = true
+	process_mode = Node.PROCESS_MODE_ALWAYS
 
 func set_text_to_error_message(body: Variant, error_code: int = 0):
 	if body is PackedByteArray:

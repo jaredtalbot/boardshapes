@@ -25,15 +25,18 @@ func generate_nodes(json_string: String) -> Node:
 		region.add_child(sprite)
 		
 		var collision = CollisionPolygon2D.new()
-		var mesh = item["mesh"] as Array
-		var vectormesh = mesh.map(func(v: Dictionary): return Vector2(v["x"], v["y"]))
+		var shape = item["shape"] as Array
+		var vectorshape = PackedVector2Array()
+		for i in range(0, len(shape), 2):
+			vectorshape.append(Vector2(shape[i], shape[i+1]))
 		
-		collision.polygon = vectormesh
+		collision.polygon = vectorshape
 		region.add_child(collision)
 		region.position = Vector2(item["cornerX"], item["cornerY"])
 		level.add_child(region)
 	return level
 
 func checkItem(item: Variant) -> bool:
-	return item is Dictionary and item.get("regionImage") is String and item.get("mesh") is Array \
-		and item["mesh"].all(func(m): return m is Dictionary and m.has_all(["x", "y"])) and item.has_all(["cornerX", "cornerY"])
+	return item is Dictionary and item.get("regionImage") is String and item.get("shape") is Array \
+		and len(item["shape"]) % 2 == 0 and item["shape"].all(func(m): return m is int or m is float) \
+		and item.has_all(["cornerX", "cornerY"])
