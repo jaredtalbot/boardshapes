@@ -26,7 +26,7 @@ func create_level(img: Image, options: Dictionary):
 	if Preferences.dark_mode:
 		loading_indicator.set_text_color(Color(1, 1, 1, 1))
 	var buffer = img.save_png_to_buffer()
-	var request = FileUploader.upload_buffer(base_url + "/api/build-level", buffer, "image.png", HTTPClient.METHOD_POST, "image", options)
+	var request = FileUploader.upload_buffer(base_url + "/api/create-shapes", buffer, "image.png", HTTPClient.METHOD_POST, "image", options)
 	request.request_completed.connect(_on_response_received)
 
 func load_level(level_data: Variant):
@@ -43,6 +43,19 @@ func load_level(level_data: Variant):
 		or json.get("endPos") is not Dictionary or json.get("regions") is not Array:
 		show_error("Could not load level.")
 		return
+	
+	## Convert shapes from old level files
+	if (json["regions"] as Array).any(func(x): return (x as Dictionary).has("mesh")):
+		for region: Dictionary in json["regions"]:
+			if not region.has("mesh"):
+				show_error("Could not load level.")
+			var mesh = region["mesh"]
+			var shape = []
+			shape.resize(len(mesh) * 2)
+			for i in range(len(mesh)):
+				shape[i*2] = mesh[i]["x"]
+				shape[i*2+1] = mesh[i]["y"]
+			region["shape"] = shape
 	
 	var generated_level = LevelGenerator.generate_nodes(json["regions"])
 	if generated_level == null:

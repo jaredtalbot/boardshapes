@@ -15,6 +15,9 @@
     },
     {
       "path": "MultiplayerServer"
+    },
+    {
+      "path": "Boardbox"
     }
   ],
   "settings": {}

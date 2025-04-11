@@ -45,7 +45,7 @@ func create_level(img: Image):
 	loading_indicator.show()
 	loading_indicator.set_text("Uploading Image...")
 	var buffer = img.save_png_to_buffer()
-	var request = FileUploader.upload_buffer(base_url + "/api/build-level", buffer, "image.png", \
+	var request = FileUploader.upload_buffer(base_url + "/api/create-shapes", buffer, "image.png", \
 		HTTPClient.METHOD_POST, "image", {
 			"preserveColor": preserve_color_check.button_pressed,
 			"noColorSeparation": no_color_separation_check.button_pressed,
