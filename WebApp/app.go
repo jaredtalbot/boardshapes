@@ -2,6 +2,7 @@ package main
 
 import (
 	"codejester27/cmps401fa2024/web-app/api"
+	"os"
 	"strings"
 
 	"log"
@@ -56,7 +57,11 @@ func main() {
 	router.NoRoute(gin.Logger(), func(ctx *gin.Context) {
 		url := ctx.Request.URL.Path
 		if containsAny(url, "wp", "wordpress", "admin", "php") {
-			ctx.File("./misc-assets/teapot.txt")
+			dat, err := os.ReadFile("./misc-assets/teapot.txt")
+			if err == nil {
+				ctx.String(http.StatusTeapot, string(dat))
+				return
+			}
 			ctx.Status(http.StatusTeapot)
 			return
 		}
