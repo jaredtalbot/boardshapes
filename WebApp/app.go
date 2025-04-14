@@ -29,12 +29,21 @@ func main() {
 	router.Use(gin.Recovery())
 
 	logged := router.Group("") // I don't like seeing auth tokens in my terminal so we're not logging the websocket requests
-	logged.Use(gin.Logger())
 
 	// cors
 	logged.Use(func(ctx *gin.Context) {
 		ctx.Header("Access-Control-Allow-Origin", "*")
 	})
+
+	// log forwarded requests
+	logged.Use(func(ctx *gin.Context) {
+		ctx.Next()
+		if from := ctx.GetHeader("X-Forwarded-For"); from != "" {
+			log.Printf("Request above forwarded from: %s\n", from)
+		}
+	})
+
+	logged.Use(gin.Logger())
 
 	games := logged.Group("")
 
