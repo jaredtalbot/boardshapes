@@ -21,6 +21,15 @@ func containsAny(haystack string, needles ...string) bool {
 	return false
 }
 
+// Logs forwarded requests (like through a proxy)
+func logForwarded(ctx *gin.Context) {
+	ctx.Next()
+	if from := ctx.GetHeader("X-Forwarded-For"); from != "" {
+		log.Printf("Request above forwarded from: %s\n", from)
+	}
+
+}
+
 func main() {
 	log.Printf("Running with %d CPUs\n", runtime.NumCPU())
 
@@ -35,14 +44,7 @@ func main() {
 		ctx.Header("Access-Control-Allow-Origin", "*")
 	})
 
-	// log forwarded requests
-	logged.Use(func(ctx *gin.Context) {
-		ctx.Next()
-		if from := ctx.GetHeader("X-Forwarded-For"); from != "" {
-			log.Printf("Request above forwarded from: %s\n", from)
-		}
-	})
-
+	logged.Use(logForwarded)
 	logged.Use(gin.Logger())
 
 	games := logged.Group("")
@@ -63,7 +65,7 @@ func main() {
 	logged.POST("/api/create-shapes", api.CreateShapes)
 	router.GET("/api/ws", api.ConnectListenerWebsocket)
 
-	router.NoRoute(gin.Logger(), func(ctx *gin.Context) {
+	router.NoRoute(logForwarded, gin.Logger(), func(ctx *gin.Context) {
 		url := ctx.Request.URL.Path
 		if containsAny(url, "wp", "wordpress", "admin", "php") {
 			dat, err := os.ReadFile("./misc-assets/teapot.txt")
