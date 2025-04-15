@@ -254,6 +254,17 @@ func StraightOpt(sortedVertexShape []Vertex) []Vertex {
 	return sortedVertexShape
 }
 
+
+func DouglasOptimization(sortedVertexShape []Vertex) []Vertex {
+	index := 0
+	endPoint := sortedVertexShape[len(sortedVertexShape)-1]
+	startPoint := sortedVertexShape[index]
+	
+
+
+
+}
+
 func PrintMatrix(matrix [][]bool) {
 	for _, s := range matrix {
 		for _, v := range s {
