@@ -1,3 +1,7 @@
+## Notice
+
+This repository will be archived soon. Development will continue at [boardshapes/boardshapes](https://github.com/boardshapes/boardshapes)!
+
 # Boardshapes
 
 To run a Go project:
