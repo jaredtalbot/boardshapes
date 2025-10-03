@@ -1,6 +1,6 @@
-## Notice
+# Notice
 
-This repository will be archived soon. Development will continue at [boardshapes/boardshapes](https://github.com/boardshapes/boardshapes)!
+This repository has been archived, as Boardwalk moves to closed-source. Boardshapes and other projects will remain open-source and continue development at [boardshapes/boardshapes](https://github.com/boardshapes/boardshapes)!
 
 # Boardshapes
 
